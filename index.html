@@ -319,7 +319,7 @@ async function start(){
   $("login").classList.add("hidden");$("app").classList.remove("hidden");
   $("who").textContent=(profile.full_name||user.email)+" • "+(profile.role==="admin"?"Admin":"BD");
   await load();
-  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table":"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table":"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table":"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table":"forecast_targets"},load).subscribe();
+  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).subscribe();
 }
 
 function authErrorMessage(err){
