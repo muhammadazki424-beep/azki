@@ -122,7 +122,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
     <section id="potential" class="section">
       <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
+      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
     </section>
 
     <section id="customers" class="section">
@@ -142,7 +142,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
     <section id="po" class="section">
       <div class="top"><div><h1>PO Received</h1><div class="muted">Data dari Excel. BD hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
+      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="forecast" class="section">
@@ -311,6 +311,9 @@ function render(){
   }).join("");
   $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
   $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
+
+  $("potentialSectionTotal").textContent=money(potential.reduce((a,x)=>a+num(x.value),0));
+  $("poSectionTotal").textContent=money(po.reduce((a,x)=>a+num(x.value),0));
 
   $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
   $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
