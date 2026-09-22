@@ -221,8 +221,23 @@ const bdNames=()=>{
   return [...new Set(names.map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b));
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const monthKey=(m)=>String(m||'').slice(0,7);
-const yearOf=(m)=>String(m||'').slice(0,4);
+function monthKey(m){
+  const s=String(m??"").trim();
+  let x=s.match(/(20\\d{2})[-\\/](0?[1-9]|1[0-2])/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
+  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
+  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
+  x=s.toLowerCase().match(/([a-z]+)/);
+  const y=s.match(/20\\d{2}/);
+  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
+  return s.slice(0,7);
+}
+function yearOf(m){
+  const s=String(m??"");
+  const y=s.match(/20\\d{2}/);
+  return y?y[0]:s.slice(0,4);
+}
 const bdEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
 function renderPotentialByBD(){
   const names=bdNames();
@@ -254,7 +269,11 @@ function renderCustomerMonthly(){
   $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
 }
 function renderPOByBD(){
-  const names=bdNames();
+  // PO Received per BD: jangan tampilkan akun/nama internal Marketing atau Azki.
+  const names=bdNames().filter(bd=>{
+    const n=String(bd||'').trim().toLowerCase();
+    return n!=='marketing' && n!=='azki';
+  });
   $('dashPOBD').innerHTML=names.map(bd=>{
     const rows=po.filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
@@ -283,14 +302,6 @@ function render(){
   }).join("");
   $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
   $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-
-  $("dashPO").innerHTML=po.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td></tr>`).join("")||`<tr><td colspan="4">Belum ada PO.</td></tr>`;
-
-  $("dashPotential").innerHTML=potential.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada potential.</td></tr>`;
-
-  $("dashLost").innerHTML=lost.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada lost lead.</td></tr>`;
-  $("dashComplaint").innerHTML=complaints.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${money(e.quantity_complain)}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada complaint.</td></tr>`;
-  $("dashCustomer").innerHTML=customers.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada customer.</td></tr>`;
 
   $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
   $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
