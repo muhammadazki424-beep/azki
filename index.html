@@ -218,7 +218,12 @@ async function load(){
 
 const bdNames=()=>{
   const names=[...profiles.map(p=>p.full_name).filter(Boolean),...potential.map(x=>x.bd),...customers.map(x=>x.bd),...po.map(x=>x.bd)].filter(Boolean);
-  return [...new Set(names.map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b));
+  return [...new Set(names.map(x=>String(x).trim()))]
+    .filter(name=>{
+      const n=String(name).toLowerCase();
+      return n!=='marketing' && n!=='azki';
+    })
+    .sort((a,b)=>a.localeCompare(b));
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
