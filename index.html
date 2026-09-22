@@ -31,6 +31,8 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 .toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:280px}.readonly{background:#f7f8fa}
 @media(max-width:1050px){.login{grid-template-columns:1fr}.loginHero{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
 @media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
+
+.bdCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bdMini{background:#0f1724;border:1px solid #263246;border-radius:14px;padding:16px}.bdMini h3{margin:0 0 8px;color:#fff;font-size:16px}.bdMini .big{font-size:22px;font-weight:800;color:#fff}.bdMini .sub{font-size:12px;color:#9aa8bd;margin-top:5px}.yearbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.yearbar select{background:#0a101b;color:#fff;border:1px solid #2b384e;border-radius:8px;padding:9px 12px}.monthMatrix{overflow:auto}.monthMatrix table{min-width:980px}.monthMatrix th,.monthMatrix td{text-align:center;white-space:nowrap}.monthMatrix th:first-child,.monthMatrix td:first-child{text-align:left;position:sticky;left:0;background:inherit}.monthMatrix td strong{color:#fff}.sectionNote{font-size:12px;color:#8f9db2;margin-top:4px}.bdBreakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.bdPanel{border:1px solid #263246;border-radius:14px;padding:14px;background:#0f1724}.bdPanel h3{margin:0 0 10px;color:#fff}.bdPanel table{min-width:0}.bdPanel th,.bdPanel td{background:transparent;color:#dce3ee}@media(max-width:900px){.bdCards{grid-template-columns:repeat(2,minmax(0,1fr))}.bdBreakdown{grid-template-columns:1fr}}@media(max-width:560px){.bdCards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -86,42 +88,35 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
   <main class="main">
     <section id="dashboard" class="section active">
       <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Semua BD dapat melihat data. Data editable dapat diedit/hapus oleh semua BD.</div></div>
+        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan Potential, Database Customer, dan PO Received per BD.</div></div>
         <div id="sync" class="badge green">ONLINE</div>
       </div>
       <div class="cards">
         <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
         <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
-        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua potential</div></div>
-        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Data read-only</div></div>
+        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
+        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
       </div>
-      <div class="grid2">
-        <div class="panel">
-          <div class="panelHead"><h2>BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
-        </div>
-        <div class="panel">
-          <div class="panelHead"><h2>PO Received</h2><button class="btn gray small" onclick="go('po')">Lihat Semua</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th></tr></thead><tbody id="dashPO"></tbody></table></div>
-        </div>
-      </div>
+
       <div class="panel">
-        <div class="panelHead"><h2>Potential — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('potential')">+ Tambah</button></div>
-        <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Aksi</th></tr></thead><tbody id="dashPotential"></tbody></table></div>
+        <div class="panelHead"><div><h2>🎯 Potential per BD</h2><div class="sectionNote">Masing-masing BD ditampilkan terpisah.</div></div><button class="btn gray small" onclick="go('potential')">Kelola Potential</button></div>
+        <div id="dashPotentialBD" class="bdCards"></div>
       </div>
-      <div class="grid2">
-        <div class="panel">
-          <div class="panelHead"><h2>Lost Leads — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('lost')">+ Tambah</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="dashLost"></tbody></table></div>
-        </div>
-        <div class="panel">
-          <div class="panelHead"><h2>Complaint — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('complaint')">+ Tambah</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="dashComplaint"></tbody></table></div>
-        </div>
-      </div>
+
       <div class="panel">
-        <div class="panelHead"><h2>Database Customer — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('customer')">+ Tambah</button></div>
-        <div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Aksi</th></tr></thead><tbody id="dashCustomer"></tbody></table></div>
+        <div class="panelHead"><div><h2>🏢 Database Customer per BD — Bulanan 2024–2026</h2><div class="sectionNote">Jumlah database customer per bulan untuk setiap BD.</div></div><button class="btn gray small" onclick="go('customers')">Kelola Customer</button></div>
+        <div class="yearbar"><label style="margin:0">Tahun</label><select id="customerYearFilter"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="all">Semua Tahun</option></select></div>
+        <div id="dashCustomerMonthly" class="monthMatrix"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><div><h2>📦 PO Received per BD</h2><div class="sectionNote">Nilai PO dan jumlah PO dipisahkan berdasarkan BD.</div></div><button class="btn gray small" onclick="go('po')">Lihat PO Received</button></div>
+        <div id="dashPOBD" class="bdBreakdown"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><h2>👥 BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
+        <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
       </div>
     </section>
 
@@ -203,6 +198,7 @@ const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option
 const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
+$("customerYearFilter").onchange=renderCustomerMonthly;
 
 async function load(){
   const qs=await Promise.all([
@@ -220,7 +216,60 @@ async function load(){
   render();
 }
 
+const bdNames=()=>{
+  const names=[...profiles.map(p=>p.full_name).filter(Boolean),...potential.map(x=>x.bd),...customers.map(x=>x.bd),...po.map(x=>x.bd)].filter(Boolean);
+  return [...new Set(names.map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b));
+};
+const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const monthKey=(m)=>String(m||'').slice(0,7);
+const yearOf=(m)=>String(m||'').slice(0,4);
+const bdEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
+function renderPotentialByBD(){
+  const names=bdNames();
+  const html=names.map(bd=>{
+    const rows=potential.filter(x=>bdEq(x.bd,bd));
+    const total=rows.reduce((a,x)=>a+num(x.value),0);
+    return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
+  }).join('');
+  $('dashPotentialBD').innerHTML=html||'<div class="muted">Belum ada data Potential.</div>';
+}
+function renderCustomerMonthly(){
+  const filter=$('customerYearFilter')?.value||'2026';
+  const names=bdNames();
+  const years=filter==='all'?[2024,2025,2026]:[Number(filter)];
+  let out='';
+  for(const year of years){
+    out+=`<h3 style="color:#fff;margin:10px 0">${year}</h3><table><thead><tr><th>BD</th>${monthNames.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+    out+=names.map(bd=>{
+      let total=0;
+      const cells=monthNames.map((_,i)=>{
+        const key=`${year}-${String(i+1).padStart(2,'0')}`;
+        const n=customers.filter(x=>bdEq(x.bd,bd)&&monthKey(x.month)===key).length; total+=n;
+        return `<td>${n||'-'}</td>`;
+      }).join('');
+      return `<tr><td><strong>${esc(bd)}</strong></td>${cells}<td><strong>${total}</strong></td></tr>`;
+    }).join('');
+    out+='</tbody></table>';
+  }
+  $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
+}
+function renderPOByBD(){
+  const names=bdNames();
+  $('dashPOBD').innerHTML=names.map(bd=>{
+    const rows=po.filter(x=>bdEq(x.bd,bd));
+    const total=rows.reduce((a,x)=>a+num(x.value),0);
+    const byYear=[2024,2025,2026].map(y=>{
+      const r=rows.filter(x=>yearOf(x.month)===String(y));
+      return `<tr><td>${y}</td><td>${r.length}</td><td>${money(r.reduce((a,x)=>a+num(x.value),0))}</td></tr>`;
+    }).join('');
+    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total</div><div class="table"><table><thead><tr><th>Tahun</th><th>Qty PO</th><th>Nilai</th></tr></thead><tbody>${byYear}</tbody></table></div></div>`;
+  }).join('')||'<div class="muted">Belum ada data PO Received.</div>';
+}
+
 function render(){
+  renderPotentialByBD();
+  renderCustomerMonthly();
+  renderPOByBD();
   const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
   const totalPO=po.reduce((a,x)=>a+num(x.value),0);
   const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
