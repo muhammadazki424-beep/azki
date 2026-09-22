@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cetakdong Team Azki</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+.hidden{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.loginbox,.panel,.card{background:#fff;border-radius:15px;box-shadow:0 4px 18px #0000000b}
+.loginbox{width:min(420px,100%);padding:30px}.brand{font-size:30px;font-weight:900;color:#111}.brand span{color:#111}
+.sub,.muted{color:#6b7280}.sub{margin:5px 0 22px}label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid #d7dce5;border-radius:9px;background:#fff}textarea{min-height:80px}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#111;color:#fff;font-weight:bold}.blue{background:#2563eb}.red{background:#dc2626}.gray{background:#e9edf3;color:#172033}
+.msg{font-size:13px;margin-top:10px}.error{color:#dc2626}.success{color:#15803d}
+.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.side{background:#111827;color:white;padding:22px 16px;min-height:100vh}
+.side .brand{color:#fff;margin:0 6px 5px}.side .brand span{color:#111;background:#fff;padding:2px 5px;border-radius:4px}.role{font-size:12px;color:#aeb7c7;margin:0 6px 20px}
+.nav button{width:100%;text-align:left;background:none;border:0;color:#dbe2ed;padding:11px 10px;border-radius:8px;margin:2px 0}.nav button.active,.nav button:hover{background:#273246;color:white}
+.main{padding:26px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{margin:0;font-size:27px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{padding:18px}.card .k{font-size:12px;color:#6b7280;font-weight:bold}.card .v{font-size:24px;font-weight:900;margin-top:8px}
+.panel{padding:18px;margin-top:16px}.panel h2{font-size:17px;margin:0 0 14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.section{display:none}.section.active{display:block}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:13px}th{font-size:12px;color:#667085;background:#fafbfc}
+.small{padding:6px 9px;font-size:12px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.modalbox{background:white;border-radius:15px;padding:22px;width:min(440px,100%)}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:16px}.cards,.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+<div class="loginbox">
+<div class="brand">cetak<span>dong</span></div>
+<div class="sub">Team Azki • Sales Dashboard</div>
+<form id="loginForm">
+<label>Email</label><input id="email" type="email" required>
+<label>Password</label><input id="password" type="password" required>
+<button class="btn" style="width:100%;margin-top:16px">Login</button>
+</form>
+<button id="magic" class="btn gray" style="width:100%;margin-top:8px">Kirim Magic Link</button>
+<button id="forgot" class="btn gray" style="width:100%;margin-top:8px">Reset Password</button>
+<div id="loginMsg" class="msg"></div>
+</div></div>
+
+<div id="app" class="layout hidden">
+<aside class="side">
+<div class="brand">cetak<span>dong</span></div>
+<div id="who" class="role"></div><div id="role" class="role"></div>
+<div class="nav">
+<button data-page="dashboard" class="active">📊 Dashboard</button>
+<button data-page="input">✍️ Input Data</button>
+<button data-page="performance">👥 BD Performance</button>
+<button data-page="customers">🏢 Customers</button>
+<button data-page="lost">⚠️ Lost & Complaint</button>
+<button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
+</div>
+<div style="margin-top:25px">
+<button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
+<button id="logout" class="btn" style="width:100%;margin-top:8px;background:#374151">Logout</button>
+</div>
+</aside>
+
+<main class="main">
+
+<section id="dashboard" class="section active">
+<div class="top"><div><h1>Sales Dashboard</h1><div class="muted">Real-Time Sales Dashboard</div></div><span id="sync" class="muted">online</span></div>
+<div class="cards">
+<div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div></div>
+<div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div></div>
+<div class="card"><div class="k">POTENTIAL</div><div id="potential" class="v">Rp 0</div></div>
+<div class="card"><div class="k">PO RECEIVED</div><div id="po" class="v">Rp 0</div></div>
+</div>
+<div class="grid2">
+<div class="panel"><h2>BD Performance</h2><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="perf"></tbody></table></div></div>
+<div class="panel"><h2>Customer berdasarkan PO</h2><div class="table"><table><thead><tr><th>Customer</th><th>BD</th><th>Nilai</th><th>Bulan</th></tr></thead><tbody id="cust"></tbody></table></div></div>
+</div>
+<div class="panel"><h2>Lost & Complaint</h2><div class="table"><table><thead><tr><th>Type</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="lostDash"></tbody></table></div></div>
+</section>
+
+<section id="input" class="section">
+<div class="top"><div><h1>Input Data</h1><div class="muted">BD dapat input/edit/hapus Potential, Lost Lead, dan Complaint.</div></div></div>
+<div class="panel"><h2>Tambah Data</h2>
+<form id="entryForm"><div class="formgrid">
+<div><label>Jenis Data</label><select id="type" required><option value="potential">Potential</option><option value="lost">Lost Lead</option><option value="complaint">Complaint</option><option value="po">PO Received</option></select></div>
+<div><label>Customer / Company</label><input id="customer" required></div>
+<div><label>Nilai</label><input id="value" type="number" min="0" required></div>
+<div><label>Bulan</label><input id="month" type="month" required></div>
+<div class="full"><label>Catatan</label><textarea id="notes"></textarea></div>
+</div><button class="btn blue" style="margin-top:14px">Simpan</button><div id="entryMsg" class="msg"></div></form></div>
+<div class="panel"><h2>Data Saya</h2><div class="table"><table><thead><tr><th>Jenis</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="myData"></tbody></table></div></div>
+</section>
+
+<section id="performance" class="section"><div class="top"><h1>BD Performance</h1></div><div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="perf2"></tbody></table></div></div></section>
+
+<section id="customers" class="section"><div class="top"><h1>Customers</h1></div><div class="panel"><div class="table"><table><thead><tr><th>Customer</th><th>BD</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="cust2"></tbody></table></div></div></section>
+
+<section id="lost" class="section"><div class="top"><h1>Lost & Complaint</h1></div><div class="panel"><div class="table"><table><thead><tr><th>Type</th><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="lost2"></tbody></table></div></div></section>
+
+<section id="admin" class="section">
+<div class="top"><h1>User & Target</h1></div>
+<div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="users"></tbody></table></div></div>
+<div class="panel"><h2>Semua Data</h2><div class="table"><table><thead><tr><th>Type</th><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Aksi</th></tr></thead><tbody id="allData"></tbody></table></div></div>
+</section>
+</main></div>
+
+<div id="passModal" class="modal hidden"><div class="modalbox"><h2>🔐 Ubah Password</h2><label>Password Baru</label><input id="pass1" type="password"><label>Ulangi Password</label><input id="pass2" type="password"><div id="passMsg" class="msg"></div><div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div></div></div>
+
+<div id="editModal" class="modal hidden"><div class="modalbox"><h2>Edit Data</h2><input id="editId" type="hidden"><label>Jenis Data</label><select id="editType"></select><label>Customer / Company</label><input id="editCustomer"><label>Nilai</label><input id="editValue" type="number"><label>Bulan</label><input id="editMonth" type="month"><label>Catatan</label><textarea id="editNotes"></textarea><div id="editMsg" class="msg"></div><div class="actions"><button id="closeEdit" class="btn gray">Batal</button><button id="saveEdit" class="btn blue">Simpan</button></div></div></div>
+
+<script>
+let sb,user,profile,profiles=[],entries=[];
+const $=x=>document.getElementById(x);
+const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const name=id=>(profiles.find(p=>p.id===id)||{}).full_name||"Unknown";
+const tn=t=>({potential:"Potential",po:"PO Received",lost:"Lost Lead",complaint:"Complaint"})[t]||t;
+const editable=e=>profile.role==="admin"||(e.bd_id===user.id&&["potential","lost","complaint"].includes(e.type));
+
+async function load(){
+ const p=await sb.from("profiles").select("*");
+ const e=await sb.from("sales_entries").select("*").order("created_at",{ascending:false});
+ if(p.error||e.error){console.error(p.error||e.error);$("sync").textContent="error";return}
+ profiles=p.data||[];entries=e.data||[];render();
+}
+function buttons(e){
+ if(!editable(e))return "View only";
+ return '<button class="btn blue small" onclick="openEdit(''+e.id+'')">Edit</button> <button class="btn red small" onclick="deleteEntry(''+e.id+'')">Hapus</button>';
+}
+function render(){
+ const mine=entries.filter(e=>profile.role==="admin"||e.bd_id===user.id);
+ const target=profile.role==="admin"?profiles.reduce((a,p)=>a+Number(p.target||0),0):Number(profile.target||0);
+ const po=mine.filter(e=>e.type==="po").reduce((a,e)=>a+Number(e.value||0),0);
+ const pot=mine.filter(e=>e.type==="potential").reduce((a,e)=>a+Number(e.value||0),0);
+ $("target").textContent=money(target);$("achievement").textContent=money(po);$("potential").textContent=money(pot);$("po").textContent=money(po);
+
+ const perf=profiles.filter(p=>profile.role==="admin"||p.id===user.id).map(p=>{
+  const v=entries.filter(e=>e.bd_id===p.id&&e.type==="po").reduce((a,e)=>a+Number(e.value||0),0),t=Number(p.target||0);
+  return "<tr><td>"+esc(p.full_name)+"</td><td>"+money(t)+"</td><td>"+money(v)+"</td><td>"+(t?(v/t*100).toFixed(1):"0.0")+"%</td></tr>";
+ }).join("");
+ $("perf").innerHTML=perf||"<tr><td colspan=4>Belum ada data.</td></tr>";$("perf2").innerHTML=perf||"<tr><td colspan=4>Belum ada data.</td></tr>";
+
+ const pos=mine.filter(e=>e.type==="po");
+ $("cust").innerHTML=pos.map(e=>"<tr><td>"+esc(e.customer)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td></tr>").join("")||"<tr><td colspan=4>Belum ada PO.</td></tr>";
+ $("cust2").innerHTML=pos.map(e=>"<tr><td>"+esc(e.customer)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td></tr>").join("")||"<tr><td colspan=5>Belum ada PO.</td></tr>";
+
+ const lost=mine.filter(e=>["lost","complaint"].includes(e.type));
+ $("lostDash").innerHTML=lost.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td></tr>").join("")||"<tr><td colspan=5>Belum ada data.</td></tr>";
+ $("lost2").innerHTML=lost.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td><td>"+buttons(e)+"</td></tr>").join("")||"<tr><td colspan=7>Belum ada data.</td></tr>";
+ $("myData").innerHTML=mine.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td><td>"+buttons(e)+"</td></tr>").join("")||"<tr><td colspan=6>Belum ada data.</td></tr>";
+
+ if(profile.role==="admin"){
+  $("adminNav").classList.remove("hidden");
+  $("users").innerHTML=profiles.map(p=>"<tr><td>"+esc(p.full_name)+"</td><td>"+esc(p.role)+"</td><td>"+money(p.target)+"</td><td><button class='btn blue small' onclick="setTarget('"+p.id+"')">Ubah Target</button></td></tr>").join("");
+  $("allData").innerHTML=entries.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+buttons(e)+"</td></tr>").join("");
+ }
+}
+async function start(){
+ if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY){$("loginMsg").className="msg error";$("loginMsg").textContent="config.js belum terbaca.";return}
+ sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+ const s=await sb.auth.getSession();if(!s.data.session)return;
+ user=s.data.session.user;
+ const p=await sb.from("profiles").select("*").eq("id",user.id).single();
+ if(p.error||!p.data){$("loginMsg").className="msg error";$("loginMsg").textContent="Profil user belum dibuat.";return}
+ profile=p.data;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent=profile.full_name||user.email;$("role").textContent=profile.role==="admin"?"Administrator":"BD";
+ if(profile.role==="admin")$("adminNav").classList.remove("hidden");else{const poOpt=$('type').querySelector('option[value="po"]');if(poOpt)poOpt.remove()}
+ await load();
+ sb.channel("sales-live").on("postgres_changes",{event:"*",schema:"public",table:"sales_entries"},()=>load()).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},()=>load()).subscribe();
+}
+$("loginForm").onsubmit=async e=>{e.preventDefault();sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const r=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(r.error){$("loginMsg").className="msg error";$("loginMsg").textContent=r.error.message}else start()};
+$("magic").onclick=async()=>{sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const a=$("email").value.trim();if(!a){$("loginMsg").textContent="Isi email dulu.";return}const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});$("loginMsg").className=r.error?"msg error":"msg success";$("loginMsg").textContent=r.error?r.error.message:"Magic Link sudah dikirim. Cek email."};
+$("forgot").onclick=async()=>{sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const a=$("email").value.trim();if(!a){$("loginMsg").textContent="Isi email dulu.";return}const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});$("loginMsg").className=r.error?"msg error":"msg success";$("loginMsg").textContent=r.error?r.error.message:"Link reset password sudah dikirim."};
+$("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(b.classList.contains("hidden"))return;document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(b.dataset.page).classList.add("active")});
+
+$("entryForm").onsubmit=async e=>{e.preventDefault();const type=$("type").value;if(profile.role!=="admin"&&type==="po"){ $("entryMsg").className="msg error";$("entryMsg").textContent="BD tidak boleh input PO Received.";return}const r=await sb.from("sales_entries").insert({bd_id:user.id,type,customer:$("customer").value.trim(),value:Number($("value").value),month:$("month").value,notes:$("notes").value.trim()});$("entryMsg").className=r.error?"msg error":"msg success";$("entryMsg").textContent=r.error?r.error.message:"Data berhasil disimpan.";if(!r.error){e.target.reset();load()}};
+
+window.openEdit=id=>{const e=entries.find(x=>x.id===id);if(!e||!editable(e))return;$("editId").value=e.id;$("editType").innerHTML=(profile.role==="admin"?["potential","po","lost","complaint"]:["potential","lost","complaint"]).map(t=>"<option value='"+t+"'>"+tn(t)+"</option>").join("");$("editType").value=e.type;$("editCustomer").value=e.customer||"";$("editValue").value=e.value||0;$("editMonth").value=e.month||"";$("editNotes").value=e.notes||"";$("editMsg").textContent="";$("editModal").classList.remove("hidden")};
+window.deleteEntry=async id=>{const e=entries.find(x=>x.id===id);if(!e||!editable(e))return;if(!confirm("Hapus data ini?"))return;const r=await sb.from("sales_entries").delete().eq("id",id);if(r.error)alert(r.error.message);else load()};
+$("closeEdit").onclick=()=>$("editModal").classList.add("hidden");
+$("saveEdit").onclick=async()=>{const id=$("editId").value,e=entries.find(x=>x.id===id);if(!e||!editable(e))return;const type=$("editType").value;if(profile.role!=="admin"&&type==="po"){ $("editMsg").className="msg error";$("editMsg").textContent="BD tidak boleh mengubah menjadi PO Received.";return}const r=await sb.from("sales_entries").update({type,customer:$("editCustomer").value.trim(),value:Number($("editValue").value),month:$("editMonth").value,notes:$("editNotes").value.trim()}).eq("id",id);$("editMsg").className=r.error?"msg error":"msg success";$("editMsg").textContent=r.error?r.error.message:"Data berhasil diubah.";if(!r.error){$("editModal").classList.add("hidden");load()}};
+
+window.setTarget=async id=>{if(profile.role!=="admin")return;const p=profiles.find(x=>x.id===id);const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;const r=await sb.from("profiles").update({target:Number(v)}).eq("id",id);if(r.error)alert(r.error.message);else load()};
+
+$("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
+$("closePass").onclick=()=>$("passModal").classList.add("hidden");
+$("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
+
+window.addEventListener("load",()=>start().catch(e=>{console.error(e);$("loginMsg").className="msg error";$("loginMsg").textContent=e.message}));
+</script>
+</body></html>
