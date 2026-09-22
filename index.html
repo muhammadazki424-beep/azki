@@ -150,7 +150,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
     <section id="forecast" class="section">
       <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr id="forecastGrandTotalRow"><th>TOTAL KESELURUHAN</th><th id="forecastSumForecast">Rp 0</th><th id="forecastSumTarget">Rp 0</th><th id="forecastSumFlexo">Rp 0</th><th id="forecastSumRoto">Rp 0</th><th id="forecastSumTotal">Rp 0</th><th id="forecastSumPct">-</th><th id="forecastSumCommFlexo">Rp 0</th><th id="forecastSumCommRoto">Rp 0</th><th></th></tr></tfoot></table></div><div class="totalValueBox" style="margin-top:14px"><span>TOTAL KESELURUHAN PO RECEIVED</span><strong id="forecastSumPO">Rp 0</strong></div></div>
+      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div>
     </section>
 
     <section id="performance" class="section">
@@ -344,17 +344,6 @@ function render(){
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
   $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Belum ada PO.</td></tr>`;
   $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
-  const fSum=(key)=>forecast.reduce((a,e)=>a+num(e[key]),0);
-  const totalForecast=fSum("forecast"), totalTarget=fSum("target"), totalFlexo=fSum("achievement_flexo"), totalRoto=fSum("achievement_roto"), totalAll=fSum("total"), totalCommFlexo=fSum("commission_flexo"), totalCommRoto=fSum("commission_roto");
-  $("forecastSumForecast").textContent=money(totalForecast);
-  $("forecastSumTarget").textContent=money(totalTarget);
-  $("forecastSumFlexo").textContent=money(totalFlexo);
-  $("forecastSumRoto").textContent=money(totalRoto);
-  $("forecastSumTotal").textContent=money(totalAll);
-  $("forecastSumPct").textContent=totalTarget?((totalAll/totalTarget)*100).toFixed(1)+"%":"-";
-  $("forecastSumCommFlexo").textContent=money(totalCommFlexo);
-  $("forecastSumCommRoto").textContent=money(totalCommRoto);
-  $("forecastSumPO").textContent=money(po.reduce((a,e)=>a+num(e.value),0));
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
