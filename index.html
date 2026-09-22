@@ -17,7 +17,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 .loginSide{display:flex;align-items:center;justify-content:center;padding:30px;background:#070c14}.loginbox{width:min(470px,100%);padding:34px;border:1px solid #273247;border-radius:20px;background:#0d1421;box-shadow:0 18px 50px #0008}
 .loginbox h1{color:#fff;font-size:28px;margin:20px 0 8px}.loginbox p{color:#9ca8bb}.loginbox label{color:#dce3ee}
 input,select,textarea{width:100%;padding:11px 13px;border:1px solid #d6dce7;border-radius:10px;background:#fff;color:#172033}textarea{min-height:90px;resize:vertical}
-.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}
+.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}.passwrap{position:relative}.passwrap input{padding-right:48px}.eyeBtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9ca8bb;font-size:18px;padding:6px 8px;line-height:1}.eyeBtn:hover{color:#fff}
 label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border:0;border-radius:10px;padding:10px 14px;background:#172033;color:#fff;font-weight:800}.btn.white{background:#fff;color:#0b1220}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}.btn.gray{background:#e9edf3;color:#172033}.btn.small{padding:6px 9px;font-size:11px}.btn.ghost{background:transparent;border:1px solid #d9dee8;color:#172033}
 .msg{font-size:13px;margin-top:10px}.error{color:#ef4444}.success{color:#22c55e}
 .layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:var(--navy);color:#fff;padding:22px 15px;min-height:100vh;position:sticky;top:0;height:100vh}.side .brand{margin:0 8px}.side .brand img{width:34px;height:34px}.role{font-size:12px;color:#9ca8bb;margin:8px 8px 22px}.nav button{width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px 10px;border-radius:9px;margin:2px 0}.nav button.active,.nav button:hover{background:#1b2940;color:#fff}
@@ -51,7 +51,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
       <p>Masuk menggunakan akun BD atau Admin.</p>
       <form id="loginForm">
         <label>Email</label><input id="email" type="email" placeholder="email@perusahaan.com" required>
-        <label>Password</label><input id="password" type="password" placeholder="Password" required>
+        <label>Password</label><div class="passwrap"><input id="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-target="password" aria-label="Tampilkan password">👁</button></div>
         <button class="btn white" style="width:100%;margin-top:17px">Login →</button>
       </form>
       <button id="magic" class="btn gray" style="width:100%;margin-top:9px">Kirim Magic Link</button>
@@ -176,10 +176,19 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
 <div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
   <h2>🔐 Ubah Password</h2>
-  <label>Password Baru</label><input id="pass1" type="password">
-  <label>Ulangi Password</label><input id="pass2" type="password">
+  <label>Password Baru</label><div class="passwrap"><input id="pass1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass1" aria-label="Tampilkan password">👁</button></div>
+  <label>Ulangi Password</label><div class="passwrap"><input id="pass2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass2" aria-label="Tampilkan password">👁</button></div>
   <div id="passMsg" class="msg"></div>
   <div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div>
+</div></div>
+
+<div id="resetModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
+  <h2>🔑 Buat Password Baru</h2>
+  <p class="muted">Masukkan password baru setelah membuka link reset dari email.</p>
+  <label>Password Baru</label><div class="passwrap"><input id="reset1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset1" aria-label="Tampilkan password">👁</button></div>
+  <label>Ulangi Password</label><div class="passwrap"><input id="reset2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset2" aria-label="Tampilkan password">👁</button></div>
+  <div id="resetMsg" class="msg"></div>
+  <div class="actions"><button id="saveReset" class="btn blue">Simpan Password</button></div>
 </div></div>
 
 <script>
@@ -313,17 +322,80 @@ async function start(){
   sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table":"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table":"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table":"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table":"forecast_targets"},load).subscribe();
 }
 
+function authErrorMessage(err){
+  const msg=String(err?.message||"").toLowerCase();
+  if(msg.includes("invalid login credentials")||msg.includes("invalid credentials")||msg.includes("invalid email or password")){
+    return "Username/email atau password salah.";
+  }
+  if(msg.includes("email not confirmed")){
+    return "Email akun belum dikonfirmasi di Supabase.";
+  }
+  if(msg.includes("rate limit")){
+    return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
+  }
+  if(msg.includes("email")) return err.message;
+  return err?.message||"Login gagal.";
+}
+
 $("loginForm").onsubmit=async e=>{
   e.preventDefault();
-  try{$("loginMsg").className="msg";$("loginMsg").textContent="Memproses login...";sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const r=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(r.error)throw r.error;await start()}
-  catch(err){$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Login gagal."}
+  const btn=e.submitter||$("loginForm").querySelector("button[type=submit]");
+  try{
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Memproses login...";
+    if(btn) btn.disabled=true;
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const email=$("email").value.trim();
+    const password=$("password").value;
+    const r=await sb.auth.signInWithPassword({email,password});
+    if(r.error) throw r.error;
+    await start();
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent=authErrorMessage(err);
+  }finally{
+    if(btn) btn.disabled=false;
+  }
 };
+
 $("magic").onclick=async()=>{
-  try{const a=$("email").value.trim();if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});if(r.error)throw r.error;$("loginMsg").className="msg success";$("loginMsg").textContent="Magic Link sudah dikirim. Cek email."}catch(err){$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Magic Link gagal."}
+  const btn=$("magic");
+  try{
+    const a=$("email").value.trim();
+    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
+    btn.disabled=true;
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Mengirim Magic Link...";
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(r.error) throw r.error;
+    $("loginMsg").className="msg success";
+    $("loginMsg").textContent="Magic Link sudah diminta. Cek Inbox/Spam email.";
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent="Magic Link gagal: "+(err?.message||"coba lagi.");
+  }finally{btn.disabled=false}
 };
+
 $("forgot").onclick=async()=>{
-  try{const a=$("email").value.trim();if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});if(r.error)throw r.error;$("loginMsg").className="msg success";$("loginMsg").textContent="Link reset password sudah dikirim. Cek email."}catch(err){$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Reset password gagal."}
+  const btn=$("forgot");
+  try{
+    const a=$("email").value.trim();
+    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
+    btn.disabled=true;
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Memproses reset password...";
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});
+    if(r.error) throw r.error;
+    $("loginMsg").className="msg success";
+    $("loginMsg").textContent="Permintaan reset sudah dikirim. Cek Inbox/Spam email.";
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent="Reset password gagal: "+(err?.message||"coba lagi.");
+  }finally{btn.disabled=false}
 };
+
 $("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
 
@@ -340,6 +412,47 @@ $("closePass").onclick=()=>$("passModal").classList.add("hidden");
 $("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
 
 window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
-window.addEventListener("DOMContentLoaded",()=>{try{const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);c.auth.onAuthStateChange(async(event,session)=>{if(event==="PASSWORD_RECOVERY"&&session){const a=prompt("Password baru (minimal 6 karakter):");if(a){const r=await c.auth.updateUser({password:a});alert(r.error?r.error.message:"Password berhasil diubah.")}}})}catch(e){}});
+document.querySelectorAll(".eyeBtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const el=$(btn.dataset.target);
+    if(!el)return;
+    const show=el.type==="password";
+    el.type=show?"text":"password";
+    btn.textContent=show?"🙈":"👁";
+    btn.setAttribute("aria-label",show?"Sembunyikan password":"Tampilkan password");
+  });
+});
+
+$("saveReset").onclick=async()=>{
+  const a=$("reset1").value,b=$("reset2").value;
+  $("resetMsg").className="msg";
+  if(a.length<6){$("resetMsg").className="msg error";$("resetMsg").textContent="Password minimal 6 karakter.";return}
+  if(a!==b){$("resetMsg").className="msg error";$("resetMsg").textContent="Password tidak sama.";return}
+  const btn=$("saveReset");
+  try{
+    btn.disabled=true;
+    const r=await sb.auth.updateUser({password:a});
+    if(r.error)throw r.error;
+    $("resetMsg").className="msg success";
+    $("resetMsg").textContent="Password berhasil diubah. Silakan login kembali.";
+    setTimeout(async()=>{await sb.auth.signOut();location.href=location.origin+location.pathname},1200);
+  }catch(err){
+    $("resetMsg").className="msg error";
+    $("resetMsg").textContent=err?.message||"Gagal mengubah password.";
+  }finally{btn.disabled=false}
+};
+
+window.addEventListener("DOMContentLoaded",()=>{
+  try{
+    const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    c.auth.onAuthStateChange(async(event,session)=>{
+      if(event==="PASSWORD_RECOVERY"&&session){
+        sb=c;
+        $("reset1").value="";$("reset2").value="";$("resetMsg").textContent="";
+        $("resetModal").classList.remove("hidden");
+      }
+    });
+  }catch(e){}
+});
 </script>
 </body></html>
