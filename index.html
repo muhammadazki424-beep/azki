@@ -33,6 +33,9 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 @media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
 
 .bdCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bdMini{background:#0f1724;border:1px solid #263246;border-radius:14px;padding:16px}.bdMini h3{margin:0 0 8px;color:#fff;font-size:16px}.bdMini .big{font-size:22px;font-weight:800;color:#fff}.bdMini .sub{font-size:12px;color:#9aa8bd;margin-top:5px}.yearbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.yearbar select{background:#0a101b;color:#fff;border:1px solid #2b384e;border-radius:8px;padding:9px 12px}.monthMatrix{overflow:auto}.monthMatrix table{min-width:980px}.monthMatrix th,.monthMatrix td{text-align:center;white-space:nowrap}.monthMatrix th:first-child,.monthMatrix td:first-child{text-align:left;position:sticky;left:0;background:inherit}.monthMatrix td strong{color:#172033;font-weight:800}.sectionNote{font-size:12px;color:#8f9db2;margin-top:4px}.bdBreakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.bdPanel{border:1px solid #263246;border-radius:14px;padding:14px;background:#0f1724}.bdPanel h3{margin:0 0 10px;color:#fff}.bdPanel table{min-width:0}.bdPanel th,.bdPanel td{background:transparent;color:#dce3ee}@media(max-width:900px){.bdCards{grid-template-columns:repeat(2,minmax(0,1fr))}.bdBreakdown{grid-template-columns:1fr}}@media(max-width:560px){.bdCards{grid-template-columns:1fr}}
+
+.totalValueBox{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 16px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05)}
+.totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -100,7 +103,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
       <div class="panel">
         <div class="panelHead"><div><h2>🎯 Potential per BD</h2><div class="sectionNote">Masing-masing BD ditampilkan terpisah.</div></div><button class="btn gray small" onclick="go('potential')">Kelola Potential</button></div>
-        <div id="dashPotentialBD" class="bdCards"></div>
+        <div id="dashPotentialBD" class="bdCards"></div><div class="totalValueBox" style="margin-top:14px"><span>TOTAL VALUE POTENTIAL — SEMUA BD</span><strong id="dashPotentialGrandTotal">Rp 0</strong></div>
       </div>
 
       <div class="panel">
@@ -111,7 +114,7 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 
       <div class="panel">
         <div class="panelHead"><div><h2>📦 PO Received per BD</h2><div class="sectionNote">Nilai PO dan jumlah PO dipisahkan berdasarkan BD.</div></div><button class="btn gray small" onclick="go('po')">Lihat PO Received</button></div>
-        <div id="dashPOBD" class="bdBreakdown"></div>
+        <div class="totalValueBox"><span>TOTAL VALUE PO RECEIVED — SEMUA BD</span><strong id="dashPOGrandTotal">Rp 0</strong></div><div id="dashPOBD" class="bdBreakdown"></div>
       </div>
 
       <div class="panel">
@@ -249,7 +252,7 @@ function yearOf(m){
 }
 const bdEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
 function renderPotentialByBD(){
-  const names=[...bdNames()].sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+  const names=[...bdNames()].filter(bd=>!bdEq(bd,'Kahar')).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
   const html=names.map(bd=>{
     const rows=potential.filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
@@ -301,7 +304,7 @@ function render(){
   const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
   const totalPO=po.reduce((a,x)=>a+num(x.value),0);
   const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
-  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);
+  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);$("dashPotentialGrandTotal").textContent=money(totalPotential);$("dashPOGrandTotal").textContent=money(totalPO);
 
   const perf=profiles.map(p=>{
     const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
