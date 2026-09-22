@@ -7,452 +7,189 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
-:root{--navy:#0b1220;--navy2:#111a2b;--line:#e7ebf2;--muted:#6b7280;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--bg:#f4f6fa}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#172033}
-button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:900;font-size:26px;letter-spacing:-.7px}.brand img{width:32px;height:32px;object-fit:cover;border-radius:50%}.brandText{color:#fff}.brandSmall{font-size:11px;color:#9ca8bb;margin:3px 0 0 42px}
-.login{min-height:100vh;display:grid;grid-template-columns:1.25fr .75fr;background:#070c14}
-.loginHero{position:relative;min-height:100vh;background:linear-gradient(90deg,#050a12d9,#050a128f),url("image 127.jpg") center/cover no-repeat;display:flex;align-items:center;padding:7vw}
-.loginHeroContent{max-width:650px}.loginHero .brand{font-size:58px}.loginHero .brand img{width:62px;height:62px}.heroSub{color:#e8edf6;font-size:18px;margin-top:16px}
-.loginSide{display:flex;align-items:center;justify-content:center;padding:30px;background:#070c14}.loginbox{width:min(470px,100%);padding:34px;border:1px solid #273247;border-radius:20px;background:#0d1421;box-shadow:0 18px 50px #0008}
-.loginbox h1{color:#fff;font-size:28px;margin:20px 0 8px}.loginbox p{color:#9ca8bb}.loginbox label{color:#dce3ee}
-input,select,textarea{width:100%;padding:11px 13px;border:1px solid #d6dce7;border-radius:10px;background:#fff;color:#172033}textarea{min-height:90px;resize:vertical}
-.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}.passwrap{position:relative}.passwrap input{padding-right:48px}.eyeBtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9ca8bb;font-size:18px;padding:6px 8px;line-height:1}.eyeBtn:hover{color:#fff}
-label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border:0;border-radius:10px;padding:10px 14px;background:#172033;color:#fff;font-weight:800}.btn.white{background:#fff;color:#0b1220}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}.btn.gray{background:#e9edf3;color:#172033}.btn.small{padding:6px 9px;font-size:11px}.btn.ghost{background:transparent;border:1px solid #d9dee8;color:#172033}
-.msg{font-size:13px;margin-top:10px}.error{color:#ef4444}.success{color:#22c55e}
-.layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:var(--navy);color:#fff;padding:22px 15px;min-height:100vh;position:sticky;top:0;height:100vh}.side .brand{margin:0 8px}.side .brand img{width:34px;height:34px}.role{font-size:12px;color:#9ca8bb;margin:8px 8px 22px}.nav button{width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px 10px;border-radius:9px;margin:2px 0}.nav button.active,.nav button:hover{background:#1b2940;color:#fff}
-.main{padding:26px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.top h1{margin:0;font-size:27px}.muted{color:var(--muted);font-size:13px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border-radius:15px;padding:18px;box-shadow:0 4px 18px #0000000a;border:1px solid #edf0f5}.card .k{font-size:11px;color:#697386;font-weight:900}.card .v{font-size:23px;font-weight:900;margin-top:8px}.card .s{font-size:11px;color:#8a93a3;margin-top:5px}
-.panel{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:18px;margin-top:16px;box-shadow:0 4px 18px #00000008}.panel h2{font-size:16px;margin:0 0 14px}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section{display:none}.section.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px;vertical-align:top}th{font-size:11px;color:#667085;background:#fafbfc;position:sticky;top:0}td .btn{margin-right:4px;margin-bottom:3px}
-.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-size:10px;font-weight:800}.badge.red{background:#fee2e2;color:#991b1b}.badge.green{background:#dcfce7;color:#166534}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
-.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalbox{background:#fff;border-radius:17px;padding:22px;width:min(760px,100%);max-height:92vh;overflow:auto}.modalbox h2{margin:0 0 10px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:280px}.readonly{background:#f7f8fa}
-@media(max-width:1050px){.login{grid-template-columns:1fr}.loginHero{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+.hidden{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.loginbox,.panel,.card{background:#fff;border-radius:15px;box-shadow:0 4px 18px #0000000b}
+.loginbox{width:min(420px,100%);padding:30px}.brand{font-size:30px;font-weight:900;color:#111}.brand span{color:#111}
+.sub,.muted{color:#6b7280}.sub{margin:5px 0 22px}label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid #d7dce5;border-radius:9px;background:#fff}textarea{min-height:80px}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#111;color:#fff;font-weight:bold}.blue{background:#2563eb}.red{background:#dc2626}.gray{background:#e9edf3;color:#172033}
+.msg{font-size:13px;margin-top:10px}.error{color:#dc2626}.success{color:#15803d}
+.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.side{background:#111827;color:white;padding:22px 16px;min-height:100vh}
+.side .brand{color:#fff;margin:0 6px 5px}.side .brand span{color:#111;background:#fff;padding:2px 5px;border-radius:4px}.role{font-size:12px;color:#aeb7c7;margin:0 6px 20px}
+.nav button{width:100%;text-align:left;background:none;border:0;color:#dbe2ed;padding:11px 10px;border-radius:8px;margin:2px 0}.nav button.active,.nav button:hover{background:#273246;color:white}
+.main{padding:26px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{margin:0;font-size:27px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{padding:18px}.card .k{font-size:12px;color:#6b7280;font-weight:bold}.card .v{font-size:24px;font-weight:900;margin-top:8px}
+.panel{padding:18px;margin-top:16px}.panel h2{font-size:17px;margin:0 0 14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.section{display:none}.section.active{display:block}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:13px}th{font-size:12px;color:#667085;background:#fafbfc}
+.small{padding:6px 9px;font-size:12px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.modalbox{background:white;border-radius:15px;padding:22px;width:min(440px,100%)}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:16px}.cards,.formgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div id="login" class="login">
-  <div class="loginHero">
-    <div class="loginHeroContent">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <div class="heroSub">Real-Time Sales Dashboard</div>
-    </div>
-  </div>
-  <div class="loginSide">
-    <div class="loginbox">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <h1>Login ke Dashboard</h1>
-      <p>Masuk menggunakan akun BD atau Admin.</p>
-      <form id="loginForm">
-        <label>Email</label><input id="email" type="email" placeholder="email@perusahaan.com" required>
-        <label>Password</label><div class="passwrap"><input id="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-target="password" aria-label="Tampilkan password">👁</button></div>
-        <button class="btn white" style="width:100%;margin-top:17px">Login →</button>
-      </form>
-      <button id="magic" class="btn gray" style="width:100%;margin-top:9px">Kirim Magic Link</button>
-      <button id="forgot" class="btn gray" style="width:100%;margin-top:9px">Reset Password</button>
-      <div id="loginMsg" class="msg"></div>
-    </div>
-  </div>
-</div>
+<div class="loginbox">
+<div class="brand">cetak<span>dong</span></div>
+<div class="sub">Team Azki • Sales Dashboard</div>
+<form id="loginForm">
+<label>Email</label><input id="email" type="email" required>
+<label>Password</label><input id="password" type="password" required>
+<button class="btn" style="width:100%;margin-top:16px">Login</button>
+</form>
+<button id="magic" class="btn gray" style="width:100%;margin-top:8px">Kirim Magic Link</button>
+<button id="forgot" class="btn gray" style="width:100%;margin-top:8px">Reset Password</button>
+<div id="loginMsg" class="msg"></div>
+</div></div>
 
 <div id="app" class="layout hidden">
-  <aside class="side">
-    <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-    <div class="brandSmall">TEAM AZKI</div>
-    <div id="who" class="role"></div>
-    <div class="nav">
-      <button data-page="dashboard" class="active">📊 Dashboard</button>
-      <button data-page="potential">🎯 Potential</button>
-      <button data-page="customers">🏢 Database Customer</button>
-      <button data-page="lost">⚠️ Lost Leads</button>
-      <button data-page="complaints">💬 Complaint Customer</button>
-      <button data-page="po">📦 PO Received</button>
-      <button data-page="forecast">📈 Forecast</button>
-      <button data-page="performance">👥 BD Performance</button>
-      <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
-    </div>
-    <div style="margin-top:24px">
-      <button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
-      <button id="logout" class="btn" style="width:100%;margin-top:8px;background:#29364b">Logout</button>
-    </div>
-  </aside>
-
-  <main class="main">
-    <section id="dashboard" class="section active">
-      <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Semua BD dapat melihat data. Data editable dapat diedit/hapus oleh semua BD.</div></div>
-        <div id="sync" class="badge green">ONLINE</div>
-      </div>
-      <div class="cards">
-        <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
-        <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
-        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua potential</div></div>
-        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Data read-only</div></div>
-      </div>
-      <div class="grid2">
-        <div class="panel">
-          <div class="panelHead"><h2>BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
-        </div>
-        <div class="panel">
-          <div class="panelHead"><h2>PO Received</h2><button class="btn gray small" onclick="go('po')">Lihat Semua</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th></tr></thead><tbody id="dashPO"></tbody></table></div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panelHead"><h2>Potential — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('potential')">+ Tambah</button></div>
-        <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Aksi</th></tr></thead><tbody id="dashPotential"></tbody></table></div>
-      </div>
-      <div class="grid2">
-        <div class="panel">
-          <div class="panelHead"><h2>Lost Leads — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('lost')">+ Tambah</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="dashLost"></tbody></table></div>
-        </div>
-        <div class="panel">
-          <div class="panelHead"><h2>Complaint — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('complaint')">+ Tambah</button></div>
-          <div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="dashComplaint"></tbody></table></div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panelHead"><h2>Database Customer — Edit / Hapus</h2><button class="btn blue small" onclick="openEditor('customer')">+ Tambah</button></div>
-        <div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Aksi</th></tr></thead><tbody id="dashCustomer"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
-    </section>
-
-    <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
-    </section>
-
-    <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
-    </section>
-
-    <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
-    </section>
-
-    <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Data dari Excel. BD hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
-    </section>
-
-    <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Data dari Excel. BD hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div>
-    </section>
-
-    <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
-    </section>
-
-    <section id="admin" class="section">
-      <div class="top"><div><h1>User & Target</h1><div class="muted">Menu Admin. BD biasa tidak dapat mengubah target.</div></div></div>
-      <div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
-    </section>
-  </main>
+<aside class="side">
+<div class="brand">cetak<span>dong</span></div>
+<div id="who" class="role"></div><div id="role" class="role"></div>
+<div class="nav">
+<button data-page="dashboard" class="active">📊 Dashboard</button>
+<button data-page="input">✍️ Input Data</button>
+<button data-page="performance">👥 BD Performance</button>
+<button data-page="customers">🏢 Customers</button>
+<button data-page="lost">⚠️ Lost & Complaint</button>
+<button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
 </div>
+<div style="margin-top:25px">
+<button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
+<button id="logout" class="btn" style="width:100%;margin-top:8px;background:#374151">Logout</button>
+</div>
+</aside>
 
-<div id="modal" class="modal hidden"><div class="modalbox">
-  <h2 id="modalTitle">Tambah Data</h2>
-  <div id="modalForm"></div>
-  <div id="modalMsg" class="msg"></div>
-  <div class="actions"><button class="btn gray" onclick="closeModal()">Batal</button><button class="btn blue" onclick="saveModal()">Simpan</button></div>
-</div></div>
+<main class="main">
 
-<div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔐 Ubah Password</h2>
-  <label>Password Baru</label><div class="passwrap"><input id="pass1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="pass2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass2" aria-label="Tampilkan password">👁</button></div>
-  <div id="passMsg" class="msg"></div>
-  <div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div>
-</div></div>
+<section id="dashboard" class="section active">
+<div class="top"><div><h1>Sales Dashboard</h1><div class="muted">Real-Time Sales Dashboard</div></div><span id="sync" class="muted">online</span></div>
+<div class="cards">
+<div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div></div>
+<div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div></div>
+<div class="card"><div class="k">POTENTIAL</div><div id="potential" class="v">Rp 0</div></div>
+<div class="card"><div class="k">PO RECEIVED</div><div id="po" class="v">Rp 0</div></div>
+</div>
+<div class="grid2">
+<div class="panel"><h2>BD Performance</h2><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="perf"></tbody></table></div></div>
+<div class="panel"><h2>Customer berdasarkan PO</h2><div class="table"><table><thead><tr><th>Customer</th><th>BD</th><th>Nilai</th><th>Bulan</th></tr></thead><tbody id="cust"></tbody></table></div></div>
+</div>
+<div class="panel"><h2>Lost & Complaint</h2><div class="table"><table><thead><tr><th>Type</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="lostDash"></tbody></table></div></div>
+</section>
 
-<div id="resetModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔑 Buat Password Baru</h2>
-  <p class="muted">Masukkan password baru setelah membuka link reset dari email.</p>
-  <label>Password Baru</label><div class="passwrap"><input id="reset1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="reset2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset2" aria-label="Tampilkan password">👁</button></div>
-  <div id="resetMsg" class="msg"></div>
-  <div class="actions"><button id="saveReset" class="btn blue">Simpan Password</button></div>
-</div></div>
+<section id="input" class="section">
+<div class="top"><div><h1>Input Data</h1><div class="muted">BD dapat input/edit/hapus Potential, Lost Lead, dan Complaint.</div></div></div>
+<div class="panel"><h2>Tambah Data</h2>
+<form id="entryForm"><div class="formgrid">
+<div><label>Jenis Data</label><select id="type" required><option value="potential">Potential</option><option value="lost">Lost Lead</option><option value="complaint">Complaint</option><option value="po">PO Received</option></select></div>
+<div><label>Customer / Company</label><input id="customer" required></div>
+<div><label>Nilai</label><input id="value" type="number" min="0" required></div>
+<div><label>Bulan</label><input id="month" type="month" required></div>
+<div class="full"><label>Catatan</label><textarea id="notes"></textarea></div>
+</div><button class="btn blue" style="margin-top:14px">Simpan</button><div id="entryMsg" class="msg"></div></form></div>
+<div class="panel"><h2>Data Saya</h2><div class="table"><table><thead><tr><th>Jenis</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="myData"></tbody></table></div></div>
+</section>
+
+<section id="performance" class="section"><div class="top"><h1>BD Performance</h1></div><div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="perf2"></tbody></table></div></div></section>
+
+<section id="customers" class="section"><div class="top"><h1>Customers</h1></div><div class="panel"><div class="table"><table><thead><tr><th>Customer</th><th>BD</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="cust2"></tbody></table></div></div></section>
+
+<section id="lost" class="section"><div class="top"><h1>Lost & Complaint</h1></div><div class="panel"><div class="table"><table><thead><tr><th>Type</th><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="lost2"></tbody></table></div></div></section>
+
+<section id="admin" class="section">
+<div class="top"><h1>User & Target</h1></div>
+<div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="users"></tbody></table></div></div>
+<div class="panel"><h2>Semua Data</h2><div class="table"><table><thead><tr><th>Type</th><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Aksi</th></tr></thead><tbody id="allData"></tbody></table></div></div>
+</section>
+</main></div>
+
+<div id="passModal" class="modal hidden"><div class="modalbox"><h2>🔐 Ubah Password</h2><label>Password Baru</label><input id="pass1" type="password"><label>Ulangi Password</label><input id="pass2" type="password"><div id="passMsg" class="msg"></div><div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div></div></div>
+
+<div id="editModal" class="modal hidden"><div class="modalbox"><h2>Edit Data</h2><input id="editId" type="hidden"><label>Jenis Data</label><select id="editType"></select><label>Customer / Company</label><input id="editCustomer"><label>Nilai</label><input id="editValue" type="number"><label>Bulan</label><input id="editMonth" type="month"><label>Catatan</label><textarea id="editNotes"></textarea><div id="editMsg" class="msg"></div><div class="actions"><button id="closeEdit" class="btn gray">Batal</button><button id="saveEdit" class="btn blue">Simpan</button></div></div></div>
 
 <script>
-let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[];
-let editorKind=null,editorId=null;
-const $=id=>document.getElementById(id);
+let sb,user,profile,profiles=[],entries=[];
+const $=x=>document.getElementById(x);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
-const num=n=>Number(n)||0;
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const rowBtn=(kind,id)=>`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
-const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option>${profiles.map(p=>`<option ${p.full_name===value?"selected":""}>${esc(p.full_name)}</option>`).join("")}<option ${value==="Others"?"selected":""}>Others</option></select>`;
-const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
-const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
-const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
+const name=id=>(profiles.find(p=>p.id===id)||{}).full_name||"Unknown";
+const tn=t=>({potential:"Potential",po:"PO Received",lost:"Lost Lead",complaint:"Complaint"})[t]||t;
+const editable=e=>profile.role==="admin"||(e.bd_id===user.id&&["potential","lost","complaint"].includes(e.type));
 
 async function load(){
-  const qs=await Promise.all([
-    sb.from("profiles").select("*").order("full_name"),
-    sb.from("potential_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_database").select("*").order("created_at",{ascending:false}),
-    sb.from("lost_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_complaints").select("*").order("created_at",{ascending:false}),
-    sb.from("po_received").select("*").order("created_at",{ascending:false}),
-    sb.from("forecast_targets").select("*").order("bd")
-  ]);
-  const names=["profiles","potential","customers","lost","complaints","po","forecast"];
-  for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
-  [profiles,potential,customers,lost,complaints,po,forecast]=qs.map(x=>x.data||[]);
-  render();
+ const p=await sb.from("profiles").select("*");
+ const e=await sb.from("sales_entries").select("*");
+ if(p.error||e.error){console.error(p.error||e.error);$("sync").textContent="error";return}
+ profiles=p.data||[];entries=e.data||[];render();
 }
-
+function buttons(e){
+ if(!editable(e))return "View only";
+ return `<button class="btn blue small" onclick="openEdit('${e.id}')">Edit</button> <button class="btn red small" onclick="deleteEntry('${e.id}')">Hapus</button>`;
+}
 function render(){
-  const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
-  const totalPO=po.reduce((a,x)=>a+num(x.value),0);
-  const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
-  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);
+ const mine=entries.filter(e=>profile.role==="admin"||e.bd_id===user.id);
+ const target=profile.role==="admin"?profiles.reduce((a,p)=>a+Number(p.target||0),0):Number(profile.target||0);
+ const po=mine.filter(e=>e.type==="po").reduce((a,e)=>a+Number(e.value||0),0);
+ const pot=mine.filter(e=>e.type==="potential").reduce((a,e)=>a+Number(e.value||0),0);
+ $("target").textContent=money(target);$("achievement").textContent=money(po);$("potential").textContent=money(pot);$("po").textContent=money(po);
 
-  const perf=profiles.map(p=>{
-    const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
-    const target=f?num(f.target):num(p.target);
-    const ach=f?num(f.total):po.filter(x=>x.bd===p.full_name).reduce((a,x)=>a+num(x.value),0);
-    return `<tr><td>${esc(p.full_name)}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
-  }).join("");
-  $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-  $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
+ const perf=profiles.filter(p=>profile.role==="admin"||p.id===user.id).map(p=>{
+  const v=entries.filter(e=>e.bd_id===p.id&&e.type==="po").reduce((a,e)=>a+Number(e.value||0),0),t=Number(p.target||0);
+  return "<tr><td>"+esc(p.full_name)+"</td><td>"+money(t)+"</td><td>"+money(v)+"</td><td>"+(t?(v/t*100).toFixed(1):"0.0")+"%</td></tr>";
+ }).join("");
+ $("perf").innerHTML=perf||"<tr><td colspan=4>Belum ada data.</td></tr>";$("perf2").innerHTML=perf||"<tr><td colspan=4>Belum ada data.</td></tr>";
 
-  $("dashPO").innerHTML=po.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td></tr>`).join("")||`<tr><td colspan="4">Belum ada PO.</td></tr>`;
+ const pos=mine.filter(e=>e.type==="po");
+ $("cust").innerHTML=pos.map(e=>"<tr><td>"+esc(e.customer)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td></tr>").join("")||"<tr><td colspan=4>Belum ada PO.</td></tr>";
+ $("cust2").innerHTML=pos.map(e=>"<tr><td>"+esc(e.customer)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td></tr>").join("")||"<tr><td colspan=5>Belum ada PO.</td></tr>";
 
-  $("dashPotential").innerHTML=potential.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada potential.</td></tr>`;
+ const lost=mine.filter(e=>["lost","complaint"].includes(e.type));
+ $("lostDash").innerHTML=lost.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td></tr>").join("")||"<tr><td colspan=5>Belum ada data.</td></tr>";
+ $("lost2").innerHTML=lost.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td><td>"+buttons(e)+"</td></tr>").join("")||"<tr><td colspan=7>Belum ada data.</td></tr>";
+ $("myData").innerHTML=mine.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+esc(e.notes)+"</td><td>"+buttons(e)+"</td></tr>").join("")||"<tr><td colspan=6>Belum ada data.</td></tr>";
 
-  $("dashLost").innerHTML=lost.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada lost lead.</td></tr>`;
-  $("dashComplaint").innerHTML=complaints.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${money(e.quantity_complain)}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada complaint.</td></tr>`;
-  $("dashCustomer").innerHTML=customers.slice(0,8).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada customer.</td></tr>`;
-
-  $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
-  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada PO.</td></tr>`;
-  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td></tr>`).join("")||`<tr><td colspan="9">Belum ada forecast.</td></tr>`;
-
-  $("adminNav").classList.toggle("hidden",profile?.role!=="admin");
-  if(profile?.role==="admin"){
-    $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(p.role)}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
-  }
+ if(profile.role==="admin"){
+  $("adminNav").classList.remove("hidden");
+  $("users").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(p.role)}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
+  $("allData").innerHTML=entries.map(e=>"<tr><td>"+tn(e.type)+"</td><td>"+esc(name(e.bd_id))+"</td><td>"+esc(e.customer)+"</td><td>"+money(e.value)+"</td><td>"+esc(e.month)+"</td><td>"+buttons(e)+"</td></tr>").join("");
+ }
 }
-
-function openEditor(kind,id=null){
-  editorKind=kind;editorId=id;
-  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints}[kind]||[]).find(x=>x.id===id):null;
-  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer"}[kind]);
-  let h="";
-  if(kind==="potential"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="customer"){
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="lost"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else {
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  }
-  $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
-}
-function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorId=null}
-
-async function saveModal(){
-  let table,payload;
-  const val=id=>$(id)?.value??"";
-  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}}
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(!payload?.bd || !(payload.customer||payload.company)){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
-  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
-  closeModal();await load();
-}
-
-async function removeRow(kind,id){
-  if(!confirm("Hapus data ini?"))return;
-  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints"}[kind];
-  const r=await sb.from(table).delete().eq("id",id);
-  if(r.error)alert(r.error.message);else await load();
-}
-
-window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
-
-async function setTarget(id){
-  if(profile.role!=="admin")return;
-  const p=profiles.find(x=>x.id===id);if(!p)return;
-  const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;
-  const n=num(v);
-  let r=await sb.from("profiles").update({target:n}).eq("id",id);
-  if(r.error){alert(r.error.message);return}
-  const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
-  if(f){r=await sb.from("forecast_targets").update({target:n}).eq("id",f.id);if(r.error)alert(r.error.message)}
-  await load();
-}
-
 async function start(){
-  if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("config.js belum terbaca.");
-  sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-  const s=await sb.auth.getSession();if(!s.data.session)return;
-  user=s.data.session.user;
-  const p=await sb.from("profiles").select("*").eq("id",user.id).single();
-  if(p.error||!p.data)throw new Error("Profil user belum dibuat di tabel profiles.");
-  profile=p.data;
-  $("login").classList.add("hidden");$("app").classList.remove("hidden");
-  $("who").textContent=(profile.full_name||user.email)+" • "+(profile.role==="admin"?"Admin":"BD");
-  await load();
-  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table":"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table":"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table":"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table":"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table":"forecast_targets"},load).subscribe();
+ if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY){$("loginMsg").className="msg error";$("loginMsg").textContent="config.js belum terbaca.";return}
+ sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+ const s=await sb.auth.getSession();if(!s.data.session)return;
+ user=s.data.session.user;
+ const p=await sb.from("profiles").select("*").eq("id",user.id).single();
+ if(p.error||!p.data){$("loginMsg").className="msg error";$("loginMsg").textContent="Profil user belum dibuat.";return}
+ profile=p.data;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent=profile.full_name||user.email;$("role").textContent=profile.role==="admin"?"Administrator":"BD";
+ if(profile.role==="admin")$("adminNav").classList.remove("hidden");else{const poOpt=$('type').querySelector('option[value="po"]');if(poOpt)poOpt.remove()}
+ await load();
+ sb.channel("sales-live").on("postgres_changes",{event:"*",schema:"public",table:"sales_entries"},()=>load()).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},()=>load()).subscribe();
 }
-
-function authErrorMessage(err){
-  const msg=String(err?.message||"").toLowerCase();
-  if(msg.includes("invalid login credentials")||msg.includes("invalid credentials")||msg.includes("invalid email or password")){
-    return "Username/email atau password salah.";
-  }
-  if(msg.includes("email not confirmed")){
-    return "Email akun belum dikonfirmasi di Supabase.";
-  }
-  if(msg.includes("rate limit")){
-    return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
-  }
-  if(msg.includes("email")) return err.message;
-  return err?.message||"Login gagal.";
-}
-
-$("loginForm").onsubmit=async e=>{
-  e.preventDefault();
-  const btn=e.submitter||$("loginForm").querySelector("button[type=submit]");
-  try{
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses login...";
-    if(btn) btn.disabled=true;
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const email=$("email").value.trim();
-    const password=$("password").value;
-    const r=await sb.auth.signInWithPassword({email,password});
-    if(r.error) throw r.error;
-    await start();
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent=authErrorMessage(err);
-  }finally{
-    if(btn) btn.disabled=false;
-  }
-};
-
-$("magic").onclick=async()=>{
-  const btn=$("magic");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Mengirim Magic Link...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Magic Link sudah diminta. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Magic Link gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
-
-$("forgot").onclick=async()=>{
-  const btn=$("forgot");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses reset password...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Permintaan reset sudah dikirim. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Reset password gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
-
+$("loginForm").onsubmit=async e=>{e.preventDefault();try{if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("Konfigurasi Supabase belum terbaca.");sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);$("loginMsg").className="msg";$("loginMsg").textContent="Memproses login...";const r=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(r.error)throw r.error;await start()}catch(err){console.error(err);$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Login gagal. Coba lagi."}};
+$("magic").onclick=async()=>{try{if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("Konfigurasi Supabase belum terbaca.");sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const a=$("email").value.trim();if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}$("loginMsg").className="msg";$("loginMsg").textContent="Mengirim Magic Link...";const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});if(r.error)throw r.error;$("loginMsg").className="msg success";$("loginMsg").textContent="Magic Link sudah dikirim. Cek email."}catch(err){console.error(err);$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Magic Link gagal dikirim."}};
+$("forgot").onclick=async()=>{try{if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("Konfigurasi Supabase belum terbaca.");sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);const a=$("email").value.trim();if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}$("loginMsg").className="msg";$("loginMsg").textContent="Mengirim link reset...";const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});if(r.error)throw r.error;$("loginMsg").className="msg success";$("loginMsg").textContent="Link reset password sudah dikirim. Cek email."}catch(err){console.error(err);$("loginMsg").className="msg error";$("loginMsg").textContent=err?.message||"Reset password gagal."}};
 $("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(b.classList.contains("hidden"))return;document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(b.dataset.page).classList.add("active")});
 
-["searchPotential","searchCustomer","searchLost","searchComplaint"].forEach(id=>$(id)?.addEventListener("input",()=>{
-  const q=$(id).value.toLowerCase();
-  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>(x.bd+" "+x.customer+" "+x.notes).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("");
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>(x.bd+" "+x.customer+" "+x.area).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("");
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>(x.bd+" "+x.company+" "+x.why_lost).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("");
-  if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>(x.bd+" "+x.company+" "+x.why_complain).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("");
-}));
+$("entryForm").onsubmit=async e=>{e.preventDefault();const type=$("type").value;if(profile.role!=="admin"&&type==="po"){ $("entryMsg").className="msg error";$("entryMsg").textContent="BD tidak boleh input PO Received.";return}const r=await sb.from("sales_entries").insert({bd_id:user.id,type,customer:$("customer").value.trim(),value:Number($("value").value),month:$("month").value,notes:$("notes").value.trim()});$("entryMsg").className=r.error?"msg error":"msg success";$("entryMsg").textContent=r.error?r.error.message:"Data berhasil disimpan.";if(!r.error){e.target.reset();load()}};
+
+window.openEdit=id=>{const e=entries.find(x=>x.id===id);if(!e||!editable(e))return;$("editId").value=e.id;$("editType").innerHTML=(profile.role==="admin"?["potential","po","lost","complaint"]:["potential","lost","complaint"]).map(t=>"<option value='"+t+"'>"+tn(t)+"</option>").join("");$("editType").value=e.type;$("editCustomer").value=e.customer||"";$("editValue").value=e.value||0;$("editMonth").value=e.month||"";$("editNotes").value=e.notes||"";$("editMsg").textContent="";$("editModal").classList.remove("hidden")};
+window.deleteEntry=async id=>{const e=entries.find(x=>x.id===id);if(!e||!editable(e))return;if(!confirm("Hapus data ini?"))return;const r=await sb.from("sales_entries").delete().eq("id",id);if(r.error)alert(r.error.message);else load()};
+$("closeEdit").onclick=()=>$("editModal").classList.add("hidden");
+$("saveEdit").onclick=async()=>{const id=$("editId").value,e=entries.find(x=>x.id===id);if(!e||!editable(e))return;const type=$("editType").value;if(profile.role!=="admin"&&type==="po"){ $("editMsg").className="msg error";$("editMsg").textContent="BD tidak boleh mengubah menjadi PO Received.";return}const r=await sb.from("sales_entries").update({type,customer:$("editCustomer").value.trim(),value:Number($("editValue").value),month:$("editMonth").value,notes:$("editNotes").value.trim()}).eq("id",id);$("editMsg").className=r.error?"msg error":"msg success";$("editMsg").textContent=r.error?r.error.message:"Data berhasil diubah.";if(!r.error){$("editModal").classList.add("hidden");load()}};
+
+window.setTarget=async id=>{if(profile.role!=="admin")return;const p=profiles.find(x=>x.id===id);const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;const r=await sb.from("profiles").update({target:Number(v)}).eq("id",id);if(r.error)alert(r.error.message);else load()};
 
 $("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
 $("closePass").onclick=()=>$("passModal").classList.add("hidden");
 $("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
 
-window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
-document.querySelectorAll(".eyeBtn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const el=$(btn.dataset.target);
-    if(!el)return;
-    const show=el.type==="password";
-    el.type=show?"text":"password";
-    btn.textContent=show?"🙈":"👁";
-    btn.setAttribute("aria-label",show?"Sembunyikan password":"Tampilkan password");
-  });
-});
-
-$("saveReset").onclick=async()=>{
-  const a=$("reset1").value,b=$("reset2").value;
-  $("resetMsg").className="msg";
-  if(a.length<6){$("resetMsg").className="msg error";$("resetMsg").textContent="Password minimal 6 karakter.";return}
-  if(a!==b){$("resetMsg").className="msg error";$("resetMsg").textContent="Password tidak sama.";return}
-  const btn=$("saveReset");
-  try{
-    btn.disabled=true;
-    const r=await sb.auth.updateUser({password:a});
-    if(r.error)throw r.error;
-    $("resetMsg").className="msg success";
-    $("resetMsg").textContent="Password berhasil diubah. Silakan login kembali.";
-    setTimeout(async()=>{await sb.auth.signOut();location.href=location.origin+location.pathname},1200);
-  }catch(err){
-    $("resetMsg").className="msg error";
-    $("resetMsg").textContent=err?.message||"Gagal mengubah password.";
-  }finally{btn.disabled=false}
-};
-
-window.addEventListener("DOMContentLoaded",()=>{
-  try{
-    const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    c.auth.onAuthStateChange(async(event,session)=>{
-      if(event==="PASSWORD_RECOVERY"&&session){
-        sb=c;
-        $("reset1").value="";$("reset2").value="";$("resetMsg").textContent="";
-        $("resetModal").classList.remove("hidden");
-      }
-    });
-  }catch(e){}
-});
+sb=null;
+window.addEventListener("load",async()=>{try{await start();}catch(e){console.error(e);$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
+window.addEventListener("DOMContentLoaded",()=>{try{const client=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);client.auth.onAuthStateChange(async(event,session)=>{if(event==="PASSWORD_RECOVERY"&&session){const a=prompt("Masukkan password baru (minimal 6 karakter):");if(!a)return;const r=await client.auth.updateUser({password:a});alert(r.error?r.error.message:"Password berhasil diubah.");}})}catch(e){console.error(e)}});
 </script>
 </body></html>
