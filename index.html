@@ -226,7 +226,7 @@ const bdNames=()=>{
   for(const raw of names){
     const name=String(raw).trim();
     const key=name.toLowerCase();
-    if(!key || key==='marketing' || key==='azki' || seen.has(key)) continue;
+    if(!key || key==='marketing' || key==='azki' || key==='kahar' || seen.has(key)) continue;
     seen.add(key);
     clean.push(name);
   }
@@ -283,10 +283,10 @@ function renderCustomerMonthly(){
   $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
 }
 function renderPOByBD(){
-  // PO Received per BD: jangan tampilkan akun/nama internal Marketing atau Azki.
+  // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
   const names=bdNames().filter(bd=>{
     const n=String(bd||'').trim().toLowerCase();
-    return n!=='marketing' && n!=='azki';
+    return n!=='marketing' && n!=='azki' && n!=='kahar';
   });
   $('dashPOBD').innerHTML=names.map(bd=>{
     const rows=po.filter(x=>bdEq(x.bd,bd));
