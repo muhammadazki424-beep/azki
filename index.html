@@ -144,13 +144,13 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
     </section>
 
     <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Data dari Excel. BD hanya dapat melihat.</div></div></div>
-      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
+      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
+      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Data dari Excel. BD hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div>
+      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
+      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div>
     </section>
 
     <section id="performance" class="section">
@@ -338,10 +338,14 @@ function render(){
   $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
-  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td></tr>`).join("")||`<tr><td colspan="5">Belum ada PO.</td></tr>`;
-  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td></tr>`).join("")||`<tr><td colspan="9">Belum ada forecast.</td></tr>`;
+  const isAdmin=profile?.role==="admin";
+  $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
+  $("poActionHead")?.classList.toggle("hidden",!isAdmin);
+  $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
+  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Belum ada PO.</td></tr>`;
+  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
 
-  $("adminNav").classList.toggle("hidden",profile?.role!=="admin");
+  $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
     $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(p.role)}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
   }
@@ -349,7 +353,7 @@ function render(){
 
 function openEditor(kind,id=null){
   editorKind=kind;editorId=id;
-  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints}[kind]||[]).find(x=>x.id===id):null;
+  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast}[kind]||[]).find(x=>x.id===id):null;
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer"}[kind]);
   let h="";
   if(kind==="potential"){
@@ -358,8 +362,14 @@ function openEditor(kind,id=null){
     h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="lost"){
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else {
+  } else if(kind==="complaint") {
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+  } else if(kind==="po") {
+    if(profile.role!=="admin"){ closeModal(); return; }
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+  } else if(kind==="forecast") {
+    if(profile.role!=="admin"){ closeModal(); return; }
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
   $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
@@ -372,7 +382,9 @@ async function saveModal(){
   if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
   if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
   if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(!payload?.bd || !(payload.customer||payload.company)){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
+  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
+  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
+  if(!payload?.bd || (editorKind!=="forecast" && !(payload.customer||payload.company))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
   let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
   if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
   closeModal();await load();
@@ -380,7 +392,8 @@ async function saveModal(){
 
 async function removeRow(kind,id){
   if(!confirm("Hapus data ini?"))return;
-  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints"}[kind];
+  if((kind==="po"||kind==="forecast") && profile?.role!=="admin") return;
+  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets"}[kind];
   const r=await sb.from(table).delete().eq("id",id);
   if(r.error)alert(r.error.message);else await load();
 }
