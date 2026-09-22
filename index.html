@@ -250,10 +250,12 @@ function yearOf(m){
   const y=s.match(/20\\d{2}/);
   return y?y[0]:s.slice(0,4);
 }
-const bdEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
+const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
+const bdEq=(a,b)=>normBD(a)===normBD(b);
+const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar '); };
 function renderPotentialByBD(){
-  const names=[...bdNames()].filter(bd=>!bdEq(bd,'Kahar')).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
-  const html=names.map(bd=>{
+  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+  const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
     const rows=potential.filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
     return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
@@ -306,12 +308,26 @@ function render(){
   const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
   $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);$("dashPotentialGrandTotal").textContent=money(totalPotential);$("dashPOGrandTotal").textContent=money(totalPO);
 
-  const perf=profiles.map(p=>{
-    const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
-    const target=f?num(f.target):num(p.target);
-    const ach=f?num(f.total):po.filter(x=>x.bd===p.full_name).reduce((a,x)=>a+num(x.value),0);
-    return `<tr><td>${esc(p.full_name)}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
-  }).join("");
+  const perfSeen=new Set();
+  const perf=profiles
+    .filter(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      return n && n!=="azki" && n!=="kahar" && n!=="marketing";
+    })
+    .sort((a,b)=>String(a.full_name||"").trim().localeCompare(String(b.full_name||"").trim(),"id",{sensitivity:"base"}))
+    .filter(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      if(perfSeen.has(n)) return false;
+      perfSeen.add(n);
+      return true;
+    })
+    .map(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      const f=forecast.find(x=>String(x.bd||"").trim().toLowerCase()===n);
+      const target=f?num(f.target):num(p.target);
+      const ach=f?num(f.total):po.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
+      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
+    }).join("");
   $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
   $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
 
