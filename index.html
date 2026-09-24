@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cetakdong Team Azki</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="config.js"></script>
 <style>
 :root{--navy:#0b1220;--navy2:#111a2b;--line:#e7ebf2;--muted:#6b7280;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--bg:#f4f6fa}
@@ -93,6 +94,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     <section id="dashboard" class="section active">
       <div class="top">
         <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan Potential, Database Customer, dan PO Received per BD.</div></div>
+        <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
         <div id="sync" class="badge green">ONLINE</div>
       </div>
       <div class="cards">
@@ -415,6 +417,42 @@ async function removeRow(kind,id){
   const r=await sb.from(table).delete().eq("id",id);
   if(r.error)alert(r.error.message);else await load();
 }
+
+
+function downloadAllExcel(){
+  try{
+    if(typeof XLSX==='undefined'){
+      alert('Fitur Excel belum siap. Coba refresh halaman lalu ulangi.');
+      return;
+    }
+    const wb=XLSX.utils.book_new();
+    const cleanRows=(rows)=>rows.map(r=>{
+      const o={};
+      Object.keys(r||{}).forEach(k=>{ if(k!=='id') o[k]=r[k]; });
+      return o;
+    });
+    const addSheet=(name,rows)=>{
+      const data=cleanRows(rows||[]);
+      const ws=XLSX.utils.json_to_sheet(data.length?data:[{}]);
+      XLSX.utils.book_append_sheet(wb,ws,name.slice(0,31));
+    };
+    addSheet('Potential',potential);
+    addSheet('Database Customer',customers);
+    addSheet('Lost Leads',lost);
+    addSheet('Complaint Customer',complaints);
+    addSheet('PO Received',po);
+    addSheet('Forecast & Target',forecast);
+    addSheet('User & Target',profiles.map(p=>({full_name:p.full_name,role:p.role,target:p.target})));
+
+    const now=new Date();
+    const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('');
+    XLSX.writeFile(wb,`Cetakdong_Team_Azki_All_Data_${stamp}.xlsx`);
+  }catch(err){
+    console.error(err);
+    alert('Gagal membuat file Excel: '+(err?.message||'silakan coba lagi.'));
+  }
+}
+window.downloadAllExcel=downloadAllExcel;
 
 window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
 
