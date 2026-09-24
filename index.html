@@ -229,7 +229,7 @@ const bdNames=()=>{
   for(const raw of names){
     const name=String(raw).trim();
     const key=name.toLowerCase();
-    if(!key || key==='marketing' || key==='azki' || key==='kahar' || seen.has(key)) continue;
+    if(!key || key==='marketing' || key==='azki' || key==='kahar' || key==='yappy' || key==='yappy sunandi' || seen.has(key)) continue;
     seen.add(key);
     clean.push(name);
   }
@@ -255,7 +255,7 @@ function yearOf(m){
 }
 const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
 const bdEq=(a,b)=>normBD(a)===normBD(b);
-const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar '); };
+const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
 function renderPotentialByBD(){
   const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
   const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
@@ -289,7 +289,7 @@ function renderPOByBD(){
   // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
   const names=bdNames().filter(bd=>{
     const n=String(bd||'').trim().toLowerCase();
-    return n!=='marketing' && n!=='azki' && n!=='kahar';
+    return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
   });
   $('dashPOBD').innerHTML=names.map(bd=>{
     const rows=po.filter(x=>bdEq(x.bd,bd));
@@ -329,7 +329,7 @@ function render(){
   const perf=profiles
     .filter(p=>{
       const n=String(p.full_name||"").trim().toLowerCase();
-      return n && n!=="azki" && n!=="kahar" && n!=="marketing";
+      return n && n!=="azki" && n!=="kahar" && n!=="marketing" && n!=="yappy" && n!=="yappy sunandi";
     })
     .sort((a,b)=>String(a.full_name||"").trim().localeCompare(String(b.full_name||"").trim(),"id",{sensitivity:"base"}))
     .filter(p=>{
