@@ -197,16 +197,6 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
           <div class="badge green">TERHUBUNG</div>
         </div>
 
-        <iframe
-          id="calculatorFrame"
-          class="calculatorFrame"
-          src="https://ctkdong.adijayamontana.com/dashboard"
-          title="Kalkulator Team Cetakdong"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allow="clipboard-read; clipboard-write">
-        </iframe>
-
         <div id="calculatorFallback" class="calculatorFallback">
           <h3>Kalkulator tidak dapat ditampilkan di dalam dashboard</h3>
           <div>Website kalkulator mungkin memblokir tampilan melalui iframe.</div>
@@ -231,35 +221,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
       <div class="top"><div><h1>User & Target</h1><div class="muted">Menu Admin. BD biasa tidak dapat mengubah target.</div></div></div>
       <div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
     </section>
-  
-<section id="sectionCalculator" class="section">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-      <div>
-        <h2 style="margin:0 0 6px">🧮 Kalkulator Cetakdong</h2>
-        <div style="opacity:.75">Kalkulator dibuka langsung di halaman terpisah agar login akun kalkulator tetap berjalan normal.</div>
-      </div>
-      <a href="https://ctkdong.adijayamontana.com/dashboard" target="_blank" rel="noopener noreferrer"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="btn primary"
-         style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">
-        Buka Kalkulator
-      </a>
-    </div>
-
-    <div style="margin-top:18px;padding:18px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
-      <div style="font-weight:700;margin-bottom:8px">Cara pakai</div>
-      <div style="line-height:1.6;opacity:.85">
-        1. Klik <b>Buka Kalkulator</b>.<br>
-        2. Login menggunakan akun kalkulator seperti biasa.<br>
-        3. Dashboard Team Azki tetap terbuka di tab ini.
-      </div>
-    </div>
-  </div>
-</section>
-
-</main>
+  </main>
 </div>
 
 <div id="modal" class="modal hidden"><div class="modalbox">
@@ -567,7 +529,6 @@ async function removeRow(kind,id){
   if(r.error)alert(r.error.message);else await load();
 }
 
-
 function downloadAllExcel(){
   try{
     if(typeof XLSX==='undefined'){
@@ -604,15 +565,14 @@ function downloadAllExcel(){
 }
 window.downloadAllExcel=downloadAllExcel;
 
-
 function reloadCalculator(){
   const frame=$("calculatorFrame");
   if(frame){
-    frame.src="https://ctkdong.adijayamontana.com/dashboard?embed="+Date.now();
+    frame.src="?embed="+Date.now();
   }
 }
 function openCalculatorNewTab(){
-  window.open("https://ctkdong.adijayamontana.com/dashboard","_blank","noopener,noreferrer");
+  window.open("","_blank","noopener,noreferrer");
 }
 const calculatorFrame=$("calculatorFrame");
 if(calculatorFrame){
