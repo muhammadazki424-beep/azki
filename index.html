@@ -38,6 +38,14 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 .totalValueBox{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 16px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05)}
 .totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
 tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
+
+.calculatorFrameWrap{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:10px;margin-top:16px;box-shadow:0 4px 18px #00000008}
+.calculatorToolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 4px 12px}
+.calculatorFrame{width:100%;height:calc(100vh - 175px);min-height:680px;border:0;border-radius:12px;background:#fff;display:block}
+.calculatorFallback{display:none;padding:30px;text-align:center;color:#667085;background:#f8fafc;border-radius:12px}
+.calculatorFallback h3{margin:0 0 8px;color:#172033}
+@media(max-width:760px){.calculatorFrame{height:calc(100vh - 230px);min-height:600px}}
+
 </style>
 </head>
 <body>
@@ -48,7 +56,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
       <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
       <div class="brandSmall">TEAM AZKI</div>
       <div class="heroSub">Real-Time Sales Dashboard</div>
-      <div class="loginQuote">Welcome to your amazing app.<br><span>“Believe you can and you're halfway there.”</span></div>
+      <div class="loginQuote">“Target memberi arah, proses memberi hasil, dan konsistensi membawa kita lebih jauh.”<span>— CETAKDONG TEAM AZKI</span></div>
     </div>
   </div>
   <div class="loginSide">
@@ -82,6 +90,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
       <button data-page="complaints">💬 Complaint Customer</button>
       <button data-page="po">📦 PO Received</button>
       <button data-page="pomonitor">📋 Monitoring PO Customer</button>
+      <button data-page="calculator">🧮 Kalkulator</button>
       <button data-page="forecast">📈 Forecast</button>
       <button data-page="performance">👥 BD Performance</button>
       <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
@@ -167,6 +176,44 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
           <div style="font-weight:800">Total Value: <span id="poMonitorTotal">Rp 0</span></div>
         </div>
         <div class="poMonitor" style="margin-top:12px"><table><thead><tr><th>No</th><th>PO Date</th><th>PO Number</th><th>Customer Name</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price (Rp/Roll)</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery Qty</th><th>Complain Qty</th><th>Need Help?</th><th>Aksi</th></tr></thead><tbody id="poMonitorTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="calculator" class="section">
+      <div class="top">
+        <div>
+          <h1>🧮 Kalkulator</h1>
+          <div class="muted">Kalkulator team ditampilkan langsung di dalam dashboard Cetakdong Team Azki.</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn gray" onclick="reloadCalculator()">↻ Refresh Kalkulator</button>
+          <button class="btn blue" onclick="openCalculatorNewTab()">↗ Buka Full Screen</button>
+        </div>
+      </div>
+
+      <div class="calculatorFrameWrap">
+        <div class="calculatorToolbar">
+          <div class="muted">Sumber: ctkdong.adijayamontana.com/dashboard</div>
+          <div class="badge green">TERHUBUNG</div>
+        </div>
+
+        <iframe
+          id="calculatorFrame"
+          class="calculatorFrame"
+          src="https://ctkdong.adijayamontana.com/dashboard"
+          title="Kalkulator Team Cetakdong"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="clipboard-read; clipboard-write">
+        </iframe>
+
+        <div id="calculatorFallback" class="calculatorFallback">
+          <h3>Kalkulator tidak dapat ditampilkan di dalam dashboard</h3>
+          <div>Website kalkulator mungkin memblokir tampilan melalui iframe.</div>
+          <div style="margin-top:14px">
+            <button class="btn blue" onclick="openCalculatorNewTab()">Buka Kalkulator</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -528,6 +575,24 @@ function downloadAllExcel(){
   }
 }
 window.downloadAllExcel=downloadAllExcel;
+
+
+function reloadCalculator(){
+  const frame=$("calculatorFrame");
+  if(frame){
+    frame.src="https://ctkdong.adijayamontana.com/dashboard?embed="+Date.now();
+  }
+}
+function openCalculatorNewTab(){
+  window.open("https://ctkdong.adijayamontana.com/dashboard","_blank","noopener,noreferrer");
+}
+const calculatorFrame=$("calculatorFrame");
+if(calculatorFrame){
+  calculatorFrame.addEventListener("error",()=>{
+    $("calculatorFallback").style.display="block";
+    calculatorFrame.style.display="none";
+  });
+}
 
 window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
 
