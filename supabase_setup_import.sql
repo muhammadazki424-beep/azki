@@ -1,693 +1,530 @@
-<!doctype html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cetakdong Team Azki</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="config.js"></script>
-<style>
-:root{--navy:#0b1220;--navy2:#111a2b;--line:#e7ebf2;--muted:#6b7280;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--bg:#f4f6fa}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#172033}
-button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:900;font-size:26px;letter-spacing:-.7px}.brand img{width:32px;height:32px;object-fit:cover;border-radius:50%}.brandText{color:#fff}.brandSmall{font-size:11px;color:#9ca8bb;margin:3px 0 0 42px}
-.login{min-height:100vh;display:grid;grid-template-columns:1.25fr .75fr;background:#070c14}
-.loginHero{position:relative;min-height:100vh;background:linear-gradient(90deg,#050a12d9,#050a128f),url("image 127.jpg") center/cover no-repeat;display:flex;align-items:center;padding:7vw}
-.loginHeroContent{max-width:650px}.loginHero .brand{font-size:58px}.loginHero .brand img{width:62px;height:62px}.heroSub{color:#e8edf6;font-size:18px;margin-top:16px}.loginQuote{margin-top:18px;max-width:590px;color:#dbe5f4;font-size:16px;line-height:1.65;font-style:italic;border-left:3px solid #fff;padding-left:16px}.loginQuote span{display:block;margin-top:7px;color:#9ca8bb;font-size:12px;font-style:normal;font-weight:700;letter-spacing:.4px}
-.loginSide{display:flex;align-items:center;justify-content:center;padding:30px;background:#070c14}.loginbox{width:min(470px,100%);padding:34px;border:1px solid #273247;border-radius:20px;background:#0d1421;box-shadow:0 18px 50px #0008}
-.loginbox h1{color:#fff;font-size:28px;margin:20px 0 8px}.loginbox p{color:#9ca8bb}.loginbox label{color:#dce3ee}
-input,select,textarea{width:100%;padding:11px 13px;border:1px solid #d6dce7;border-radius:10px;background:#fff;color:#172033}textarea{min-height:90px;resize:vertical}
-.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}.passwrap{position:relative}.passwrap input{padding-right:48px}.eyeBtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9ca8bb;font-size:18px;padding:6px 8px;line-height:1}.eyeBtn:hover{color:#fff}
-label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border:0;border-radius:10px;padding:10px 14px;background:#172033;color:#fff;font-weight:800}.btn.white{background:#fff;color:#0b1220}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}.btn.gray{background:#e9edf3;color:#172033}.btn.small{padding:6px 9px;font-size:11px}.btn.ghost{background:transparent;border:1px solid #d9dee8;color:#172033}
-.msg{font-size:13px;margin-top:10px}.error{color:#ef4444}.success{color:#22c55e}
-.layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:var(--navy);color:#fff;padding:22px 15px;min-height:100vh;position:sticky;top:0;height:100vh}.side .brand{margin:0 8px}.side .brand img{width:34px;height:34px}.role{font-size:12px;color:#9ca8bb;margin:8px 8px 22px}.nav button{width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px 10px;border-radius:9px;margin:2px 0}.nav button.active,.nav button:hover{background:#1b2940;color:#fff}
-.main{padding:26px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.top h1{margin:0;font-size:27px}.muted{color:var(--muted);font-size:13px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border-radius:15px;padding:18px;box-shadow:0 4px 18px #0000000a;border:1px solid #edf0f5}.card .k{font-size:11px;color:#697386;font-weight:900}.card .v{font-size:23px;font-weight:900;margin-top:8px}.card .s{font-size:11px;color:#8a93a3;margin-top:5px}
-.panel{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:18px;margin-top:16px;box-shadow:0 4px 18px #00000008}.panel h2{font-size:16px;margin:0 0 14px}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section{display:none}.section.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px;vertical-align:top}th{font-size:11px;color:#667085;background:#fafbfc;position:sticky;top:0}td .btn{margin-right:4px;margin-bottom:3px}
-.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-size:10px;font-weight:800}.badge.red{background:#fee2e2;color:#991b1b}.badge.green{background:#dcfce7;color:#166534}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
-.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalbox{background:#fff;border-radius:17px;padding:22px;width:min(760px,100%);max-height:92vh;overflow:auto}.modalbox h2{margin:0 0 10px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:280px}.readonly{background:#f7f8fa}.poMonitor{overflow:auto}.poMonitor table{min-width:1500px}.poStatus{min-width:130px}.poStatus select{min-width:120px}.poSummary{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px;margin-bottom:14px}.poSummary .mini{background:#0f1724;border:1px solid #263246;border-radius:12px;padding:12px;color:#fff}.poSummary .mini .k{font-size:10px;color:#9aa8bd;font-weight:800}.poSummary .mini .v{font-size:18px;font-weight:900;margin-top:5px}@media(max-width:900px){.poSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:1050px){.login{grid-template-columns:1fr}.loginHero{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
+-- CETAKDONG TEAM AZKI - SETUP + IMPORT DATA EXCEL
+-- Jalankan file ini SEKALI di Supabase > SQL Editor.
+-- Data editable: Potential, Database Customer, Lost Leads, Complaint.
+-- PO Received dan Forecast: READ-ONLY untuk BD.
+-- Semua BD yang login dapat melihat dan mengedit/menghapus data editable.
 
-.bdCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bdMini{background:#0f1724;border:1px solid #263246;border-radius:14px;padding:16px}.bdMini h3{margin:0 0 8px;color:#fff;font-size:16px}.bdMini .big{font-size:22px;font-weight:800;color:#fff}.bdMini .sub{font-size:12px;color:#9aa8bd;margin-top:5px}.yearbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.yearbar select{background:#0a101b;color:#fff;border:1px solid #2b384e;border-radius:8px;padding:9px 12px}.monthMatrix{overflow:auto}.monthMatrix table{min-width:980px}.monthMatrix th,.monthMatrix td{text-align:center;white-space:nowrap}.monthMatrix th:first-child,.monthMatrix td:first-child{text-align:left;position:sticky;left:0;background:inherit}.monthMatrix td strong{color:#172033;font-weight:800}.sectionNote{font-size:12px;color:#8f9db2;margin-top:4px}.bdBreakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.bdPanel{border:1px solid #263246;border-radius:14px;padding:14px;background:#0f1724}.bdPanel h3{margin:0 0 10px;color:#fff}.bdPanel table{min-width:0}.bdPanel th,.bdPanel td{background:transparent;color:#dce3ee}@media(max-width:900px){.bdCards{grid-template-columns:repeat(2,minmax(0,1fr))}.bdBreakdown{grid-template-columns:1fr}}@media(max-width:560px){.bdCards{grid-template-columns:1fr}}
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
 
-.totalValueBox{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 16px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05)}
-.totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
-tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
-</style>
-</head>
-<body>
+alter table public.profiles enable row level security;
+drop policy if exists "profiles_select_all_auth" on public.profiles;
+create policy "profiles_select_all_auth"
+on public.profiles for select to authenticated
+using (true);
 
-<div id="login" class="login">
-  <div class="loginHero">
-    <div class="loginHeroContent">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <div class="heroSub">Real-Time Sales Dashboard</div>
-      <div class="loginQuote">Welcome to your amazing app.<br><span>“Believe you can and you're halfway there.”</span></div>
-    </div>
-  </div>
-  <div class="loginSide">
-    <div class="loginbox">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <h1>Login ke Dashboard</h1>
-      <p>Masuk menggunakan akun BD atau Admin.</p>
-      <form id="loginForm">
-        <label>Email</label><input id="email" type="email" placeholder="email@perusahaan.com" required>
-        <label>Password</label><div class="passwrap"><input id="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-target="password" aria-label="Tampilkan password">👁</button></div>
-        <button class="btn white" style="width:100%;margin-top:17px">Login →</button>
-      </form>
-      <button id="magic" class="btn gray" style="width:100%;margin-top:9px">Kirim Magic Link</button>
-      <button id="forgot" class="btn gray" style="width:100%;margin-top:9px">Reset Password</button>
-      <div id="loginMsg" class="msg"></div>
-    </div>
-  </div>
-</div>
+drop policy if exists "profiles_update_admin" on public.profiles;
+create policy "profiles_update_admin"
+on public.profiles for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
-<div id="app" class="layout hidden">
-  <aside class="side">
-    <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-    <div class="brandSmall">TEAM AZKI</div>
-    <div id="who" class="role"></div>
-    <div class="nav">
-      <button data-page="dashboard" class="active">📊 Dashboard</button>
-      <button data-page="potential">🎯 Potential</button>
-      <button data-page="customers">🏢 Database Customer</button>
-      <button data-page="lost">⚠️ Lost Leads</button>
-      <button data-page="complaints">💬 Complaint Customer</button>
-      <button data-page="po">📦 PO Received</button>
-      <button data-page="pomonitor">📋 Monitoring PO Customer</button>
-      <button data-page="forecast">📈 Forecast</button>
-      <button data-page="performance">👥 BD Performance</button>
-      <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
-    </div>
-    <div style="margin-top:24px">
-      <button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
-      <button id="logout" class="btn" style="width:100%;margin-top:8px;background:#29364b">Logout</button>
-    </div>
-  </aside>
+create table if not exists public.potential_leads (
+  id uuid primary key default gen_random_uuid(),
+  bd text not null default '',
+  customer text not null,
+  value numeric not null default 0,
+  month text not null default '',
+  notes text default '',
+  created_at timestamptz default now()
+);
 
-  <main class="main">
-    <section id="dashboard" class="section active">
-      <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan Potential, Database Customer, dan PO Received per BD.</div></div>
-        <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
-        <div id="sync" class="badge green">ONLINE</div>
-      </div>
-      <div class="cards">
-        <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
-        <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
-        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
-        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
-      </div>
+create table if not exists public.customer_database (
+  id uuid primary key default gen_random_uuid(),
+  bd text default '',
+  customer text not null,
+  area text default '',
+  month text default '',
+  value numeric not null default 0,
+  notes text default '',
+  created_at timestamptz default now()
+);
 
-      <div class="panel">
-        <div class="panelHead"><div><h2>🎯 Potential per BD</h2><div class="sectionNote">Masing-masing BD ditampilkan terpisah.</div></div><button class="btn gray small" onclick="go('potential')">Kelola Potential</button></div>
-        <div id="dashPotentialBD" class="bdCards"></div><div class="totalValueBox" style="margin-top:14px"><span>TOTAL VALUE POTENTIAL — SEMUA BD</span><strong id="dashPotentialGrandTotal">Rp 0</strong></div>
-      </div>
+create table if not exists public.lost_leads (
+  id uuid primary key default gen_random_uuid(),
+  company text not null,
+  pic text default '',
+  packaging text default '',
+  product text default '',
+  production_system text default '',
+  quantity_expected numeric default 0,
+  amount_expected numeric default 0,
+  why_lost text default '',
+  closing_month text default '',
+  bd text default '',
+  description text default '',
+  created_at timestamptz default now()
+);
 
-      <div class="panel">
-        <div class="panelHead"><div><h2>🏢 Database Customer per BD — Bulanan 2024–2026</h2><div class="sectionNote">Jumlah database customer per bulan untuk setiap BD.</div></div><button class="btn gray small" onclick="go('customers')">Kelola Customer</button></div>
-        <div class="yearbar"><label style="margin:0">Tahun</label><select id="customerYearFilter"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="all">Semua Tahun</option></select></div>
-        <div id="dashCustomerMonthly" class="monthMatrix"></div>
-      </div>
+create table if not exists public.customer_complaints (
+  id uuid primary key default gen_random_uuid(),
+  company text not null,
+  pic text default '',
+  packaging text default '',
+  product text default '',
+  article text default '',
+  production_system text default '',
+  quantity_order numeric default 0,
+  quantity_complain numeric default 0,
+  why_complain text default '',
+  bd text default '',
+  description text default '',
+  created_at timestamptz default now()
+);
 
-      <div class="panel">
-        <div class="panelHead"><div><h2>📦 PO Received per BD</h2><div class="sectionNote">Nilai PO dan jumlah PO dipisahkan berdasarkan BD.</div></div><button class="btn gray small" onclick="go('po')">Lihat PO Received</button></div>
-        <div class="totalValueBox"><span>TOTAL VALUE PO RECEIVED — SEMUA BD</span><strong id="dashPOGrandTotal">Rp 0</strong></div><div id="dashPOBD" class="bdBreakdown"></div>
-      </div>
+create table if not exists public.po_received (
+  id uuid primary key default gen_random_uuid(),
+  bd text not null default '',
+  customer text not null,
+  value numeric not null default 0,
+  month text not null default '',
+  notes text default '',
+  created_at timestamptz default now()
+);
 
-      <div class="panel">
-        <div class="panelHead"><div><h2>📋 Monitoring PO Customer</h2><div class="sectionNote">Monitoring progress PO berdasarkan tanggal, customer, BD, dan status Week 1–4.</div></div><button class="btn gray small" onclick="go('pomonitor')">Kelola Monitoring PO</button></div>
-        <div id="dashPOMonitorSummary" class="poSummary"></div>
-        <div class="table"><table><thead><tr><th>PO</th><th>Customer</th><th>BD</th><th>Value</th><th>Status</th><th>ETD</th></tr></thead><tbody id="dashPOMonitor"></tbody></table></div>
-      </div>
+create table if not exists public.forecast_targets (
+  id uuid primary key default gen_random_uuid(),
+  bd text not null unique,
+  forecast numeric not null default 0,
+  target numeric not null default 0,
+  achievement_flexo numeric not null default 0,
+  achievement_roto numeric not null default 0,
+  total numeric not null default 0,
+  percentage numeric default 0,
+  commission_flexo numeric default 0,
+  commission_roto numeric default 0,
+  created_at timestamptz default now()
+);
 
-      <div class="panel">
-        <div class="panelHead"><h2>👥 BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
-        <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
-      </div>
-    </section>
+alter table public.potential_leads enable row level security;
+alter table public.customer_database enable row level security;
+alter table public.lost_leads enable row level security;
+alter table public.customer_complaints enable row level security;
+alter table public.po_received enable row level security;
+alter table public.forecast_targets enable row level security;
 
-    <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
-      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
-    </section>
+-- Semua user login boleh lihat semua data.
+drop policy if exists "potential_select" on public.potential_leads;
+create policy "potential_select" on public.potential_leads for select to authenticated using (true);
+drop policy if exists "potential_insert" on public.potential_leads;
+create policy "potential_insert" on public.potential_leads for insert to authenticated with check (true);
+drop policy if exists "potential_update" on public.potential_leads;
+create policy "potential_update" on public.potential_leads for update to authenticated using (true) with check (true);
+drop policy if exists "potential_delete" on public.potential_leads;
+create policy "potential_delete" on public.potential_leads for delete to authenticated using (true);
 
-    <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
-    </section>
+drop policy if exists "customer_select" on public.customer_database;
+create policy "customer_select" on public.customer_database for select to authenticated using (true);
+drop policy if exists "customer_insert" on public.customer_database;
+create policy "customer_insert" on public.customer_database for insert to authenticated with check (true);
+drop policy if exists "customer_update" on public.customer_database;
+create policy "customer_update" on public.customer_database for update to authenticated using (true) with check (true);
+drop policy if exists "customer_delete" on public.customer_database;
+create policy "customer_delete" on public.customer_database for delete to authenticated using (true);
 
-    <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
-    </section>
+drop policy if exists "lost_select" on public.lost_leads;
+create policy "lost_select" on public.lost_leads for select to authenticated using (true);
+drop policy if exists "lost_insert" on public.lost_leads;
+create policy "lost_insert" on public.lost_leads for insert to authenticated with check (true);
+drop policy if exists "lost_update" on public.lost_leads;
+create policy "lost_update" on public.lost_leads for update to authenticated using (true) with check (true);
+drop policy if exists "lost_delete" on public.lost_leads;
+create policy "lost_delete" on public.lost_leads for delete to authenticated using (true);
 
-    <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
-    </section>
+drop policy if exists "complaint_select" on public.customer_complaints;
+create policy "complaint_select" on public.customer_complaints for select to authenticated using (true);
+drop policy if exists "complaint_insert" on public.customer_complaints;
+create policy "complaint_insert" on public.customer_complaints for insert to authenticated with check (true);
+drop policy if exists "complaint_update" on public.customer_complaints;
+create policy "complaint_update" on public.customer_complaints for update to authenticated using (true) with check (true);
+drop policy if exists "complaint_delete" on public.customer_complaints;
+create policy "complaint_delete" on public.customer_complaints for delete to authenticated using (true);
 
-    <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
-      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
-    </section>
+-- PO dan Forecast: BD hanya SELECT. Admin boleh CRUD.
+drop policy if exists "po_select" on public.po_received;
+create policy "po_select" on public.po_received for select to authenticated using (true);
+drop policy if exists "po_admin_insert" on public.po_received;
+create policy "po_admin_insert" on public.po_received for insert to authenticated with check (public.is_admin());
+drop policy if exists "po_admin_update" on public.po_received;
+create policy "po_admin_update" on public.po_received for update to authenticated using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "po_admin_delete" on public.po_received;
+create policy "po_admin_delete" on public.po_received for delete to authenticated using (public.is_admin());
 
-    <section id="pomonitor" class="section">
-      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
-      <div class="panel">
-        <div class="toolbar" style="justify-content:space-between;align-items:center">
-          <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
-          <div style="font-weight:800">Total Value: <span id="poMonitorTotal">Rp 0</span></div>
-        </div>
-        <div class="poMonitor" style="margin-top:12px"><table><thead><tr><th>No</th><th>PO Date</th><th>PO Number</th><th>Customer Name</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price (Rp/Roll)</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery Qty</th><th>Complain Qty</th><th>Need Help?</th><th>Aksi</th></tr></thead><tbody id="poMonitorTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
-    </section>
-
-    <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
-    </section>
-
-    <section id="admin" class="section">
-      <div class="top"><div><h1>User & Target</h1><div class="muted">Menu Admin. BD biasa tidak dapat mengubah target.</div></div></div>
-      <div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
-    </section>
-  </main>
-</div>
-
-<div id="modal" class="modal hidden"><div class="modalbox">
-  <h2 id="modalTitle">Tambah Data</h2>
-  <div id="modalForm"></div>
-  <div id="modalMsg" class="msg"></div>
-  <div class="actions"><button class="btn gray" onclick="closeModal()">Batal</button><button class="btn blue" onclick="saveModal()">Simpan</button></div>
-</div></div>
-
-<div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔐 Ubah Password</h2>
-  <label>Password Baru</label><div class="passwrap"><input id="pass1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="pass2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass2" aria-label="Tampilkan password">👁</button></div>
-  <div id="passMsg" class="msg"></div>
-  <div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div>
-</div></div>
-
-<div id="resetModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔑 Buat Password Baru</h2>
-  <p class="muted">Masukkan password baru setelah membuka link reset dari email.</p>
-  <label>Password Baru</label><div class="passwrap"><input id="reset1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="reset2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset2" aria-label="Tampilkan password">👁</button></div>
-  <div id="resetMsg" class="msg"></div>
-  <div class="actions"><button id="saveReset" class="btn blue">Simpan Password</button></div>
-</div></div>
-
-<script>
-let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[];
-let editorKind=null,editorId=null;
-const $=id=>document.getElementById(id);
-const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
-const num=n=>Number(n)||0;
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const rowBtn=(kind,id)=>`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
-const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option>${profiles.map(p=>`<option ${p.full_name===value?"selected":""}>${esc(p.full_name)}</option>`).join("")}<option ${value==="Others"?"selected":""}>Others</option></select>`;
-const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
-const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
-const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
-$("customerYearFilter").onchange=renderCustomerMonthly;
-$("searchPOMonitor").oninput=renderPOMonitor;
-$("poMonitorMonthFilter").onchange=renderPOMonitor;
-$("poMonitorStatusFilter").onchange=renderPOMonitor;
-
-async function load(){
-  const qs=await Promise.all([
-    sb.from("profiles").select("*").order("full_name"),
-    sb.from("potential_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_database").select("*").order("created_at",{ascending:false}),
-    sb.from("lost_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_complaints").select("*").order("created_at",{ascending:false}),
-    sb.from("po_received").select("*").order("created_at",{ascending:false}),
-    sb.from("forecast_targets").select("*").order("bd"),
-    sb.from("po_monitoring").select("*").order("po_date",{ascending:false}).order("created_at",{ascending:false})
-  ]);
-  const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring"];
-  for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
-  [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring]=qs.map(x=>x.data||[]);
-  render();
-}
-
-const bdNames=()=>{
-  const names=[...profiles.map(p=>p.full_name).filter(Boolean),...potential.map(x=>x.bd),...customers.map(x=>x.bd),...po.map(x=>x.bd)].filter(Boolean);
-  const seen=new Set();
-  const clean=[];
-  for(const raw of names){
-    const name=String(raw).trim();
-    const key=name.toLowerCase();
-    if(!key || key==='marketing' || key==='azki' || key==='kahar' || key==='yappy' || key==='yappy sunandi' || seen.has(key)) continue;
-    seen.add(key);
-    clean.push(name);
-  }
-  return clean.sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
-};
-const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function monthKey(m){
-  const s=String(m??"").trim();
-  let x=s.match(/(20\\d{2})[-\\/](0?[1-9]|1[0-2])/);
-  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
-  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
-  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
-  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  x=s.toLowerCase().match(/([a-z]+)/);
-  const y=s.match(/20\\d{2}/);
-  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
-  return s.slice(0,7);
-}
-function yearOf(m){
-  const s=String(m??"");
-  const y=s.match(/20\\d{2}/);
-  return y?y[0]:s.slice(0,4);
-}
-const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
-const bdEq=(a,b)=>normBD(a)===normBD(b);
-const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
-function renderPotentialByBD(){
-  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
-  const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
-    const rows=potential.filter(x=>bdEq(x.bd,bd));
-    const total=rows.reduce((a,x)=>a+num(x.value),0);
-    return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
-  }).join('');
-  $('dashPotentialBD').innerHTML=html||'<div class="muted">Belum ada data Potential.</div>';
-}
-function renderCustomerMonthly(){
-  const filter=$('customerYearFilter')?.value||'2026';
-  const names=bdNames();
-  const years=filter==='all'?[2024,2025,2026]:[Number(filter)];
-  let out='';
-  for(const year of years){
-    out+=`<h3 style="color:#fff;margin:10px 0">${year}</h3><table><thead><tr><th>BD</th>${monthNames.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
-    out+=names.map(bd=>{
-      let total=0;
-      const cells=monthNames.map((_,i)=>{
-        const key=`${year}-${String(i+1).padStart(2,'0')}`;
-        const n=customers.filter(x=>bdEq(x.bd,bd)&&monthKey(x.month)===key).length; total+=n;
-        return `<td>${n||'-'}</td>`;
-      }).join('');
-      return `<tr><td><strong>${esc(bd)}</strong></td>${cells}<td><strong>${total}</strong></td></tr>`;
-    }).join('');
-    out+='</tbody></table>';
-  }
-  $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
-}
-function renderPOByBD(){
-  // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
-  const names=bdNames().filter(bd=>{
-    const n=String(bd||'').trim().toLowerCase();
-    return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
-  });
-  $('dashPOBD').innerHTML=names.map(bd=>{
-    const rows=po.filter(x=>bdEq(x.bd,bd));
-    const total=rows.reduce((a,x)=>a+num(x.value),0);
-    const byYear=[2024,2025,2026].map(y=>{
-      const r=rows.filter(x=>yearOf(x.month)===String(y));
-      return `<tr><td>${y}</td><td>${r.length}</td><td>${money(r.reduce((a,x)=>a+num(x.value),0))}</td></tr>`;
-    }).join('');
-    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total</div><div class="table"><table><thead><tr><th>Tahun</th><th>Qty PO</th><th>Nilai</th></tr></thead><tbody>${byYear}</tbody></table></div></div>`;
-  }).join('')||'<div class="muted">Belum ada data PO Received.</div>';
-}
-
-function poStatusOptions(value=""){
-  const opts=["","File Design","RPO","Produksi","Delivery","Selesai","Pending"];
-  return opts.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${o||'Pilih Status'}</option>`).join('');
-}
-function renderPOMonitor(){
-  const q=String($("searchPOMonitor")?.value||"").trim().toLowerCase();
-  const mf=$("poMonitorMonthFilter")?.value||"all";
-  const sf=$("poMonitorStatusFilter")?.value||"all";
-  const months=[...new Set(poMonitoring.map(x=>String(x.po_date||"").slice(0,7)).filter(Boolean))].sort().reverse();
-  const sel=$("poMonitorMonthFilter");
-  if(sel){ const current=sel.value||"all"; sel.innerHTML='<option value="all">Semua Bulan</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join(''); sel.value=months.includes(current)?current:"all"; }
-  const rows=poMonitoring.filter(x=>{
-    const hay=[x.po_number,x.customer_name,x.bd,x.article,x.need_help].join(' ').toLowerCase();
-    const matchQ=!q||hay.includes(q);
-    const matchM=mf==='all'||String(x.po_date||'').slice(0,7)===mf;
-    const statuses=[x.week1,x.week2,x.week3,x.week4].filter(Boolean);
-    const matchS=sf==='all'||statuses.includes(sf);
-    return matchQ&&matchM&&matchS;
-  });
-  const total=rows.reduce((a,x)=>a+num(x.value),0);
-  $("poMonitorTotal").textContent=money(total);
-  const statusOf=x=>x.week4||x.week3||x.week2||x.week1||'Pending';
-  const done=rows.filter(x=>statusOf(x)==='Selesai').length;
-  const process=rows.filter(x=>['File Design','RPO','Produksi','Delivery'].includes(statusOf(x))).length;
-  const pending=rows.filter(x=>statusOf(x)==='Pending').length;
-  const complain=rows.reduce((a,x)=>a+num(x.complain_qty),0);
-  const summary=[['TOTAL PO',rows.length],['TOTAL VALUE',money(total)],['PROSES',process],['SELESAI',done],['COMPLAIN QTY',complain]];
-  $("dashPOMonitorSummary").innerHTML=summary.map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
-  $("dashPOMonitor").innerHTML=rows.slice(0,10).map(x=>`<tr><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${money(x.value)}</td><td><span class="badge">${esc(statusOf(x))}</span></td><td>${esc(x.etd||'-')}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada monitoring PO.</td></tr>';
-  $("poMonitorTable").innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.po_date||'-')}</td><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${esc(x.article||'-')}</td><td>${num(x.qty).toLocaleString('id-ID')}</td><td>${money(x.price_per_roll)}</td><td>${money(x.value)}</td><td><span class="badge">${esc(x.week1||'-')}</span></td><td><span class="badge">${esc(x.week2||'-')}</span></td><td><span class="badge">${esc(x.week3||'-')}</span></td><td><span class="badge">${esc(x.week4||'-')}</span></td><td>${esc(x.etd||'-')}</td><td>${num(x.delivery_qty).toLocaleString('id-ID')}</td><td>${num(x.complain_qty).toLocaleString('id-ID')}</td><td>${esc(x.need_help||'-')}</td><td>${rowBtn('pomonitor',x.id)}</td></tr>`).join('')||'<tr><td colspan="18">Belum ada data Monitoring PO Customer.</td></tr>';
-}
-
-function displayRole(profileOrRole){
-  const role = typeof profileOrRole === "string"
-    ? profileOrRole
-    : (profileOrRole?.role || "");
-  const name = typeof profileOrRole === "object"
-    ? String(profileOrRole?.full_name || "").trim().toLowerCase()
-    : "";
-  if(name === "azki") return "BD Head";
-  if(name === "kahar") return "BD Manager";
-  if(name === "nicolas") return "BD Senior";
-  if(name === "anggri") return "BD Senior";
-  if(name === "yappy sunandi") return "HOD";
-  return String(role).toLowerCase() === "admin" ? "Admin" : "BD";
-}
-
-function render(){
-  renderPotentialByBD();
-  renderCustomerMonthly();
-  renderPOByBD();
-  renderPOMonitor();
-  const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
-  const totalPO=po.reduce((a,x)=>a+num(x.value),0);
-  const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
-  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);$("dashPotentialGrandTotal").textContent=money(totalPotential);$("dashPOGrandTotal").textContent=money(totalPO);
-
-  const perfSeen=new Set();
-  const perf=profiles
-    .filter(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      return n && n!=="azki" && n!=="kahar" && n!=="marketing" && n!=="yappy" && n!=="yappy sunandi";
-    })
-    .sort((a,b)=>String(a.full_name||"").trim().localeCompare(String(b.full_name||"").trim(),"id",{sensitivity:"base"}))
-    .filter(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      if(perfSeen.has(n)) return false;
-      perfSeen.add(n);
-      return true;
-    })
-    .map(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      const f=forecast.find(x=>String(x.bd||"").trim().toLowerCase()===n);
-      const target=f?num(f.target):num(p.target);
-      const ach=f?num(f.total):po.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
-      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
-    }).join("");
-  $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-  $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-
-  $("potentialSectionTotal").textContent=money(potential.reduce((a,x)=>a+num(x.value),0));
-  $("poSectionTotal").textContent=money(po.reduce((a,x)=>a+num(x.value),0));
-
-  const forecastSum=forecast.reduce((a,x)=>a+num(x.forecast),0);
-  const targetSum=forecast.reduce((a,x)=>a+num(x.target),0);
-  const flexoSum=forecast.reduce((a,x)=>a+num(x.achievement_flexo),0);
-  const rotoSum=forecast.reduce((a,x)=>a+num(x.achievement_roto),0);
-  const forecastTotalSum=forecast.reduce((a,x)=>a+num(x.total),0);
-  const poGrandSum=po.reduce((a,x)=>a+num(x.value),0);
-  const commissionFlexoSum=forecast.reduce((a,x)=>a+num(x.commission_flexo),0);
-  const commissionRotoSum=forecast.reduce((a,x)=>a+num(x.commission_roto),0);
-  $("forecastGrandTotal").textContent=money(forecastSum);
-  $("forecastTargetGrandTotal").textContent=money(targetSum);
-  $("forecastFlexoGrandTotal").textContent=money(flexoSum);
-  $("forecastRotoGrandTotal").textContent=money(rotoSum);
-  $("forecastPOGrandTotal").textContent=money(poGrandSum);
-  $("forecastPercentGrandTotal").textContent=targetSum?((forecastTotalSum/targetSum)*100).toFixed(1)+"%":"-";
-  $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
-  $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
-
-  $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
-  const isAdmin=profile?.role==="admin";
-  $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
-  $("poActionHead")?.classList.toggle("hidden",!isAdmin);
-  $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
-  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Belum ada PO.</td></tr>`;
-  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
-
-  $("adminNav").classList.toggle("hidden",!isAdmin);
-  if(profile?.role==="admin"){
-    $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(displayRole(p))}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
-  }
-}
-
-function openEditor(kind,id=null){
-  editorKind=kind;editorId=id;
-  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring}[kind]||[]).find(x=>x.id===id):null;
-  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer"}[kind]||"");
-  let h="";
-  if(kind==="potential"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="customer"){
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="lost"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else if(kind==="complaint") {
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else if(kind==="po") {
-    if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="pomonitor") {
-    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
-  } else if(kind==="forecast") {
-    if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
-  }
-  $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
-}
-function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorId=null}
-
-async function saveModal(){
-  let table,payload;
-  const val=id=>$(id)?.value??"";
-  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}}
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
-  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
-  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
-  if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
-  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
-  closeModal();await load();
-}
-
-async function removeRow(kind,id){
-  if(!confirm("Hapus data ini?"))return;
-  if((kind==="po"||kind==="forecast") && profile?.role!=="admin") return;
-  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring"}[kind];
-  const r=await sb.from(table).delete().eq("id",id);
-  if(r.error)alert(r.error.message);else await load();
-}
+drop policy if exists "forecast_select" on public.forecast_targets;
+create policy "forecast_select" on public.forecast_targets for select to authenticated using (true);
+drop policy if exists "forecast_admin_insert" on public.forecast_targets;
+create policy "forecast_admin_insert" on public.forecast_targets for insert to authenticated with check (public.is_admin());
+drop policy if exists "forecast_admin_update" on public.forecast_targets;
+create policy "forecast_admin_update" on public.forecast_targets for update to authenticated using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "forecast_admin_delete" on public.forecast_targets;
+create policy "forecast_admin_delete" on public.forecast_targets for delete to authenticated using (public.is_admin());
 
 
-function downloadAllExcel(){
-  try{
-    if(typeof XLSX==='undefined'){
-      alert('Fitur Excel belum siap. Coba refresh halaman lalu ulangi.');
-      return;
-    }
-    const wb=XLSX.utils.book_new();
-    const cleanRows=(rows)=>rows.map(r=>{
-      const o={};
-      Object.keys(r||{}).forEach(k=>{ if(k!=='id') o[k]=r[k]; });
-      return o;
-    });
-    const addSheet=(name,rows)=>{
-      const data=cleanRows(rows||[]);
-      const ws=XLSX.utils.json_to_sheet(data.length?data:[{}]);
-      XLSX.utils.book_append_sheet(wb,ws,name.slice(0,31));
-    };
-    addSheet('Potential',potential);
-    addSheet('Database Customer',customers);
-    addSheet('Lost Leads',lost);
-    addSheet('Complaint Customer',complaints);
-    addSheet('PO Received',po);
-    addSheet('Forecast & Target',forecast);
-    addSheet('Monitoring PO Customer',poMonitoring);
-    addSheet('User & Target',profiles.map(p=>({full_name:p.full_name,role:displayRole(p),target:p.target})));
+grant select, insert, update, delete on public.potential_leads to authenticated;
+grant select, insert, update, delete on public.customer_database to authenticated;
+grant select, insert, update, delete on public.lost_leads to authenticated;
+grant select, insert, update, delete on public.customer_complaints to authenticated;
+grant select, insert, update, delete on public.po_received to authenticated;
+grant select, insert, update, delete on public.forecast_targets to authenticated;
+grant select on public.profiles to authenticated;
 
-    const now=new Date();
-    const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('');
-    XLSX.writeFile(wb,`Cetakdong_Team_Azki_All_Data_${stamp}.xlsx`);
-  }catch(err){
-    console.error(err);
-    alert('Gagal membuat file Excel: '+(err?.message||'silakan coba lagi.'));
-  }
-}
-window.downloadAllExcel=downloadAllExcel;
 
-window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
+-- Aktifkan realtime untuk tabel baru (aman jika sudah terdaftar).
+do $$
+begin
+  begin alter publication supabase_realtime add table public.potential_leads; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.customer_database; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.lost_leads; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.customer_complaints; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.po_received; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.forecast_targets; exception when duplicate_object then null; end;
+end $$;
 
-async function setTarget(id){
-  if(profile.role!=="admin")return;
-  const p=profiles.find(x=>x.id===id);if(!p)return;
-  const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;
-  const n=num(v);
-  let r=await sb.from("profiles").update({target:n}).eq("id",id);
-  if(r.error){alert(r.error.message);return}
-  const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
-  if(f){r=await sb.from("forecast_targets").update({target:n}).eq("id",f.id);if(r.error)alert(r.error.message)}
-  await load();
-}
+-- Replace initial imported data.
+truncate table public.potential_leads, public.customer_database, public.lost_leads,
+  public.customer_complaints, public.po_received, public.forecast_targets;
 
-async function start(){
-  if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("config.js belum terbaca.");
-  sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-  const s=await sb.auth.getSession();if(!s.data.session)return;
-  user=s.data.session.user;
-  const p=await sb.from("profiles").select("*").eq("id",user.id).single();
-  if(p.error||!p.data)throw new Error("Profil user belum dibuat di tabel profiles.");
-  profile=p.data;
-  $("login").classList.add("hidden");$("app").classList.remove("hidden");
-  $("who").textContent=(profile.full_name||user.email)+" • "+displayRole(profile);
-  await load();
-  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_monitoring"},load).subscribe();
-}
+insert into public.potential_leads (bd, customer, value, month, notes) values
+('Anggri','PT Citra Rasa Kuliner ( Roto)',425000000.0,'March (W1)','Imported from Excel'),
+('Anggri','PT Sambal Bakar Indonesia(roto)',336000000.0,'March (W1)','Imported from Excel'),
+('Anggri','PT Refli Kosmedika Lab',14700000.0,'March (W1)','Imported from Excel'),
+('Nicolas','*CV Bin Suef',0.0,'March (W1)','Imported from Excel'),
+('Nicolas','*PT Raja Jeva Nisi',0.0,'March (W1)','Imported from Excel'),
+('Nicolas','PT Berkat Kreasi Sosial',0.0,'March (W1)','Imported from Excel'),
+('Nicolas','PT Cakrawala Semesta Estetika',0.0,'March (W1)','Imported from Excel'),
+('Nicolas','*PT Funbox Manufacture Indonesia',15000000.0,'March (W1)','Imported from Excel'),
+('Nicolas','PT Koki Sehat Sejahtera',14250000.0,'March (W1)','Imported from Excel'),
+('Nicolas','PT Krisma Abadi Perkasa',44000000.0,'March (W1)','Imported from Excel'),
+('Nicolas','PT Mulia Indah Cosmetindo',29400000.0,'March (W1)','Imported from Excel'),
+('Johnsen','*IGO Indonesia (Roto)',0.0,'March (W1)','Imported from Excel'),
+('Johnsen','*Kopi Bubuk 666',0.0,'March (W1)','Imported from Excel'),
+('Johnsen','Herbal Rock Sugar',0.0,'March (W1)','Imported from Excel'),
+('Johnsen','Perseorangan - Pak Bambang',0.0,'March (W1)','Imported from Excel'),
+('Johnsen','Perseorangan - Pak Yudha',58951200.0,'March (W1)','Imported from Excel'),
+('Johnsen','INACO (PT Niramas Utama)',35800000.0,'March (W1)','Imported from Excel'),
+('Johnsen','INACO (PT Niramas Utama)',19000000.0,'March (W1)','Imported from Excel'),
+('Nirina','PT Sanlex Malindo',21228000.0,'March (W1)','Imported from Excel'),
+('Nirina','PT Sumber Nelayan Indonesia',297342000.0,'March (W1)','Imported from Excel'),
+('Nirina','PT Sumber Nelayan Indonesia',271550000.0,'March (W1)','Imported from Excel');
 
-function authErrorMessage(err){
-  const msg=String(err?.message||"").toLowerCase();
-  if(msg.includes("invalid login credentials")||msg.includes("invalid credentials")||msg.includes("invalid email or password")){
-    return "Username/email atau password salah.";
-  }
-  if(msg.includes("email not confirmed")){
-    return "Email akun belum dikonfirmasi di Supabase.";
-  }
-  if(msg.includes("rate limit")){
-    return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
-  }
-  if(msg.includes("email")) return err.message;
-  return err?.message||"Login gagal.";
-}
+insert into public.customer_database (bd, customer, area, month, value, notes) values
+('AZKI','PT. MULTIRASA NUSANTARA','Bekasi','December 2024',70200000.0,'Imported from Excel'),
+('AZKI','PT. MULTIRASA NUSANTARA','Bekasi','May 2025',65000000.0,'Imported from Excel'),
+('AZKI','PT. MULTIRASA NUSANTARA','Bekasi','SEPTEMBER',145000000.0,'Imported from Excel'),
+('AZKI','PT. MULTIRASA NUSANTARA','Bekasi','December 2025',259840000.0,'Imported from Excel'),
+('AZKI','PT. RUMAH DIGITAL NUSANTARA','Jakarta','December 2024',43290000.0,'Imported from Excel'),
+('AZKI','PT. RUMAH DIGITAL NUSANTARA','Jakarta','January 2025',36000000.0,'Imported from Excel'),
+('AZKI','PT. RUMAH DIGITAL NUSANTARA','Jakarta','February 2025',25600000.0,'Imported from Excel'),
+('AZKI','SISTER BROTH','Jakarta','December 2024',49680000.0,'Imported from Excel'),
+('AZKI','Yayasan Muhajir','Jakarta','December 2024',26250000.0,'Imported from Excel'),
+('AZKI','PT. RAY PUTRA BORNEO','Kalimantan','January 2025',38400000.0,'Imported from Excel'),
+('AZKI','SARI INDO RASA','Jakarta','January 2025',114800000.0,'Imported from Excel'),
+('AZKI','SARI INDO RASA','Jakarta','May 2025',55250000.0,'Imported from Excel'),
+('AZKI','SARI INDO RASA','Jakarta','October 2025',50500000.0,'Imported from Excel'),
+('AZKI','SARI INDO RASA','Jakarta','December 2025',52400000.0,'Imported from Excel'),
+('AZKI','PT. PELANGI DAUN SRI REJEKI','Jakarta','February 2025',30155070.0,'Imported from Excel'),
+('AZKI','PT. PELANGI DAUN SRI REJEKI','Jakarta','NOVEMBER',32720000.0,'Imported from Excel'),
+('AZKI','ROCKY N CO','Jakarta','March 2025',34758000.0,'Imported from Excel'),
+('AZKI','NATURAL POULTRY','Jakarta','March 2025',37500000.0,'Imported from Excel'),
+('AZKI','NATURAL POULTRY','Jakarta','August 2025',37500000.0,'Imported from Excel'),
+('AZKI','DEDEN RUSTANDI','Sukabumi','APRIL',21405000.0,'Imported from Excel'),
+('AZKI','DEDEN RUSTANDI','Sukabumi','NOVEMBER',31530540.0,'Imported from Excel'),
+('AZKI','PT. INOVASI SUKSES GLOBAL','BOGOR','May 2025',50925000.0,'Imported from Excel'),
+('AZKI','DADIO FISH','Jakarta','May 2025',11260000.0,'Imported from Excel'),
+('AZKI','PT. GITA FOOD','sukoharjo','July 2025',36140000.0,'Imported from Excel'),
+('AZKI','PT. GITA FOOD','sukoharjo','August 2025',50370000.0,'Imported from Excel'),
+('AZKI','PT. GITA FOOD','sukoharjo','October 2025',104433800.0,'Imported from Excel'),
+('AZKI','PT. BINTANG AGROKIMIA UTAMA','Medan','August 2025',87820000.0,'Imported from Excel'),
+('AZKI','PT. BINTANG AGROKIMIA UTAMA','Medan','October 2025',78386685.0,'Imported from Excel'),
+('AZKI','PT. FOODLAB INDONESIA RAYA','Tangerang','August 2025',38900000.0,'Imported from Excel'),
+('AZKI','PT. PALASINDO AZKIATAMA','Jakarta','August 2025',27181500.0,'Imported from Excel'),
+('AZKI','PT. PALASINDO AZKIATAMA','Jakarta','December 2025',125496000.0,'Imported from Excel'),
+('AZKI','PT. CIPTA RASA FOOD','Tangerang','June 2025',7939890.0,'Imported from Excel'),
+('AZKI','PT. GENERASI SEHAT CERDAS','Jakarta','October 2025',380160000.0,'Imported from Excel'),
+('AZKI','Total','','December 2024',189420000.0,'Imported from Excel'),
+('AZKI','Total','','January 2025',189200000.0,'Imported from Excel'),
+('AZKI','Total','','February 2025',55755070.0,'Imported from Excel'),
+('AZKI','Total','','March 2025',72258000.0,'Imported from Excel'),
+('AZKI','Total','','APRIL',21405000.0,'Imported from Excel'),
+('AZKI','Total','','May 2025',182435000.0,'Imported from Excel'),
+('AZKI','Total','','June 2025',7939890.0,'Imported from Excel'),
+('AZKI','Total','','July 2025',36140000.0,'Imported from Excel'),
+('AZKI','Total','','August 2025',241771500.0,'Imported from Excel'),
+('AZKI','Total','','SEPTEMBER',145000000.0,'Imported from Excel'),
+('AZKI','Total','','October 2025',613480485.0,'Imported from Excel'),
+('AZKI','Total','','NOVEMBER',64250540.0,'Imported from Excel'),
+('AZKI','Total','','December 2025',437736000.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','August 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','SEPTEMBER',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','October 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','NOVEMBER',0,'Imported from Excel'),
+('AZKI','PT. SARI INDO RASA','Jakarta','December 2024',51000000.0,'Imported from Excel'),
+('AZKI','PT. SARI INDO RASA','Jakarta','February 2025',52400000.0,'Imported from Excel'),
+('AZKI','PT. SARI INDO RASA','Jakarta','May 2025',154700000.0,'Imported from Excel'),
+('AZKI','NATURAL POULTRY','Jakarta','December 2024',37800000.0,'Imported from Excel'),
+('AZKI','CV ARSA PANGAN MULIA','Gresik','December 2024',56700000.0,'Imported from Excel'),
+('AZKI','CV ARSA PANGAN MULIA','Gresik','February 2025',77500000.0,'Imported from Excel'),
+('AZKI','CV ARSA PANGAN MULIA','Gresik','APRIL',116880000.0,'Imported from Excel'),
+('AZKI','DEDEN RUSTANDI','Sukabumi','December 2024',57000000.0,'Imported from Excel'),
+('AZKI','DEDEN RUSTANDI','Sukabumi','June 2025',64828000.0,'Imported from Excel'),
+('AZKI','PT. BINTANG AGROKIMIA UTAMA','Medan','January 2025',330965124.0,'Imported from Excel'),
+('AZKI','PT. BINTANG AGROKIMIA UTAMA','Medan','February 2025',56700000.0,'Imported from Excel'),
+('AZKI','PT FOODLAB INDONESIA RAYA','Tangerang','January 2025',38146000.0,'Imported from Excel'),
+('AZKI','PT FOODLAB INDONESIA RAYA','Tangerang','March 2025',100720000.0,'Imported from Excel'),
+('AZKI','PT FOODLAB INDONESIA RAYA','Tangerang','May 2025',37095000.0,'Imported from Excel'),
+('AZKI','PT FOODLAB INDONESIA RAYA','Tangerang','July 2025',72200000.0,'Imported from Excel'),
+('AZKI','ROCKY N CO','Jakarta','February 2025',18180000.0,'Imported from Excel'),
+('AZKI','PT. PERMATA OMBAK ARUNIKA','BALI','February 2025',26857124.0,'Imported from Excel'),
+('AZKI','PT. PELANGI DAUN SRI REJEKI','Jakarta','March 2025',59683080.0,'Imported from Excel'),
+('AZKI','PT. PELANGI DAUN SRI REJEKI','Jakarta','May 2025',134430738.0,'Imported from Excel'),
+('AZKI','PT. MAINDO INTERBUMI','Tangerang','March 2025',43120000.0,'Imported from Excel'),
+('AZKI','PT. NATURA INDOLAND','Tangerang','March 2025',107910000.0,'Imported from Excel'),
+('AZKI','CV INDOCOCO','Banyumas','March 2025',330249800.0,'Imported from Excel'),
+('AZKI','PT. GENERASI SEHAT CERDAS','Jakarta','APRIL',91950000.0,'Imported from Excel'),
+('AZKI','PT. SEDARI ALAM NUSANTARA','BOGOR','May 2025',14600650.0,'Imported from Excel'),
+('AZKI','PT. BERKAH ABADI PANGAN','BOGOR','May 2025',94700000.0,'Imported from Excel'),
+('AZKI','PT. BERKAH ABADI PANGAN','BOGOR','July 2025',454740000.0,'Imported from Excel'),
+('AZKI','PT. BERKAH ABADI PANGAN','BOGOR','August 2025',118200000.0,'Imported from Excel'),
+('AZKI','MULTIRASA NUSANTARA','Bekasi','June 2025',476000000.0,'Imported from Excel'),
+('AZKI','RAMU ANUGRAH CEMERLANG','Jakarta','June 2025',42000000.0,'Imported from Excel'),
+('AZKI','PT. GITA FOOD','sukoharjo','June 2025',19730000.0,'Imported from Excel'),
+('AZKI','PT. GITA FOOD','sukoharjo','August 2025',19730000.0,'Imported from Excel'),
+('AZKI','Total','','December 2024',202500000.0,'Imported from Excel'),
+('AZKI','Total','','January 2025',369111124.0,'Imported from Excel'),
+('AZKI','Total','','February 2025',231637124.0,'Imported from Excel'),
+('AZKI','Total','','March 2025',641682880.0,'Imported from Excel'),
+('AZKI','Total','','APRIL',208830000.0,'Imported from Excel'),
+('AZKI','Total','','May 2025',435526388.0,'Imported from Excel'),
+('AZKI','Total','','June 2025',602558000.0,'Imported from Excel'),
+('AZKI','Total','','July 2025',526940000.0,'Imported from Excel'),
+('AZKI','Total','','August 2025',137930000.0,'Imported from Excel'),
+('AZKI','Total','','SEPTEMBER',0.0,'Imported from Excel'),
+('AZKI','Total','','October 2025',0.0,'Imported from Excel'),
+('AZKI','Total','','NOVEMBER',0.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','August 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','SEPTEMBER',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','October 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','NOVEMBER',0,'Imported from Excel'),
+('NICOLAS','PT FARMINDO ANN CHEMICAL','Probolinggo, Jawa Timur','December 2024',19900000.0,'Imported from Excel'),
+('NICOLAS','PT BERKAT KREASI SOSIAL','Jakarta','January 2025',24391098.0,'Imported from Excel'),
+('NICOLAS','PT SINERGI CHEM INDONESIA','Serpong, Tangerang','February 2025',89000000.0,'Imported from Excel'),
+('NICOLAS','PT SINERGI CHEM INDONESIA','Serpong, Tangerang','March 2025',32000000.0,'Imported from Excel'),
+('NICOLAS','PT SINERGI CHEM INDONESIA','Serpong, Tangerang','October 2025',31400000.0,'Imported from Excel'),
+('NICOLAS','PT MULIA INDAH COSMETINDO','Gunung Putri, Bogor','March 2025',54000000.0,'Imported from Excel'),
+('NICOLAS','PT SANJAYA CAHAYA PERKASA','Tangerang','APRIL',127650000.0,'Imported from Excel'),
+('NICOLAS','CV DUTA MANDASARI','Padang','APRIL',16500000.0,'Imported from Excel'),
+('NICOLAS','CHARITY FOOD','Surabaya','May 2025',18530000.0,'Imported from Excel'),
+('NICOLAS','CHARITY FOOD','Surabaya','October 2025',23200000.0,'Imported from Excel'),
+('NICOLAS','PT PRATAMA PUTRA SATRIA','Bekasi','May 2025',32000000.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','June 2025',144339748.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','SEPTEMBER',149431960.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','NOVEMBER',149431960.0,'Imported from Excel'),
+('NICOLAS','PT KHARIS AGUNG PUTRA JAYA','Gn Putri, Bogor','July 2025',28000000.0,'Imported from Excel'),
+('NICOLAS','PT KHARIS AGUNG PUTRA JAYA','Gn Putri, Bogor','SEPTEMBER',42660000.0,'Imported from Excel'),
+('NICOLAS','CV AMAL BERKAH DANGDER','Tangerang','August 2025',55000000.0,'Imported from Excel'),
+('NICOLAS','Total','','December 2024',19900000.0,'Imported from Excel'),
+('NICOLAS','Total','','January 2025',24391098.0,'Imported from Excel'),
+('NICOLAS','Total','','February 2025',89000000.0,'Imported from Excel'),
+('NICOLAS','Total','','March 2025',32000000.0,'Imported from Excel'),
+('NICOLAS','Total','','APRIL',144150000.0,'Imported from Excel'),
+('NICOLAS','Total','','May 2025',50530000.0,'Imported from Excel'),
+('NICOLAS','Total','','June 2025',144339748.0,'Imported from Excel'),
+('NICOLAS','Total','','July 2025',28000000.0,'Imported from Excel'),
+('NICOLAS','Total','','August 2025',55000000.0,'Imported from Excel'),
+('NICOLAS','Total','','SEPTEMBER',192091960.0,'Imported from Excel'),
+('NICOLAS','Total','','October 2025',31400000.0,'Imported from Excel'),
+('NICOLAS','Total','','NOVEMBER',149431960.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','August 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','SEPTEMBER',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','October 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','','NOVEMBER',0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','December 2024',149431960.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','January 2025',157296800.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','March 2025',280560000.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','APRIL',246000000.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','May 2025',193000000.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','June 2025',220000000.0,'Imported from Excel'),
+('NICOLAS','CV BIN SUEF','Sukabumi','August 2025',240000000.0,'Imported from Excel'),
+('NICOLAS','PT SAFEEKO BIO INDONESIA','Tangerang','December 2024',57540000.0,'Imported from Excel'),
+('NICOLAS','PT SINERGI CHEM INDONESIA','Tangerang','December 2024',25800000.0,'Imported from Excel'),
+('NICOLAS','PT DAE IN TECH','Cikarang','December 2024',21500000.0,'Imported from Excel'),
+('NICOLAS','PT KHARIS AGUNG PUTRA JAYA','Gunung Putri, Bogor','January 2025',40500000.0,'Imported from Excel'),
+('NICOLAS','PT KHARIS AGUNG PUTRA JAYA','Gunung Putri, Bogor','February 2025',31520000.0,'Imported from Excel'),
+('NICOLAS','PT KHARIS AGUNG PUTRA JAYA','Gunung Putri, Bogor','APRIL',62195000.0,'Imported from Excel'),
+('NICOLAS','PT RAJA JEVA NISI','Bekasi','February 2025',38362500.0,'Imported from Excel'),
+('NICOLAS','PT RAJA JEVA NISI','Bekasi','APRIL',172500000.0,'Imported from Excel'),
+('NICOLAS','PT RAJA JEVA NISI','Bekasi','June 2025',175500000.0,'Imported from Excel'),
+('NICOLAS','PT RAJA JEVA NISI','Bekasi','August 2025',175500000.0,'Imported from Excel'),
+('NICOLAS','PT BUYUNG POETRA SEMBADA','Jakarta Barat','February 2025',47630000.0,'Imported from Excel'),
+('NICOLAS','PT RAJAWALI HIYOTO','Bandung','May 2025',32350000.0,'Imported from Excel'),
+('NICOLAS','PT FUNBOX MANUFACTURE INDONESIA','Cikarang','May 2025',94242000.0,'Imported from Excel'),
+('NICOLAS','PT FUNBOX MANUFACTURE INDONESIA','Cikarang','June 2025',6360000.0,'Imported from Excel'),
+('NICOLAS','CV DEWA AGRO INDONESIA','Bekasi','June 2025',18300000.0,'Imported from Excel'),
+('NICOLAS','PT CAKRAWALA SEMESTA ESTETIKA','Bogor','June 2025',17100000.0,'Imported from Excel'),
+('NICOLAS','PT CAKRAWALA SEMESTA ESTETIKA','Bogor','August 2025',18900000.0,'Imported from Excel'),
+('NICOLAS','CHARITY FOOD','Mataram','July 2025',23740000.0,'Imported from Excel'),
+('NICOLAS','PT KOKI SEHAT SEJAHTERA','Boyolali','August 2025',14250000.0,'Imported from Excel'),
+('NICOLAS','PT BERKAT KREASI SOSIAL','Tangerang','August 2025',66720000.0,'Imported from Excel'),
+('NICOLAS','Total','','December 2024',254271960.0,'Imported from Excel'),
+('NICOLAS','Total','','January 2025',197796800.0,'Imported from Excel'),
+('NICOLAS','Total','','February 2025',117512500.0,'Imported from Excel'),
+('NICOLAS','Total','','March 2025',280560000.0,'Imported from Excel'),
+('NICOLAS','Total','','APRIL',480695000.0,'Imported from Excel'),
+('NICOLAS','Total','','May 2025',319592000.0,'Imported from Excel'),
+('NICOLAS','Total','','June 2025',437260000.0,'Imported from Excel'),
+('NICOLAS','Total','','July 2025',23740000.0,'Imported from Excel'),
+('NICOLAS','Total','','August 2025',515370000.0,'Imported from Excel'),
+('NICOLAS','Total','','SEPTEMBER',0.0,'Imported from Excel'),
+('NICOLAS','Total','','October 2025',0.0,'Imported from Excel'),
+('NICOLAS','Total','','NOVEMBER',0.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','August 2025',0,'Imported from Excel'),
+('Anggri','PT JAVELO TERA LESTARI','BANYUMAS','March 2025',77785000.0,'Imported from Excel'),
+('Anggri','PT MULTI STAR RUKUN ABADI','BANDUNG','APRIL',410000000.0,'Imported from Excel'),
+('Anggri','PT SENDANG MITRA PESONA','TANGGERANG','APRIL',31000000.0,'Imported from Excel'),
+('Anggri','PT MAHAKARYA APPAREL INDONESIA','JAKARTA','APRIL',31800000.0,'Imported from Excel'),
+('Anggri','Total','','March 2025',77785000.0,'Imported from Excel'),
+('Anggri','Total','','APRIL',472800000.0,'Imported from Excel'),
+('Anggri','Total','','May 2025',0.0,'Imported from Excel'),
+('Anggri','Total','','June 2025',0.0,'Imported from Excel'),
+('Anggri','Total','','July 2025',0.0,'Imported from Excel'),
+('Anggri','Total','','August 2025',0.0,'Imported from Excel'),
+('Anggri','Total','','SEPTEMBER',0.0,'Imported from Excel'),
+('Anggri','Total','','October 2025',0.0,'Imported from Excel'),
+('Anggri','Total','','NOVEMBER',0.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','August 2025',0,'Imported from Excel'),
+('Nirina','Rocky N Co','Jakarta','May 2025',22850000.0,'Imported from Excel'),
+('Nirina','Total','','March 2025',0.0,'Imported from Excel'),
+('Nirina','Total','','APRIL',0.0,'Imported from Excel'),
+('Nirina','Total','','May 2025',22850000.0,'Imported from Excel'),
+('Nirina','Total','','June 2025',0.0,'Imported from Excel'),
+('Nirina','Total','','July 2025',0.0,'Imported from Excel'),
+('Nirina','Total','','August 2025',0.0,'Imported from Excel'),
+('Nirina','Total','','SEPTEMBER',0.0,'Imported from Excel'),
+('Nirina','Total','','October 2025',0.0,'Imported from Excel'),
+('Nirina','Total','','NOVEMBER',0.0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','December 2024',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','January 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','February 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','March 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','APRIL',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','May 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','June 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','July 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','August 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','SEPTEMBER',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','October 2025',0,'Imported from Excel'),
+('MARKETING','CUSTOMER','AREA','NOVEMBER',0,'Imported from Excel'),
+('Johnsen','PT Chemipack Tambang Indonesia','Jakarta','December 2024',59200000.0,'Imported from Excel'),
+('Johnsen','YPC Sembako','Palembang','February 2025',22720960.0,'Imported from Excel'),
+('Johnsen','YPC Sembako','Palembang','May 2025',28860750.0,'Imported from Excel'),
+('Johnsen','IGO Indonesia','Jakarta','March 2025',48180000.0,'Imported from Excel'),
+('Johnsen','IGO Indonesia','Jakarta','July 2025',46800000.0,'Imported from Excel'),
+('Johnsen','PT Junny Boleh Dicoba','Jakarta','March 2025',68435000.0,'Imported from Excel'),
+('Johnsen','PT Junny Boleh Dicoba','Jakarta','APRIL',179025750.0,'Imported from Excel'),
+('Johnsen','PT Junny Boleh Dicoba','Jakarta','May 2025',36250000.0,'Imported from Excel'),
+('Johnsen','PT Junny Boleh Dicoba','Jakarta','June 2025',184550000.0,'Imported from Excel'),
+('Johnsen','PT Junny Boleh Dicoba','Jakarta','July 2025',19600000.0,'Imported from Excel'),
+('Johnsen','PT Smada Solusi Indonesia','Jakarta','May 2025',17412000.0,'Imported from Excel'),
+('Johnsen','Herbal Rock Sugar','','August 2025',11347350.0,'Imported from Excel'),
+('Johnsen','Roll Kopi Herman','','August 2025',68400000.0,'Imported from Excel'),
+('Johnsen','Total','','March 2025',116615000.0,'Imported from Excel'),
+('Johnsen','Total','','APRIL',179025750.0,'Imported from Excel'),
+('Johnsen','Total','','May 2025',82522750.0,'Imported from Excel'),
+('Johnsen','Total','','June 2025',184550000.0,'Imported from Excel'),
+('Johnsen','Total','','July 2025',66400000.0,'Imported from Excel'),
+('Johnsen','Total','','August 2025',79747350.0,'Imported from Excel'),
+('Johnsen','Total','','SEPTEMBER',0.0,'Imported from Excel'),
+('Johnsen','Total','','October 2025',0.0,'Imported from Excel'),
+('Johnsen','Total','','NOVEMBER',0.0,'Imported from Excel');
 
-$("loginForm").onsubmit=async e=>{
-  e.preventDefault();
-  const btn=e.submitter||$("loginForm").querySelector("button[type=submit]");
-  try{
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses login...";
-    if(btn) btn.disabled=true;
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const email=$("email").value.trim();
-    const password=$("password").value;
-    const r=await sb.auth.signInWithPassword({email,password});
-    if(r.error) throw r.error;
-    await start();
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent=authErrorMessage(err);
-  }finally{
-    if(btn) btn.disabled=false;
-  }
-};
+insert into public.lost_leads (company,pic,packaging,product,production_system,quantity_expected,amount_expected,why_lost,closing_month,bd,description) values
+('Chicken''s Rizz','Fariz Munziri','Roll Lid Cup PET12/LLDPE40 ukuran 130mm x 500meter','Minuman','Rotogravure',350.0,95540308.0,'harga tidak sesuai, perbandingan dengan order sebelumnya di 156.045 per 1200 meter','September','Nala',NULL);
 
-$("magic").onclick=async()=>{
-  const btn=$("magic");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Mengirim Magic Link...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Magic Link sudah diminta. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Magic Link gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
+insert into public.customer_complaints (company,pic,packaging,product,article,production_system,quantity_order,quantity_complain,why_complain,bd,description) values
+('PT Cakrawala Semesta Estetika - LANU','Anggit','Sachet 3SS','Skincare serum','LANU',' Flexo',60000.0,16600.0,'Hasil Print Tidak Sesuai','Nicolas','Ada garis putih, dan banyak bintik bintik'),
+('PT. Berkah abadi Pangan (Bunda Elia)','Andri','STP ','Kaldu ','Kaldu bumbu bunda',' Flexo',180000.0,94700000.0,'Hasil Print Tidak Sesuai',' Azki','Gradasi dan warna masih tidak sesuai');
 
-$("forgot").onclick=async()=>{
-  const btn=$("forgot");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses reset password...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Permintaan reset sudah dikirim. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Reset password gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
+insert into public.po_received (bd,customer,value,month,notes) values
+('Nicolas','PT. Cakrawala semesta estetika',18900000.0,'September','Imported from Excel'),
+('Nicolas','PT. Berkat Kreasi Sosial',66720000.0,'September','Imported from Excel'),
+('Nicolas','Cv. Bin Suef',240000000.0,'September','Imported from Excel'),
+('Nicolas','PT. Raja Jeva Nisi',175500000.0,'September','Imported from Excel'),
+('Nicolas','PT. Koki Sehat Sejahtera',14250000.0,'September','Imported from Excel'),
+('Johnsen','Herbal Rock Sugar (FLEXO)',11347350.0,'September','Imported from Excel'),
+('Johnsen','Roll Kopi Herman (ROTO)',68400000.0,'September','Imported from Excel'),
+('Johnsen','Igo Indonesia',85800000.0,'September','Imported from Excel'),
+('Johnsen','Pak Bambang',18000000.0,'September','Imported from Excel'),
+('Johnsen','Igo Indonesia',81750000.0,'September','Imported from Excel'),
+('Johnsen','PT. Junny Boleh dicoba',24000000.0,'September','Imported from Excel'),
+('Nirina','Rocky N Co',22850000.0,'September','Imported from Excel'),
+('Others','Gita Food',19730000.0,'September','Imported from Excel'),
+('Others','PT. Berkah Mega Trading',118200000.0,'September','Imported from Excel'),
+('Others','Gita Food',13975000.0,'September','Imported from Excel'),
+('Others','Flavorlab',110955000.0,'September','Imported from Excel'),
+('Others','Flavorlab',25050000.0,'September','Imported from Excel');
 
-$("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
+insert into public.forecast_targets (bd,forecast,target,achievement_flexo,achievement_roto,total,percentage,commission_flexo,commission_roto) values
+('Anggri',0.0,375000000.0,0.0,0.0,0,0,0,0),
+('Nicolas',0.0,375000000.0,33150000.0,482220000.0,515370000,1.37432,397800,964440),
+('Johnsen',0.0,250000000.0,53347350.0,235950000.0,289297350,1.1571894,480126.15,471900),
+('Nirina',0.0,250000000.0,22850000.0,0.0,22850000,0.0914,0,0),
+('Others',0.0,0.0,287910000.0,0.0,262860000.0,0,0,0);
 
-["searchPotential","searchCustomer","searchLost","searchComplaint"].forEach(id=>$(id)?.addEventListener("input",()=>{
-  const q=$(id).value.toLowerCase();
-  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>(x.bd+" "+x.customer+" "+x.notes).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("");
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>(x.bd+" "+x.customer+" "+x.area).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("");
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>(x.bd+" "+x.company+" "+x.why_lost).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("");
-  if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>(x.bd+" "+x.company+" "+x.why_complain).toLowerCase().includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("");
-}));
+-- Synchronize profile targets with the Excel target sheet where names match.
+update public.profiles p
+set target = f.target
+from public.forecast_targets f
+where lower(trim(p.full_name)) = lower(trim(f.bd))
+  and f.bd in ('Anggri','Nicolas','Johnsen','Nirina');
 
-$("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
-$("closePass").onclick=()=>$("passModal").classList.add("hidden");
-$("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
-
-window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
-document.querySelectorAll(".eyeBtn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const el=$(btn.dataset.target);
-    if(!el)return;
-    const show=el.type==="password";
-    el.type=show?"text":"password";
-    btn.textContent=show?"🙈":"👁";
-    btn.setAttribute("aria-label",show?"Sembunyikan password":"Tampilkan password");
-  });
-});
-
-$("saveReset").onclick=async()=>{
-  const a=$("reset1").value,b=$("reset2").value;
-  $("resetMsg").className="msg";
-  if(a.length<6){$("resetMsg").className="msg error";$("resetMsg").textContent="Password minimal 6 karakter.";return}
-  if(a!==b){$("resetMsg").className="msg error";$("resetMsg").textContent="Password tidak sama.";return}
-  const btn=$("saveReset");
-  try{
-    btn.disabled=true;
-    const r=await sb.auth.updateUser({password:a});
-    if(r.error)throw r.error;
-    $("resetMsg").className="msg success";
-    $("resetMsg").textContent="Password berhasil diubah. Silakan login kembali.";
-    setTimeout(async()=>{await sb.auth.signOut();location.href=location.origin+location.pathname},1200);
-  }catch(err){
-    $("resetMsg").className="msg error";
-    $("resetMsg").textContent=err?.message||"Gagal mengubah password.";
-  }finally{btn.disabled=false}
-};
-
-window.addEventListener("DOMContentLoaded",()=>{
-  try{
-    const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    c.auth.onAuthStateChange(async(event,session)=>{
-      if(event==="PASSWORD_RECOVERY"&&session){
-        sb=c;
-        $("reset1").value="";$("reset2").value="";$("resetMsg").textContent="";
-        $("resetModal").classList.remove("hidden");
-      }
-    });
-  }catch(e){}
-});
-</script>
-</body></html>
+-- END SETUP + IMPORT
