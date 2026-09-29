@@ -95,7 +95,54 @@ async function load(){
 }
 function render(){let target=forecast.reduce((a,x)=>a+N(x.target),0),pot=potential.reduce((a,x)=>a+N(x.value),0),pv=po.reduce((a,x)=>a+N(x.value),0);$('target').textContent=M(target);$('achievement').textContent=M(pv);$('potentialTotal').textContent=M(pot);$('poTotal').textContent=M(pv);let bds=[...new Set(profiles.map(x=>x.full_name).concat(potential.map(x=>x.bd),po.map(x=>x.bd)).filter(Boolean))].filter(x=>!['azki','kahar','marketing','yappy','yappy sunandi'].includes(String(x).toLowerCase()));$('dashPotential').innerHTML=bds.map(b=>{let v=potential.filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()).reduce((a,x)=>a+N(x.value),0);return `<div class="bdcard"><h3>${E(b)}</h3><strong>${M(v)}</strong></div>`}).join('');$('dashPO').innerHTML=bds.map(b=>{let v=po.filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()).reduce((a,x)=>a+N(x.value),0);return `<div class="bdcard"><h3>${E(b)}</h3><strong>${M(v)}</strong></div>`}).join('');let perf=bds.map(b=>{let f=forecast.find(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()),t=N(f?.target),a=po.filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()).reduce((s,x)=>s+N(x.value),0);return `<tr><td>${E(b)}</td><td>${M(t)}</td><td>${M(a)}</td><td>${t?(a/t*100).toFixed(1):0}%</td></tr>`}).join('');$('dashPerf').innerHTML=perf;let perfData=bds.map(b=>{let f=forecast.find(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()),t=N(f?.target),a=po.filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()).reduce((s,x)=>s+N(x.value),0),pct=t?(a/t*100):0;return {b,t,a,pct}});$('pfBD').textContent=perfData.length;$('pfTarget').textContent=M(perfData.reduce((s,x)=>s+x.t,0));$('pfPO').textContent=M(perfData.reduce((s,x)=>s+x.a,0));let pft=perfData.reduce((s,x)=>s+x.t,0),pfp=perfData.reduce((s,x)=>s+x.a,0);$('pfPct').textContent=(pft?(pfp/pft*100):0).toFixed(1)+'%';$('performanceCards').innerHTML=perfData.map(x=>`<div class="perfRow"><div class="perfTop"><span class="perfName">${E(x.b)}</span><span class="perfPct">${x.pct.toFixed(1)}%</span></div><div class="perfAmounts"><span>PO: <b>${M(x.a)}</b></span><span>Target: <b>${M(x.t)}</b></span></div><div class="progress"><span style="width:${Math.min(x.pct,100)}%"></span></div></div>`).join('');$('performanceTable').innerHTML=perfData.map(x=>`<tr><td><b>${E(x.b)}</b></td><td>${M(x.t)}</td><td>${M(x.a)}</td><td><span class="pctPill ${x.pct>=100?'good':x.pct<70?'low':''}">${x.pct.toFixed(1)}%</span></td><td><div class="progress"><span style="width:${Math.min(x.pct,100)}%"></span></div></td></tr>`).join('');
  $('potentialTable').innerHTML=potential.map(x=>`<tr><td>${E(x.bd)}</td><td>${E(x.customer)}</td><td>${M(x.value)}</td><td>${E(x.month)}</td><td>${E(x.notes)}</td><td>${btn('potential',x.id)}</td></tr>`).join('');$('customerTable').innerHTML=customers.map(x=>`<tr><td>${E(x.bd)}</td><td>${E(x.customer)}</td><td>${E(x.area)}</td><td>${E(x.month)}</td><td>${M(x.value)}</td><td>${E(x.notes)}</td><td>${btn('customer',x.id)}</td></tr>`).join('');$('lostTable').innerHTML=lost.map(x=>`<tr><td>${E(x.bd)}</td><td>${E(x.company)}</td><td>${E(x.pic)}</td><td>${M(x.amount_expected)}</td><td>${E(x.why_lost)}</td><td>${E(x.closing_month)}</td><td>${btn('lost',x.id)}</td></tr>`).join('');$('complaintTable').innerHTML=complaints.map(x=>`<tr><td>${E(x.bd)}</td><td>${E(x.company)}</td><td>${E(x.pic)}</td><td>${E(x.product)}</td><td>${N(x.quantity_order)}</td><td>${N(x.quantity_complain)}</td><td>${E(x.why_complain)}</td><td>${btn('complaint',x.id)}</td></tr>`).join('');let admin=profile?.role==='admin';$('addPO').classList.toggle('hidden',!admin);$('poTable').innerHTML=po.map(x=>`<tr><td>${E(x.bd)}</td><td>${E(x.customer)}</td><td>${M(x.value)}</td><td>${E(x.month)}</td><td>${E(x.notes)}</td><td>${admin?btn('po',x.id):''}</td></tr>`).join('');let totalForecast=forecast.reduce((s,x)=>s+N(x.forecast),0),totalTarget=forecast.reduce((s,x)=>s+N(x.target),0),totalPO=po.reduce((s,x)=>s+N(x.value),0),fcPct=totalTarget?(totalPO/totalTarget*100):0,totalFlexo=forecast.reduce((s,x)=>s+N(x.achievement_flexo),0),totalRoto=forecast.reduce((s,x)=>s+N(x.achievement_roto),0);$('forecastHeroValue').innerHTML=M(totalForecast)+' <small>forecast</small>';$('forecastTargetValue').innerHTML=M(totalTarget)+' <small>target</small>';$('forecastPOValue').textContent=M(totalPO);$('forecastHeroPct').textContent=fcPct.toFixed(1)+'%';$('forecastHeroBar').style.width=Math.min(fcPct,100)+'%';$('fcForecast').textContent=M(totalForecast);$('fcTarget').textContent=M(totalTarget);$('fcPO').textContent=M(totalPO);$('fcPct').textContent=fcPct.toFixed(1)+'%';$('fcFlexo').textContent=M(totalFlexo);$('fcRoto').textContent=M(totalRoto);$('forecastTable').innerHTML=forecast.map(x=>{let a=po.filter(p=>String(p.bd).toLowerCase()===String(x.bd).toLowerCase()).reduce((s,p)=>s+N(p.value),0),t=N(x.target),pct=t?(a/t*100):0,cl=pct>=100?'good':pct>=70?'':'low';return `<tr><td><b>${E(x.bd)}</b></td><td>${M(x.forecast)}</td><td>${M(t)}</td><td>${M(x.achievement_flexo)}</td><td>${M(x.achievement_roto)}</td><td><b>${M(a)}</b></td><td><span class="pctPill ${cl}">${pct.toFixed(1)}%</span><div class="progressWrap"><div class="progress"><span style="width:${Math.min(pct,100)}%"></span></div></div></td><td>${M(x.commission_flexo)}</td><td>${M(x.commission_roto)}</td><td>${admin?btn('forecast',x.id):''}</td></tr>`}).join('');$('adminNav').classList.toggle('hidden',!admin);if(admin)$('usersTable').innerHTML=profiles.map(p=>`<tr><td>${E(p.full_name)}</td><td>${E(p.role)}</td><td>${M(p.target)}</td><td><button class="btn blue" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join('');renderMonitor()}
-function renderMonitor(){let q=String($('searchPOMonitor').value||'').toLowerCase(),st=$('statusFilter').value,rows=monitor.filter(x=>(!q||[x.po_number,x.customer_name,x.bd,x.article].join(' ').toLowerCase().includes(q))&&(st==='all'||[x.week1,x.week2,x.week3,x.week4].includes(st)));$('monitorTotal').textContent=M(rows.reduce((a,x)=>a+N(x.value),0));$('monitorTable').innerHTML=rows.map(x=>`<tr><td>${E(x.po_date)}</td><td>${E(x.po_number)}</td><td>${E(x.customer_name)}</td><td>${E(x.bd)}</td><td>${E(x.article)}</td><td>${N(x.qty)}</td><td>${M(x.price_per_roll)}</td><td>${M(x.value)}</td><td>${E(x.week1||'-')}</td><td>${E(x.week2||'-')}</td><td>${E(x.week3||'-')}</td><td>${E(x.week4||'-')}</td><td>${E(x.etd||'-')}</td><td>${N(x.delivery_qty)}</td><td>${N(x.complain_qty)}</td><td>${btn('pomonitor',x.id)}</td></tr>`).join('')}
+function renderMonitor(){
+  const search = String($('searchPOMonitor')?.value || '').toLowerCase();
+  const status = $('statusFilter')?.value || 'all';
+
+  const rows = monitor.filter(x => {
+    const text = [
+      x.po_number,
+      x.customer_name,
+      x.bd,
+      x.article
+    ].join(' ').toLowerCase();
+
+    const statusMatch =
+      status === 'all' ||
+      [x.week1, x.week2, x.week3, x.week4].includes(status);
+
+    return (!search || text.includes(search)) && statusMatch;
+  });
+
+  $('monitorTotal').textContent =
+    M(rows.reduce((total, x) => total + N(x.value), 0));
+
+  $('monitorTable').innerHTML = rows.map(x => `
+    <tr>
+      <td>${E(x.po_date)}</td>
+      <td>${E(x.po_number)}</td>
+      <td>${E(x.customer_name)}</td>
+      <td>${E(x.bd)}</td>
+      <td>${E(x.article)}</td>
+      <td>${N(x.qty).toLocaleString('id-ID')}</td>
+      <td>${M(x.price_per_roll)}</td>
+      <td>${M(x.value)}</td>
+      <td>${E(x.week1)}</td>
+      <td>${E(x.week2)}</td>
+      <td>${E(x.week3)}</td>
+      <td>${E(x.week4)}</td>
+      <td>${E(x.etd)}</td>
+      <td>${N(x.delivery_qty).toLocaleString('id-ID')}</td>
+      <td>${N(x.complain_qty).toLocaleString('id-ID')}</td>
+      <td>
+        <button class="btn sm" onclick="editRow('pomonitor','${x.id}')">Edit</button>
+        <button class="btn sm red" onclick="deleteRow('pomonitor','${x.id}')">Hapus</button>
+      </td>
+    </tr>
+  `).join('');
+
+  console.log('PO MONITORING DITAMPILKAN:', rows.length);
+}
 function field(id,label,v='',type='text'){return `<div><label>${label}</label><input id="${id}" type="${type}" value="${E(v)}"></div>`}function area(id,label,v=''){return `<div class="full"><label>${label}</label><textarea id="${id}">${E(v)}</textarea></div>`}
 function openEditor(k,id=null){kind=k;editId=id;let arr={potential,customer:customers,lost,complaint:complaints,po,forecast,pomonitor:monitor}[k],d=id?arr.find(x=>x.id===id):{};if((k==='po'||k==='forecast')&&profile.role!=='admin')return;$('modalTitle').textContent=(id?'Edit ':'Tambah ')+k;$('modalForm').innerHTML=k==='potential'?field('bd','BD',d.bd||profile.full_name)+field('customer','Customer',d.customer)+field('value','Nilai',d.value||0,'number')+field('month','Bulan',d.month)+area('notes','Catatan',d.notes):k==='customer'?field('bd','BD',d.bd||profile.full_name)+field('customer','Customer',d.customer)+field('area','Area',d.area)+field('month','Bulan',d.month)+field('value','Nilai',d.value||0,'number')+area('notes','Catatan',d.notes):k==='lost'?field('bd','BD',d.bd||profile.full_name)+field('company','Company',d.company)+field('pic','PIC',d.pic)+field('amount','Nilai',d.amount_expected||0,'number')+field('closing','Closing',d.closing_month)+area('why','Alasan',d.why_lost):k==='complaint'?field('bd','BD',d.bd||profile.full_name)+field('company','Company',d.company)+field('pic','PIC',d.pic)+field('product','Produk',d.product)+field('qtyorder','Qty Order',d.quantity_order||0,'number')+field('qtycomplain','Qty Complain',d.quantity_complain||0,'number')+area('why','Alasan',d.why_complain):k==='po'?field('bd','BD',d.bd)+field('customer','Customer',d.customer)+field('value','Nilai',d.value||0,'number')+field('month','Bulan',d.month)+area('notes','Catatan',d.notes):k==='forecast'?field('bd','BD',d.bd)+field('forecast','Forecast',d.forecast||0,'number')+field('target','Target',d.target||0,'number')+field('flexo','Ach Flexo',d.achievement_flexo||0,'number')+field('roto','Ach Roto',d.achievement_roto||0,'number')+field('cf','Komisi Flexo',d.commission_flexo||0,'number')+field('cr','Komisi Roto',d.commission_roto||0,'number'):field('date','PO Date',d.po_date||new Date().toISOString().slice(0,10),'date')+field('number','PO Number',d.po_number)+field('customer','Customer',d.customer_name)+field('bd','BD',d.bd||profile.full_name)+field('article','Artikel',d.article)+field('qty','Qty',d.qty||0,'number')+field('price','Price',d.price_per_roll||0,'number')+field('value','Value',d.value||0,'number')+field('etd','ETD',d.etd,'date')+field('delivery','Delivery Qty',d.delivery_qty||0,'number')+field('complain','Complain Qty',d.complain_qty||0,'number')+field('week1','Week 1',d.week1)+field('week2','Week 2',d.week2)+field('week3','Week 3',d.week3)+field('week4','Week 4',d.week4);$('modal').classList.remove('hidden')}
 function closeModal(){$('modal').classList.add('hidden')}
