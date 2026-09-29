@@ -368,35 +368,54 @@ function render(){
 }
 
 function renderMonitor(){
-  const search=String($('searchPOMonitor')?.value||'').toLowerCase().trim();
-  const status=$('statusFilter')?.value||'all';
 
-  const rows=monitor.filter(x=>{
-    const text=[
-      x.po_number,
-      x.customer_name,
-      x.bd,
-      x.article
-    ].join(' ').toLowerCase();
+  const table = document.getElementById('monitorTable');
+  const total = document.getElementById('monitorTotal');
 
-    const statusText=[
-      x.week1,
-      x.week2,
-      x.week3,
-      x.week4
-    ].filter(Boolean).join(' ').toLowerCase();
+  console.log('=== DEBUG MONITORING ===');
+  console.log('monitor:', monitor);
+  console.log('jumlah monitor:', Array.isArray(monitor) ? monitor.length : 'BUKAN ARRAY');
 
-    const statusMatch=
-      status==='all' ||
-      statusText.includes(String(status).toLowerCase());
+  if(!table){
+    console.error('monitorTable TIDAK DITEMUKAN');
+    return;
+  }
 
-    return (!search||text.includes(search))&&statusMatch;
-  });
+  if(!Array.isArray(monitor)){
+    table.innerHTML = `
+      <tr>
+        <td colspan="16" style="color:red;font-weight:bold;font-size:18px">
+          DATA MONITORING BUKAN ARRAY
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
-  $('monitorTotal').textContent=
-    M(rows.reduce((total,x)=>total+N(x.value),0));
+  // TAMPILKAN SEMUA DATA TANPA FILTER
+  const rows = monitor;
 
-  $('monitorTable').innerHTML=rows.map(x=>`
+  console.log('JUMLAH ROW YANG AKAN DITAMPILKAN:', rows.length);
+
+  if(rows.length === 0){
+    table.innerHTML = `
+      <tr>
+        <td colspan="16" style="color:red;font-weight:bold;font-size:18px">
+          MONITORING KOSONG
+        </td>
+      </tr>
+    `;
+    if(total) total.textContent = 'Rp 0';
+    return;
+  }
+
+  if(total){
+    total.textContent = M(
+      rows.reduce((sum,x)=>sum + N(x.value),0)
+    );
+  }
+
+  table.innerHTML = rows.map(x => `
     <tr>
       <td>${E(x.po_date)}</td>
       <td>${E(x.po_number)}</td>
@@ -414,17 +433,22 @@ function renderMonitor(){
       <td>${N(x.delivery_qty).toLocaleString('id-ID')}</td>
       <td>${N(x.complain_qty).toLocaleString('id-ID')}</td>
       <td>
-        <button class="btn blue" onclick="openEditor('pomonitor','${x.id}')">
+        <button
+          class="btn blue"
+          onclick="openEditor('pomonitor','${x.id}')">
           Edit
         </button>
-        <button class="btn red" onclick="del('pomonitor','${x.id}')">
+
+        <button
+          class="btn red"
+          onclick="del('pomonitor','${x.id}')">
           Hapus
         </button>
       </td>
     </tr>
   `).join('');
 
-  console.log('PO MONITORING DITAMPILKAN:',rows.length);
+  console.log('PO MONITORING DITAMPILKAN:', rows.length);
 }
 
 function field(id,label,v='',type='text'){
