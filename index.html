@@ -34,7 +34,28 @@ let sb,user,profile,profiles=[],potential=[],customers=[],lost=[],complaints=[],
 const norm=x=>({id:x.id,po_date:x.po_date||x.date||'',po_number:x.po_number||x.number||'',customer_name:x.customer_name||x.customer||'',bd:x.bd||'',article:x.article||'',qty:N(x.qty),price_per_roll:N(x.price_per_roll??x.price),value:N(x.value),week1:x.week1||'',week2:x.week2||'',week3:x.week3||'',week4:x.week4||'',etd:x.etd||'',delivery_qty:N(x.delivery_qty??x.delivery),complain_qty:N(x.complain_qty??x.complain),need_help:x.need_help||''});
 function fallbackRows(){return FALLBACK.map((r,i)=>({id:'seed-'+(i+1),po_date:r[0],po_number:r[1],customer_name:r[2],bd:r[3],article:r[4],qty:r[5],price_per_roll:r[6],value:r[7],week1:r[8],week2:r[9],week3:r[10],week4:r[11],etd:r[12],delivery_qty:N(r[13]),complain_qty:N(r[14]),need_help:r[15]}))}
 async function safe(t){try{let r=await sb.from(t).select('*');return r.error?{data:[],error:r.error.message}:{data:r.data||[],error:null}}catch(e){return{data:[],error:e.message}}}
-async function loadMonitoring(){let r=await safe('po_monitoring');if(!r.error&&r.data.length){monitor=r.data.map(norm);monitorSource='supabase';$('monitorNotice').textContent='Monitoring PO membaca data dari Supabase.';$('monitorNotice').className='notice ok';return}monitor=fallbackRows();monitorSource='fallback';$('monitorNotice').textContent='Monitoring menampilkan 13 PO September 2026. Data tetap tampil walaupun tabel po_monitoring Supabase kosong / belum terbaca.';$('monitorNotice').className='notice';try{if(!r.error){await sb.from('po_monitoring').insert(monitor.map(x=>({...x,id:undefined})));}}catch(e){}}
+async function loadMonitoring(){
+  const seed=fallbackRows();
+  const r=await safe('po_monitoring');
+  const dbRows=(!r.error&&Array.isArray(r.data))?r.data.map(norm):[];
+  const byPO=new Map(seed.map(x=>[String(x.po_number).trim(),x]));
+  dbRows.forEach(x=>{
+    const key=String(x.po_number||'').trim();
+    if(key && byPO.has(key)) byPO.set(key,{...byPO.get(key),...x});
+    else if(key) byPO.set(key,x);
+  });
+  monitor=[...byPO.values()];
+  monitorSource=dbRows.length?'supabase+seed':'seed';
+  $('monitorNotice').textContent=r.error
+    ? 'Monitoring PO menampilkan data September 2026. Data Supabase belum terbaca, tetapi data tetap ditampilkan.'
+    : 'Monitoring PO terhubung ke Supabase. Data September 2026 ditampilkan.';
+  $('monitorNotice').className=r.error?'notice':'notice ok';
+
+  // Jika tabel Supabase kosong, isi otomatis dengan 13 data September.
+  if(!r.error && !dbRows.length){
+    try{await sb.from('po_monitoring').insert(seed.map(x=>{const y={...x};delete y.id;return y}))}catch(e){}
+  }
+} 
 async function load(){let names=['profiles','potential_leads','customer_database','lost_leads','customer_complaints','po_received','forecast_targets'];let rs=await Promise.all(names.map(safe));profiles=rs[0].data;potential=rs[1].data;customers=rs[2].data;lost=rs[3].data;complaints=rs[4].data;po=rs[5].data;forecast=rs[6].data;await loadMonitoring();render()}
 function go(p){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===p));if(p==='pomonitor')renderMonitor()}
 function act(k,id){return `<button class="btn blue" onclick="openEditor('${k}','${id}')">Edit</button> <button class="btn red" onclick="del('${k}','${id}')">Hapus</button>`}
