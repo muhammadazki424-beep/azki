@@ -31,11 +31,17 @@ const FALLBACK=[
 ['2026-09-29','NA/28/09/26/002','CV Berkah Pangan Industri','Nirina','Sachet 3SS NakEnak',10000,2100,21000000,'','','','','','','','']];
 const $=id=>document.getElementById(id), N=x=>Number(x)||0, M=x=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(N(x)), E=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 let sb,user,profile,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],monitor=[],monitorSource='fallback',kind=null,editId=null;
+// Data Monitoring September 2026 selalu tersedia di halaman, lalu disinkronkan dengan Supabase.
+
 const norm=x=>({id:x.id,po_date:x.po_date||x.date||'',po_number:x.po_number||x.number||'',customer_name:x.customer_name||x.customer||'',bd:x.bd||'',article:x.article||'',qty:N(x.qty),price_per_roll:N(x.price_per_roll??x.price),value:N(x.value),week1:x.week1||'',week2:x.week2||'',week3:x.week3||'',week4:x.week4||'',etd:x.etd||'',delivery_qty:N(x.delivery_qty??x.delivery),complain_qty:N(x.complain_qty??x.complain),need_help:x.need_help||''});
 function fallbackRows(){return FALLBACK.map((r,i)=>({id:'seed-'+(i+1),po_date:r[0],po_number:r[1],customer_name:r[2],bd:r[3],article:r[4],qty:r[5],price_per_roll:r[6],value:r[7],week1:r[8],week2:r[9],week3:r[10],week4:r[11],etd:r[12],delivery_qty:N(r[13]),complain_qty:N(r[14]),need_help:r[15]}))}
 async function safe(t){try{let r=await sb.from(t).select('*');return r.error?{data:[],error:r.error.message}:{data:r.data||[],error:null}}catch(e){return{data:[],error:e.message}}}
 async function loadMonitoring(){
   const seed=fallbackRows();
+  // Jangan pernah membuat Monitoring kosong hanya karena Supabase/RLS bermasalah.
+  monitor=[...seed];
+  monitorSource='seed';
+  renderMonitor();
   const r=await safe('po_monitoring');
   const dbRows=(!r.error&&Array.isArray(r.data))?r.data.map(norm):[];
   const byPO=new Map(seed.map(x=>[String(x.po_number).trim(),x]));
@@ -45,6 +51,7 @@ async function loadMonitoring(){
     else if(key) byPO.set(key,x);
   });
   monitor=[...byPO.values()];
+  if(!monitor.length) monitor=[...seed];
   monitorSource=dbRows.length?'supabase+seed':'seed';
   $('monitorNotice').textContent=r.error
     ? 'Monitoring PO menampilkan data September 2026. Data Supabase belum terbaca, tetapi data tetap ditampilkan.'
