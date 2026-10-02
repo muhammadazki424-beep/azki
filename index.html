@@ -1,820 +1,748 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cetakdong Team Azki</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="config.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#172033}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login{min-height:100vh;display:grid;grid-template-columns:1.2fr .8fr;background:#070c14}.hero{display:flex;align-items:center;padding:8%;background:linear-gradient(90deg,#050a12dd,#050a1277),url("image 127.jpg") center/cover;color:#fff}.hero h1{font-size:58px;margin:0}.hero p{font-size:18px}.loginSide{display:flex;align-items:center;justify-content:center;padding:30px}.loginbox{width:min(450px,100%);background:#0d1421;padding:32px;border-radius:20px;color:#fff}.loginbox h2{font-size:28px}.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e;margin-bottom:12px}.pass{position:relative}.pass input{padding-right:45px}.eye{position:absolute;right:5px;top:5px;background:transparent;border:0;color:#fff}.btn{border:0;border-radius:9px;padding:10px 14px;background:#172033;color:#fff;font-weight:700}.blue{background:#2563eb}.red{background:#dc2626}.gray{background:#e9edf3;color:#172033}.layout{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{background:#0b1220;color:#fff;padding:20px 14px;min-height:100vh}.brand{font-size:25px;font-weight:900}.brand small{display:block;font-size:10px;color:#9ca8bb;margin-left:4px}.role{font-size:12px;color:#9ca8bb;margin:14px 5px 20px}.nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px;border-radius:8px;margin:2px 0}.nav button:hover,.nav button.active{background:#1b2940;color:#fff}.main{padding:25px;min-width:0}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:18px}.top h1{margin:0}.muted{color:#6b7280;font-size:13px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card,.panel{background:#fff;border:1px solid #e7ebf2;border-radius:14px;padding:17px;box-shadow:0 4px 18px #00000008}.card .k{font-size:11px;color:#6b7280;font-weight:bold}.card .v{font-size:23px;font-weight:900;margin-top:7px}.panel{margin-top:16px}.panel h2{font-size:16px;margin:0 0 12px}.section{display:none}.section.active{display:block}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:9px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px}th{background:#fafbfc;color:#667085;font-size:11px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:12px;font-weight:bold;margin:8px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #d6dce7;border-radius:9px;background:#fff}textarea{min-height:85px}.full{grid-column:1/-1}.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}.modalbox{background:#fff;border-radius:16px;padding:22px;width:min(760px,100%);max-height:92vh;overflow:auto}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.badge{padding:4px 7px;border-radius:20px;background:#dcfce7;color:#166534;font-size:10px;font-weight:bold}.bdgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.bdcard{background:#0f1724;color:#fff;border-radius:12px;padding:15px}.bdcard h3{margin:0 0 8px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:300px}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.mini{background:#0f1724;color:#fff;border-radius:10px;padding:12px}.mini small{color:#9aa8bd}.mini strong{display:block;margin-top:5px;font-size:18px}@media(max-width:1000px){.login{grid-template-columns:1fr}.hero{display:none}.cards,.bdgrid{grid-template-columns:1fr 1fr}.layout{grid-template-columns:210px 1fr}}@media(max-width:700px){.layout{grid-template-columns:1fr}.side{min-height:auto}.cards,.bdgrid,.formgrid,.summary{grid-template-columns:1fr}.main{padding:14px}}
+:root{--navy:#0b1220;--navy2:#111a2b;--line:#e7ebf2;--muted:#6b7280;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--bg:#f4f6fa}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:900;font-size:26px;letter-spacing:-.7px}.brand img{width:32px;height:32px;object-fit:cover;border-radius:50%}.brandText{color:#fff}.brandSmall{font-size:11px;color:#9ca8bb;margin:3px 0 0 42px}
+.login{min-height:100vh;display:grid;grid-template-columns:1.25fr .75fr;background:#070c14}
+.loginHero{position:relative;min-height:100vh;background:linear-gradient(90deg,#050a12d9,#050a128f),url("image 127.jpg") center/cover no-repeat;display:flex;align-items:center;padding:7vw}
+.loginHeroContent{max-width:650px}.loginHero .brand{font-size:58px}.loginHero .brand img{width:62px;height:62px}.heroSub{color:#e8edf6;font-size:18px;margin-top:16px}.loginQuote{margin-top:18px;max-width:590px;color:#dbe5f4;font-size:16px;line-height:1.65;font-style:italic;border-left:3px solid #fff;padding-left:16px}.loginQuote span{display:block;margin-top:7px;color:#9ca8bb;font-size:12px;font-style:normal;font-weight:700;letter-spacing:.4px}
+.loginSide{display:flex;align-items:center;justify-content:center;padding:30px;background:#070c14}.loginbox{width:min(470px,100%);padding:34px;border:1px solid #273247;border-radius:20px;background:#0d1421;box-shadow:0 18px 50px #0008}
+.loginbox h1{color:#fff;font-size:28px;margin:20px 0 8px}.loginbox p{color:#9ca8bb}.loginbox label{color:#dce3ee}
+input,select,textarea{width:100%;padding:11px 13px;border:1px solid #d6dce7;border-radius:10px;background:#fff;color:#172033}textarea{min-height:90px;resize:vertical}
+.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}.passwrap{position:relative}.passwrap input{padding-right:48px}.eyeBtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9ca8bb;font-size:18px;padding:6px 8px;line-height:1}.eyeBtn:hover{color:#fff}
+label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border:0;border-radius:10px;padding:10px 14px;background:#172033;color:#fff;font-weight:800}.btn.white{background:#fff;color:#0b1220}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}.btn.gray{background:#e9edf3;color:#172033}.btn.small{padding:6px 9px;font-size:11px}.btn.ghost{background:transparent;border:1px solid #d9dee8;color:#172033}
+.msg{font-size:13px;margin-top:10px}.error{color:#ef4444}.success{color:#22c55e}
+.layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:var(--navy);color:#fff;padding:22px 15px;min-height:100vh;position:sticky;top:0;height:100vh}.side .brand{margin:0 8px}.side .brand img{width:34px;height:34px}.role{font-size:12px;color:#9ca8bb;margin:8px 8px 22px}.nav button{width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px 10px;border-radius:9px;margin:2px 0}.nav button.active,.nav button:hover{background:#1b2940;color:#fff}
+.main{padding:26px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.top h1{margin:0;font-size:27px}.muted{color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border-radius:15px;padding:18px;box-shadow:0 4px 18px #0000000a;border:1px solid #edf0f5}.card .k{font-size:11px;color:#697386;font-weight:900}.card .v{font-size:23px;font-weight:900;margin-top:8px}.card .s{font-size:11px;color:#8a93a3;margin-top:5px}
+.panel{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:18px;margin-top:16px;box-shadow:0 4px 18px #00000008}.panel h2{font-size:16px;margin:0 0 14px}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section{display:none}.section.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px;vertical-align:top}th{font-size:11px;color:#667085;background:#fafbfc;position:sticky;top:0}td .btn{margin-right:4px;margin-bottom:3px}
+.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-size:10px;font-weight:800}.badge.red{background:#fee2e2;color:#991b1b}.badge.green{background:#dcfce7;color:#166534}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
+.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalbox{background:#fff;border-radius:17px;padding:22px;width:min(760px,100%);max-height:92vh;overflow:auto}.modalbox h2{margin:0 0 10px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:280px}.readonly{background:#f7f8fa}.poMonitor{overflow:auto}.poMonitor table{min-width:1500px}.poStatus{min-width:130px}.poStatus select{min-width:120px}.poSummary{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px;margin-bottom:14px}.poSummary .mini{background:#0f1724;border:1px solid #263246;border-radius:12px;padding:12px;color:#fff}.poSummary .mini .k{font-size:10px;color:#9aa8bd;font-weight:800}.poSummary .mini .v{font-size:18px;font-weight:900;margin-top:5px}@media(max-width:900px){.poSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1050px){.login{grid-template-columns:1fr}.loginHero{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
 
-/* Premium Forecast & BD Performance */
-.forecastHero{display:grid;grid-template-columns:1.5fr .7fr;gap:14px;margin-bottom:14px}
-.heroPanel{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b1220,#172554);color:#fff;border:0;border-radius:18px;padding:22px;box-shadow:0 10px 30px #0b122020}
-.heroPanel:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-60px;top:-70px;background:#2563eb33}
-.heroPanel h2{margin:0;font-size:22px;position:relative;z-index:1}.heroPanel p{margin:7px 0 0;color:#b8c4d8;font-size:12px;position:relative;z-index:1}
-.heroValue{font-size:34px;font-weight:900;margin-top:18px;position:relative;z-index:1}
-.heroValue small{font-size:12px;color:#9fb0c8;font-weight:600}
-.kpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-.kpi{background:#fff;border:1px solid #e7ebf2;border-radius:15px;padding:15px;box-shadow:0 5px 20px #00000008}.kpiLabel{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#667085;font-weight:800}.kpiValue{font-size:20px;font-weight:900;margin-top:7px}.kpiSub{font-size:10px;color:#98a2b3;margin-top:5px}
-.progressWrap{margin-top:13px}.progressMeta{display:flex;justify-content:space-between;font-size:11px;color:#667085;margin-bottom:6px}.progress{height:9px;background:#e9eef5;border-radius:20px;overflow:hidden}.progress>span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#2563eb,#60a5fa);width:0;transition:width .5s}
-.progress.green>span{background:linear-gradient(90deg,#059669,#34d399)}.progress.orange>span{background:linear-gradient(90deg,#d97706,#fbbf24)}
-.splitGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.splitCard{background:#fff;border:1px solid #e7ebf2;border-radius:15px;padding:16px}.splitHead{display:flex;justify-content:space-between;align-items:center}.splitHead strong{font-size:13px}.splitValue{font-size:22px;font-weight:900;margin-top:10px}.splitTag{font-size:10px;padding:4px 8px;border-radius:20px;background:#eef4ff;color:#2563eb;font-weight:800}.splitTag.roto{background:#ecfdf3;color:#047857}
-.performanceGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.perfTop{display:flex;justify-content:space-between;align-items:center;gap:10px}.perfName{font-weight:900;font-size:13px}.perfPct{font-size:15px;font-weight:900}.perfRow{padding:14px 0;border-bottom:1px solid #edf0f4}.perfRow:last-child{border-bottom:0}.perfAmounts{display:flex;justify-content:space-between;color:#667085;font-size:11px;margin:7px 0}.perfTableWrap{border:1px solid #e7ebf2;border-radius:15px;overflow:hidden}.perfTableWrap table{min-width:760px}.pctPill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:20px;background:#eef4ff;color:#2563eb;font-weight:900;font-size:10px}.pctPill.good{background:#ecfdf3;color:#047857}.pctPill.low{background:#fff7ed;color:#c2410c}
-@media(max-width:900px){.forecastHero{grid-template-columns:1fr}.kpiGrid,.performanceGrid{grid-template-columns:1fr 1fr}.splitGrid{grid-template-columns:1fr}}
-@media(max-width:600px){.kpiGrid,.performanceGrid{grid-template-columns:1fr}}
+.bdCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bdMini{background:#0f1724;border:1px solid #263246;border-radius:14px;padding:16px}.bdMini h3{margin:0 0 8px;color:#fff;font-size:16px}.bdMini .big{font-size:22px;font-weight:800;color:#fff}.bdMini .sub{font-size:12px;color:#9aa8bd;margin-top:5px}.yearbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.yearbar select{background:#0a101b;color:#fff;border:1px solid #2b384e;border-radius:8px;padding:9px 12px}.monthMatrix{overflow:auto}.monthMatrix table{min-width:980px}.monthMatrix th,.monthMatrix td{text-align:center;white-space:nowrap}.monthMatrix th:first-child,.monthMatrix td:first-child{text-align:left;position:sticky;left:0;background:inherit}.monthMatrix td strong{color:#172033;font-weight:800}.sectionNote{font-size:12px;color:#8f9db2;margin-top:4px}.bdBreakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.bdPanel{border:1px solid #263246;border-radius:14px;padding:14px;background:#0f1724}.bdPanel h3{margin:0 0 10px;color:#fff}.bdPanel table{min-width:0}.bdPanel th,.bdPanel td{background:transparent;color:#dce3ee}@media(max-width:900px){.bdCards{grid-template-columns:repeat(2,minmax(0,1fr))}.bdBreakdown{grid-template-columns:1fr}}@media(max-width:560px){.bdCards{grid-template-columns:1fr}}
+
+.totalValueBox{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 16px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05)}
+.totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
+tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
+
+.calculatorFrameWrap{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:10px;margin-top:16px;box-shadow:0 4px 18px #00000008}
+.calculatorToolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 4px 12px}
+.calculatorFrame{width:100%;height:calc(100vh - 175px);min-height:680px;border:0;border-radius:12px;background:#fff;display:block}
+.calculatorFallback{display:none;padding:30px;text-align:center;color:#667085;background:#f8fafc;border-radius:12px}
+.calculatorFallback h3{margin:0 0 8px;color:#172033}
+@media(max-width:760px){.calculatorFrame{height:calc(100vh - 230px);min-height:600px}}
+
 </style>
 </head>
 <body>
+
 <div id="login" class="login">
- <div class="hero"><div><h1>cetakdong</h1><p>TEAM AZKI • Real-Time Sales Dashboard</p><p>Target memberi arah, proses memberi hasil, dan konsistensi membawa kita lebih jauh.</p></div></div>
- <div class="loginSide"><div class="loginbox"><h2>Login Dashboard</h2><p class="muted">Masuk menggunakan akun BD atau Admin.</p><form id="loginForm"><label>Email</label><input id="email" type="email" required placeholder="email@perusahaan.com"><label>Password</label><div class="pass"><input id="password" type="password" required><button type="button" class="eye" data-target="password">👁</button></div><button class="btn" style="width:100%;margin-top:8px">Login →</button></form><button id="magic" class="btn gray" style="width:100%;margin-top:8px">Kirim Magic Link</button><button id="forgot" class="btn gray" style="width:100%;margin-top:8px">Reset Password</button><div id="loginMsg"></div></div></div>
+  <div class="loginHero">
+    <div class="loginHeroContent">
+      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
+      <div class="brandSmall">TEAM AZKI</div>
+      <div class="heroSub">Real-Time Sales Dashboard</div>
+      <div class="loginQuote">“Target memberi arah, proses memberi hasil, dan konsistensi membawa kita lebih jauh.”<span>— CETAKDONG TEAM AZKI</span></div>
+    </div>
+  </div>
+  <div class="loginSide">
+    <div class="loginbox">
+      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
+      <div class="brandSmall">TEAM AZKI</div>
+      <h1>Login ke Dashboard</h1>
+      <p>Masuk menggunakan akun BD atau Admin.</p>
+      <form id="loginForm">
+        <label>Email</label><input id="email" type="email" placeholder="email@perusahaan.com" required>
+        <label>Password</label><div class="passwrap"><input id="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-target="password" aria-label="Tampilkan password">👁</button></div>
+        <button class="btn white" style="width:100%;margin-top:17px">Login →</button>
+      </form>
+      <button id="magic" class="btn gray" style="width:100%;margin-top:9px">Kirim Magic Link</button>
+      <button id="forgot" class="btn gray" style="width:100%;margin-top:9px">Reset Password</button>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+  </div>
 </div>
+
 <div id="app" class="layout hidden">
-<aside class="side"><div class="brand">cetakdong<small>TEAM AZKI</small></div><div id="who" class="role"></div><div class="nav">
-<button data-page="dashboard" class="active">📊 Dashboard</button><button data-page="potential">🎯 Potential</button><button data-page="customers">🏢 Database Customer</button><button data-page="lost">⚠️ Lost Leads</button><button data-page="complaints">💬 Complaint Customer</button><button data-page="po">📦 PO Received</button><button data-page="pomonitor">📋 Monitoring PO Customer</button><button data-page="forecast">📈 Forecast</button><button data-page="performance">👥 BD Performance</button><button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button></div><button id="changePass" class="btn blue" style="width:100%;margin-top:20px">🔐 Ubah Password</button><button id="logout" class="btn" style="width:100%;margin-top:8px">Logout</button></aside>
-<main class="main">
-<section id="dashboard" class="section active"><div class="top"><div><h1>Sales Dashboard</h1><div class="muted">Ringkasan sales Team Azki.</div></div><button class="btn blue" onclick="downloadExcel()">📥 Download Excel</button></div><div class="cards"><div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div></div><div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div></div><div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div></div><div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div></div></div><div class="panel"><h2>🎯 Potential per BD</h2><div id="dashPotential" class="bdgrid"></div></div><div class="panel"><h2>📦 PO Received per BD</h2><div id="dashPO" class="bdgrid"></div></div><div class="panel"><h2>👥 BD Performance</h2><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div></div></section>
+  <aside class="side">
+    <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
+    <div class="brandSmall">TEAM AZKI</div>
+    <div id="who" class="role"></div>
+    <div class="nav">
+      <button data-page="dashboard" class="active">📊 Dashboard</button>
+      <button data-page="potential">🎯 Potential</button>
+      <button data-page="customers">🏢 Database Customer</button>
+      <button data-page="lost">⚠️ Lost Leads</button>
+      <button data-page="complaints">💬 Complaint Customer</button>
+      <button data-page="po">📦 PO Received</button>
+      <button data-page="pomonitor">📋 Monitoring PO Customer</button>
+      <button data-page="calculator">🧮 Kalkulator</button>
+      <button data-page="forecast">📈 Forecast</button>
+      <button data-page="performance">👥 BD Performance</button>
+      <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
+    </div>
+    <div style="margin-top:24px">
+      <button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
+      <button id="logout" class="btn" style="width:100%;margin-top:8px;background:#29364b">Logout</button>
+    </div>
+  </aside>
 
-<section id="potential" class="section"><div class="top"><div><h1>Potential</h1><div class="muted">Semua BD dapat tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div><div class="panel"><input id="searchPotential" class="search" placeholder="Cari..."><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div></section>
+  <main class="main">
+    <section id="dashboard" class="section active">
+      <div class="top">
+        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan Potential, Database Customer, dan PO Received per BD.</div></div>
+        <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
+        <div id="sync" class="badge green">ONLINE</div>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
+        <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
+        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
+        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
+      </div>
 
-<section id="customers" class="section"><div class="top"><div><h1>Database Customer</h1></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div><div class="panel"><input id="searchCustomer" class="search" placeholder="Cari..."><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div></section>
+      <div class="panel">
+        <div class="panelHead"><div><h2>🎯 Potential per BD</h2><div class="sectionNote">Masing-masing BD ditampilkan terpisah.</div></div><button class="btn gray small" onclick="go('potential')">Kelola Potential</button></div>
+        <div id="dashPotentialBD" class="bdCards"></div><div class="totalValueBox" style="margin-top:14px"><span>TOTAL VALUE POTENTIAL — SEMUA BD</span><strong id="dashPotentialGrandTotal">Rp 0</strong></div>
+      </div>
 
-<section id="lost" class="section"><div class="top"><div><h1>Lost Leads</h1></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div><div class="panel"><input id="searchLost" class="search" placeholder="Cari..."><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div></section>
+      <div class="panel">
+        <div class="panelHead"><div><h2>🏢 Database Customer per BD — Bulanan 2024–2026</h2><div class="sectionNote">Jumlah database customer per bulan untuk setiap BD.</div></div><button class="btn gray small" onclick="go('customers')">Kelola Customer</button></div>
+        <div class="yearbar"><label style="margin:0">Tahun</label><select id="customerYearFilter"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="all">Semua Tahun</option></select></div>
+        <div id="dashCustomerMonthly" class="monthMatrix"></div>
+      </div>
 
-<section id="complaints" class="section"><div class="top"><div><h1>Complaint Customer</h1></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div><div class="panel"><input id="searchComplaint" class="search" placeholder="Cari..."><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div></section>
+      <div class="panel">
+        <div class="panelHead"><div><h2>📦 PO Received per BD</h2><div class="sectionNote">Nilai PO dan jumlah PO dipisahkan berdasarkan BD.</div></div><button class="btn gray small" onclick="go('po')">Lihat PO Received</button></div>
+        <div class="totalValueBox"><span>TOTAL VALUE PO RECEIVED — SEMUA BD</span><strong id="dashPOGrandTotal">Rp 0</strong></div><div id="dashPOBD" class="bdBreakdown"></div>
+      </div>
 
-<section id="po" class="section"><div class="top"><div><h1>PO Received</h1><div class="muted">Read-only untuk BD. Admin dapat mengelola.</div></div><button id="addPO" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO</button></div><div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div></section>
+      <div class="panel">
+        <div class="panelHead"><div><h2>📋 Monitoring PO Customer</h2><div class="sectionNote">Monitoring progress PO berdasarkan tanggal, customer, BD, dan status Week 1–4.</div></div><button class="btn gray small" onclick="go('pomonitor')">Kelola Monitoring PO</button></div>
+        <div id="dashPOMonitorSummary" class="poSummary"></div>
+        <div class="table"><table><thead><tr><th>PO</th><th>Customer</th><th>BD</th><th>Value</th><th>Status</th><th>ETD</th></tr></thead><tbody id="dashPOMonitor"></tbody></table></div>
+      </div>
 
-<section id="pomonitor" class="section"><div class="top"><div><h1>Monitoring PO Customer</h1></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div><div class="panel"><div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO/customer/BD..."><select id="statusFilter"><option value="all">Semua Status</option><option>File Design</option><option>RPO</option><option>Produksi</option><option>Delivery</option><option>Selesai</option><option>Pending</option></select></div><p><b>Total Value:</b> <span id="monitorTotal">Rp 0</span></p><div class="table"><table style="min-width:1300px"><thead><tr><th>PO Date</th><th>PO Number</th><th>Customer</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery</th><th>Complain</th><th>Aksi</th></tr></thead><tbody id="monitorTable"></tbody></table></div></div></section>
+      <div class="panel">
+        <div class="panelHead"><h2>👥 BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
+        <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
+      </div>
+    </section>
 
-<section id="forecast" class="section">
-<div class="top"><div><h1>Forecast & Target</h1><div class="muted">Pantau arah penjualan, target, PO, dan komisi Team Azki.</div></div><button class="btn blue" onclick="load()">↻ Refresh</button></div>
-<div class="forecastHero"><div class="heroPanel"><h2>📈 Sales Forecast</h2><p>Total forecast yang tercatat dibandingkan dengan target Team Azki.</p><div id="forecastHeroValue" class="heroValue">Rp 0 <small>forecast</small></div><div class="progressWrap"><div class="progressMeta"><span>Progress terhadap target</span><b id="forecastHeroPct">0%</b></div><div class="progress"><span id="forecastHeroBar"></span></div></div></div><div class="heroPanel"><h2>🎯 Target</h2><p>Total target seluruh BD.</p><div id="forecastTargetValue" class="heroValue">Rp 0 <small>target</small></div><div class="muted" style="color:#b8c4d8;margin-top:10px">PO Received: <b id="forecastPOValue">Rp 0</b></div></div></div>
-<div class="kpiGrid"><div class="kpi"><div class="kpiLabel">Total Forecast</div><div id="fcForecast" class="kpiValue">Rp 0</div><div class="kpiSub">Forecast seluruh BD</div></div><div class="kpi"><div class="kpiLabel">Total Target</div><div id="fcTarget" class="kpiValue">Rp 0</div><div class="kpiSub">Target aktif</div></div><div class="kpi"><div class="kpiLabel">PO Received</div><div id="fcPO" class="kpiValue">Rp 0</div><div class="kpiSub">Achievement aktual</div></div><div class="kpi"><div class="kpiLabel">Achievement</div><div id="fcPct" class="kpiValue">0%</div><div class="kpiSub">PO dibanding target</div></div></div>
-<div class="splitGrid"><div class="splitCard"><div class="splitHead"><strong>Achievement Flexo</strong><span class="splitTag">FLEXO</span></div><div id="fcFlexo" class="splitValue">Rp 0</div></div><div class="splitCard"><div class="splitHead"><strong>Achievement Roto</strong><span class="splitTag roto">ROTO</span></div><div id="fcRoto" class="splitValue">Rp 0</div></div></div>
-<div class="panel"><div class="top" style="margin-bottom:10px"><div><h2>Forecast per BD</h2><div class="muted">Perbandingan forecast, target, PO, achievement, dan komisi.</div></div></div><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach Flexo</th><th>Ach Roto</th><th>Total PO</th><th>Achievement</th><th>Komisi Flexo</th><th>Komisi Roto</th><th>Aksi</th></tr></thead><tbody id="forecastTable"></tbody></table></div></div>
-</section>
+    <section id="potential" class="section">
+      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
+      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
+    </section>
 
-<section id="performance" class="section">
-<div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan pencapaian PO Received terhadap target masing-masing BD.</div></div><button class="btn blue" onclick="load()">↻ Refresh</button></div>
-<div class="performanceGrid"><div class="kpi"><div class="kpiLabel">Total BD</div><div id="pfBD" class="kpiValue">0</div><div class="kpiSub">BD aktif yang tampil</div></div><div class="kpi"><div class="kpiLabel">Total Target</div><div id="pfTarget" class="kpiValue">Rp 0</div><div class="kpiSub">Akumulasi target</div></div><div class="kpi"><div class="kpiLabel">Total PO</div><div id="pfPO" class="kpiValue">Rp 0</div><div class="kpiSub">PO Received</div></div><div class="kpi"><div class="kpiLabel">Achievement</div><div id="pfPct" class="kpiValue">0%</div><div class="kpiSub">Total PO / Total Target</div></div></div>
-<div class="panel"><div class="top" style="margin-bottom:5px"><div><h2>Progress Performance</h2><div class="muted">Visual progress setiap BD terhadap target.</div></div></div><div id="performanceCards"></div></div>
-<div class="panel"><div class="top" style="margin-bottom:10px"><div><h2>Detail Performance</h2></div></div><div class="perfTableWrap"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th><th>Progress</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div></div>
-</section>
+    <section id="customers" class="section">
+      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
+      <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
+    </section>
 
-<section id="admin" class="section"><div class="top"><div><h1>User & Target</h1></div></div><div class="panel"><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
-</main></div>
+    <section id="lost" class="section">
+      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
+      <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
+    </section>
 
-<div id="modal" class="modal hidden"><div class="modalbox"><h2 id="modalTitle"></h2><div id="modalForm" class="formgrid"></div><div id="modalMsg"></div><div class="actions"><button class="btn gray" onclick="closeModal()">Batal</button><button class="btn blue" onclick="saveModal()">Simpan</button></div></div></div>
+    <section id="complaints" class="section">
+      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
+      <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
+    </section>
 
-<div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px"><h2>Ubah Password</h2><label>Password Baru</label><div class="pass"><input id="pass1" type="password"><button class="eye" data-target="pass1">👁</button></div><label>Ulangi Password</label><div class="pass"><input id="pass2" type="password"><button class="eye" data-target="pass2">👁</button></div><div id="passMsg"></div><div class="actions"><button class="btn gray" onclick="document.getElementById('passModal').classList.add('hidden')">Batal</button><button id="savePass" class="btn blue">Simpan</button></div></div></div>
+    <section id="po" class="section">
+      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
+      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
+    </section>
+
+    <section id="pomonitor" class="section">
+      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
+      <div class="panel">
+        <div class="toolbar" style="justify-content:space-between;align-items:center">
+          <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
+          <div style="font-weight:800">Total Value: <span id="poMonitorTotal">Rp 0</span></div>
+        </div>
+        <div class="poMonitor" style="margin-top:12px"><table><thead><tr><th>No</th><th>PO Date</th><th>PO Number</th><th>Customer Name</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price (Rp/Roll)</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery Qty</th><th>Complain Qty</th><th>Need Help?</th><th>Aksi</th></tr></thead><tbody id="poMonitorTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="calculator" class="section">
+      <div class="top">
+        <div>
+          <h1>🧮 Kalkulator</h1>
+          <div class="muted">Kalkulator team ditampilkan langsung di dalam dashboard Cetakdong Team Azki.</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn gray" onclick="reloadCalculator()">↻ Refresh Kalkulator</button>
+          <button class="btn blue" onclick="openCalculatorNewTab()">↗ Buka Full Screen</button>
+        </div>
+      </div>
+
+      <div class="calculatorFrameWrap">
+        <div class="calculatorToolbar">
+          <div class="muted">Sumber: ctkdong.adijayamontana.com/dashboard</div>
+          <div class="badge green">TERHUBUNG</div>
+        </div>
+
+        <div id="calculatorFallback" class="calculatorFallback">
+          <h3>Kalkulator tidak dapat ditampilkan di dalam dashboard</h3>
+          <div>Website kalkulator mungkin memblokir tampilan melalui iframe.</div>
+          <div style="margin-top:14px">
+            <button class="btn blue" onclick="openCalculatorNewTab()">Buka Kalkulator</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="forecast" class="section">
+      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
+      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
+    </section>
+
+    <section id="performance" class="section">
+      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
+      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
+    </section>
+
+    <section id="admin" class="section">
+      <div class="top"><div><h1>User & Target</h1><div class="muted">Menu Admin. BD biasa tidak dapat mengubah target.</div></div></div>
+      <div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox">
+  <h2 id="modalTitle">Tambah Data</h2>
+  <div id="modalForm"></div>
+  <div id="modalMsg" class="msg"></div>
+  <div class="actions"><button class="btn gray" onclick="closeModal()">Batal</button><button class="btn blue" onclick="saveModal()">Simpan</button></div>
+</div></div>
+
+<div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
+  <h2>🔐 Ubah Password</h2>
+  <label>Password Baru</label><div class="passwrap"><input id="pass1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass1" aria-label="Tampilkan password">👁</button></div>
+  <label>Ulangi Password</label><div class="passwrap"><input id="pass2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass2" aria-label="Tampilkan password">👁</button></div>
+  <div id="passMsg" class="msg"></div>
+  <div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div>
+</div></div>
+
+<div id="resetModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
+  <h2>🔑 Buat Password Baru</h2>
+  <p class="muted">Masukkan password baru setelah membuka link reset dari email.</p>
+  <label>Password Baru</label><div class="passwrap"><input id="reset1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset1" aria-label="Tampilkan password">👁</button></div>
+  <label>Ulangi Password</label><div class="passwrap"><input id="reset2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset2" aria-label="Tampilkan password">👁</button></div>
+  <div id="resetMsg" class="msg"></div>
+  <div class="actions"><button id="saveReset" class="btn blue">Simpan Password</button></div>
+</div></div>
 
 <script>
-let sb,user,profile,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],monitor=[],kind=null,editId=null;
-
-const $=id=>document.getElementById(id),
-N=x=>Number(x)||0,
-M=x=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(N(x)),
-E=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-
-function go(p){
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
-  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===p));
-}
-
-function btn(k,id){
-  return `<button class="btn blue" onclick="openEditor('${k}','${id}')">Edit</button> <button class="btn red" onclick="del('${k}','${id}')">Hapus</button>`;
-}
+let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[];
+let editorKind=null,editorId=null;
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
+const num=n=>Number(n)||0;
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const rowBtn=(kind,id)=>`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
+const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option>${profiles.map(p=>`<option ${p.full_name===value?"selected":""}>${esc(p.full_name)}</option>`).join("")}<option ${value==="Others"?"selected":""}>Others</option></select>`;
+const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
+const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
+const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
+$("customerYearFilter").onchange=renderCustomerMonthly;
+$("searchPOMonitor").oninput=renderPOMonitor;
+$("poMonitorMonthFilter").onchange=renderPOMonitor;
+$("poMonitorStatusFilter").onchange=renderPOMonitor;
 
 async function load(){
-  const tables=[
-    'profiles',
-    'potential_leads',
-    'customer_database',
-    'lost_leads',
-    'customer_complaints',
-    'po_received',
-    'forecast_targets',
-    'po_monitoring'
-  ];
+  const qs=await Promise.all([
+    sb.from("profiles").select("*").order("full_name"),
+    sb.from("potential_leads").select("*").order("created_at",{ascending:false}),
+    sb.from("customer_database").select("*").order("created_at",{ascending:false}),
+    sb.from("lost_leads").select("*").order("created_at",{ascending:false}),
+    sb.from("customer_complaints").select("*").order("created_at",{ascending:false}),
+    sb.from("po_received").select("*").order("created_at",{ascending:false}),
+    sb.from("forecast_targets").select("*").order("bd"),
+    sb.from("po_monitoring").select("*").order("po_date",{ascending:false}).order("created_at",{ascending:false})
+  ]);
+  const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring"];
+  for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
+  [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring]=qs.map(x=>x.data||[]);
+  render();
+}
 
-  const results=await Promise.all(
-    tables.map(t=>sb.from(t).select('*'))
-  );
-
-  profiles=results[0].data||[];
-  potential=results[1].data||[];
-  customers=results[2].data||[];
-  lost=results[3].data||[];
-  complaints=results[4].data||[];
-  po=results[5].data||[];
-  forecast=results[6].data||[];
-  monitor=results[7].data||[];
-
-  console.log('PO MONITORING DARI SUPABASE:',monitor);
-
-  /*
-    Monitoring dirender lebih dulu.
-    Jadi apabila ada masalah di render dashboard/forecast,
-    data Monitoring PO Customer tetap tampil.
-  */
-  renderMonitor();
-
-  try{
-    render();
-  }catch(e){
-    console.error('RENDER ERROR:',e);
+const bdNames=()=>{
+  const names=[...profiles.map(p=>p.full_name).filter(Boolean),...potential.map(x=>x.bd),...customers.map(x=>x.bd),...po.map(x=>x.bd)].filter(Boolean);
+  const seen=new Set();
+  const clean=[];
+  for(const raw of names){
+    const name=String(raw).trim();
+    const key=name.toLowerCase();
+    if(!key || key==='marketing' || key==='azki' || key==='kahar' || key==='yappy' || key==='yappy sunandi' || seen.has(key)) continue;
+    seen.add(key);
+    clean.push(name);
   }
+  return clean.sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+};
+const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function monthKey(m){
+  const s=String(m??"").trim();
+  let x=s.match(/(20\\d{2})[-\\/](0?[1-9]|1[0-2])/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
+  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
+  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
+  x=s.toLowerCase().match(/([a-z]+)/);
+  const y=s.match(/20\\d{2}/);
+  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
+  return s.slice(0,7);
+}
+function yearOf(m){
+  const s=String(m??"");
+  const y=s.match(/20\\d{2}/);
+  return y?y[0]:s.slice(0,4);
+}
+const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
+const bdEq=(a,b)=>normBD(a)===normBD(b);
+const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
+function renderPotentialByBD(){
+  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+  const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
+    const rows=potential.filter(x=>bdEq(x.bd,bd));
+    const total=rows.reduce((a,x)=>a+num(x.value),0);
+    return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
+  }).join('');
+  $('dashPotentialBD').innerHTML=html||'<div class="muted">Belum ada data Potential.</div>';
+}
+function renderCustomerMonthly(){
+  const filter=$('customerYearFilter')?.value||'2026';
+  const names=bdNames();
+  const years=filter==='all'?[2024,2025,2026]:[Number(filter)];
+  let out='';
+  for(const year of years){
+    out+=`<h3 style="color:#fff;margin:10px 0">${year}</h3><table><thead><tr><th>BD</th>${monthNames.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+    out+=names.map(bd=>{
+      let total=0;
+      const cells=monthNames.map((_,i)=>{
+        const key=`${year}-${String(i+1).padStart(2,'0')}`;
+        const n=customers.filter(x=>bdEq(x.bd,bd)&&monthKey(x.month)===key).length; total+=n;
+        return `<td>${n||'-'}</td>`;
+      }).join('');
+      return `<tr><td><strong>${esc(bd)}</strong></td>${cells}<td><strong>${total}</strong></td></tr>`;
+    }).join('');
+    out+='</tbody></table>';
+  }
+  $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
+}
+function renderPOByBD(){
+  // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
+  const names=bdNames().filter(bd=>{
+    const n=String(bd||'').trim().toLowerCase();
+    return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
+  });
+  $('dashPOBD').innerHTML=names.map(bd=>{
+    const rows=po.filter(x=>bdEq(x.bd,bd));
+    const total=rows.reduce((a,x)=>a+num(x.value),0);
+    const byYear=[2024,2025,2026].map(y=>{
+      const r=rows.filter(x=>yearOf(x.month)===String(y));
+      return `<tr><td>${y}</td><td>${r.length}</td><td>${money(r.reduce((a,x)=>a+num(x.value),0))}</td></tr>`;
+    }).join('');
+    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total</div><div class="table"><table><thead><tr><th>Tahun</th><th>Qty PO</th><th>Nilai</th></tr></thead><tbody>${byYear}</tbody></table></div></div>`;
+  }).join('')||'<div class="muted">Belum ada data PO Received.</div>';
+}
+
+function poStatusOptions(value=""){
+  const opts=["","File Design","RPO","Produksi","Delivery","Selesai","Pending"];
+  return opts.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${o||'Pilih Status'}</option>`).join('');
+}
+function renderPOMonitor(){
+  const q=String($("searchPOMonitor")?.value||"").trim().toLowerCase();
+  const mf=$("poMonitorMonthFilter")?.value||"all";
+  const sf=$("poMonitorStatusFilter")?.value||"all";
+  const months=[...new Set(poMonitoring.map(x=>String(x.po_date||"").slice(0,7)).filter(Boolean))].sort().reverse();
+  const sel=$("poMonitorMonthFilter");
+  if(sel){ const current=sel.value||"all"; sel.innerHTML='<option value="all">Semua Bulan</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join(''); sel.value=months.includes(current)?current:"all"; }
+  const rows=poMonitoring.filter(x=>{
+    const hay=[x.po_number,x.customer_name,x.bd,x.article,x.need_help].join(' ').toLowerCase();
+    const matchQ=!q||hay.includes(q);
+    const matchM=mf==='all'||String(x.po_date||'').slice(0,7)===mf;
+    const statuses=[x.week1,x.week2,x.week3,x.week4].filter(Boolean);
+    const matchS=sf==='all'||statuses.includes(sf);
+    return matchQ&&matchM&&matchS;
+  });
+  const total=rows.reduce((a,x)=>a+num(x.value),0);
+  $("poMonitorTotal").textContent=money(total);
+  const statusOf=x=>x.week4||x.week3||x.week2||x.week1||'Pending';
+  const done=rows.filter(x=>statusOf(x)==='Selesai').length;
+  const process=rows.filter(x=>['File Design','RPO','Produksi','Delivery'].includes(statusOf(x))).length;
+  const pending=rows.filter(x=>statusOf(x)==='Pending').length;
+  const complain=rows.reduce((a,x)=>a+num(x.complain_qty),0);
+  const summary=[['TOTAL PO',rows.length],['TOTAL VALUE',money(total)],['PROSES',process],['SELESAI',done],['COMPLAIN QTY',complain]];
+  $("dashPOMonitorSummary").innerHTML=summary.map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  $("dashPOMonitor").innerHTML=rows.slice(0,10).map(x=>`<tr><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${money(x.value)}</td><td><span class="badge">${esc(statusOf(x))}</span></td><td>${esc(x.etd||'-')}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada monitoring PO.</td></tr>';
+  $("poMonitorTable").innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.po_date||'-')}</td><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${esc(x.article||'-')}</td><td>${num(x.qty).toLocaleString('id-ID')}</td><td>${money(x.price_per_roll)}</td><td>${money(x.value)}</td><td><span class="badge">${esc(x.week1||'-')}</span></td><td><span class="badge">${esc(x.week2||'-')}</span></td><td><span class="badge">${esc(x.week3||'-')}</span></td><td><span class="badge">${esc(x.week4||'-')}</span></td><td>${esc(x.etd||'-')}</td><td>${num(x.delivery_qty).toLocaleString('id-ID')}</td><td>${num(x.complain_qty).toLocaleString('id-ID')}</td><td>${esc(x.need_help||'-')}</td><td>${rowBtn('pomonitor',x.id)}</td></tr>`).join('')||'<tr><td colspan="18">Belum ada data Monitoring PO Customer.</td></tr>';
+}
+
+function displayRole(profileOrRole){
+  const role = typeof profileOrRole === "string"
+    ? profileOrRole
+    : (profileOrRole?.role || "");
+  const name = typeof profileOrRole === "object"
+    ? String(profileOrRole?.full_name || "").trim().toLowerCase()
+    : "";
+  if(name === "azki") return "BD Head";
+  if(name === "kahar") return "BD Manager";
+  if(name === "nicolas") return "BD Senior";
+  if(name === "anggri") return "BD Senior";
+  if(name === "yappy sunandi") return "HOD";
+  return String(role).toLowerCase() === "admin" ? "Admin" : "BD";
 }
 
 function render(){
-  let target=forecast.reduce((a,x)=>a+N(x.target),0),
-      pot=potential.reduce((a,x)=>a+N(x.value),0),
-      pv=po.reduce((a,x)=>a+N(x.value),0);
+  renderPotentialByBD();
+  renderCustomerMonthly();
+  renderPOByBD();
+  renderPOMonitor();
+  const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
+  const totalPO=po.reduce((a,x)=>a+num(x.value),0);
+  const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
+  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);$("dashPotentialGrandTotal").textContent=money(totalPotential);$("dashPOGrandTotal").textContent=money(totalPO);
 
-  $('target').textContent=M(target);
-  $('achievement').textContent=M(pv);
-  $('potentialTotal').textContent=M(pot);
-  $('poTotal').textContent=M(pv);
+  const perfSeen=new Set();
+  const perf=profiles
+    .filter(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      return n && n!=="azki" && n!=="kahar" && n!=="marketing" && n!=="yappy" && n!=="yappy sunandi";
+    })
+    .sort((a,b)=>String(a.full_name||"").trim().localeCompare(String(b.full_name||"").trim(),"id",{sensitivity:"base"}))
+    .filter(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      if(perfSeen.has(n)) return false;
+      perfSeen.add(n);
+      return true;
+    })
+    .map(p=>{
+      const n=String(p.full_name||"").trim().toLowerCase();
+      const f=forecast.find(x=>String(x.bd||"").trim().toLowerCase()===n);
+      const target=f?num(f.target):num(p.target);
+      const ach=f?num(f.total):po.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
+      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
+    }).join("");
+  $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
+  $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
 
-  let bds=[...new Set(
-    profiles.map(x=>x.full_name)
-    .concat(potential.map(x=>x.bd),po.map(x=>x.bd))
-    .filter(Boolean)
-  )].filter(x=>!['azki','kahar','marketing','yappy','yappy sunandi'].includes(String(x).toLowerCase()));
+  $("potentialSectionTotal").textContent=money(potential.reduce((a,x)=>a+num(x.value),0));
+  $("poSectionTotal").textContent=money(po.reduce((a,x)=>a+num(x.value),0));
 
-  $('dashPotential').innerHTML=bds.map(b=>{
-    let v=potential
-      .filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase())
-      .reduce((a,x)=>a+N(x.value),0);
+  const forecastSum=forecast.reduce((a,x)=>a+num(x.forecast),0);
+  const targetSum=forecast.reduce((a,x)=>a+num(x.target),0);
+  const flexoSum=forecast.reduce((a,x)=>a+num(x.achievement_flexo),0);
+  const rotoSum=forecast.reduce((a,x)=>a+num(x.achievement_roto),0);
+  const forecastTotalSum=forecast.reduce((a,x)=>a+num(x.total),0);
+  const poGrandSum=po.reduce((a,x)=>a+num(x.value),0);
+  const commissionFlexoSum=forecast.reduce((a,x)=>a+num(x.commission_flexo),0);
+  const commissionRotoSum=forecast.reduce((a,x)=>a+num(x.commission_roto),0);
+  $("forecastGrandTotal").textContent=money(forecastSum);
+  $("forecastTargetGrandTotal").textContent=money(targetSum);
+  $("forecastFlexoGrandTotal").textContent=money(flexoSum);
+  $("forecastRotoGrandTotal").textContent=money(rotoSum);
+  $("forecastPOGrandTotal").textContent=money(poGrandSum);
+  $("forecastPercentGrandTotal").textContent=targetSum?((forecastTotalSum/targetSum)*100).toFixed(1)+"%":"-";
+  $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
+  $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
-    return `<div class="bdcard"><h3>${E(b)}</h3><strong>${M(v)}</strong></div>`;
-  }).join('');
+  $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
+  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
+  const isAdmin=profile?.role==="admin";
+  $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
+  $("poActionHead")?.classList.toggle("hidden",!isAdmin);
+  $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
+  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Belum ada PO.</td></tr>`;
+  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
 
-  $('dashPO').innerHTML=bds.map(b=>{
-    let v=po
-      .filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase())
-      .reduce((a,x)=>a+N(x.value),0);
-
-    return `<div class="bdcard"><h3>${E(b)}</h3><strong>${M(v)}</strong></div>`;
-  }).join('');
-
-  let perf=bds.map(b=>{
-    let f=forecast.find(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()),
-        t=N(f?.target),
-        a=po
-          .filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase())
-          .reduce((s,x)=>s+N(x.value),0);
-
-    return `<tr>
-      <td>${E(b)}</td>
-      <td>${M(t)}</td>
-      <td>${M(a)}</td>
-      <td>${t?(a/t*100).toFixed(1):0}%</td>
-    </tr>`;
-  }).join('');
-
-  $('dashPerf').innerHTML=perf;
-
-  let perfData=bds.map(b=>{
-    let f=forecast.find(x=>String(x.bd).toLowerCase()===String(b).toLowerCase()),
-        t=N(f?.target),
-        a=po
-          .filter(x=>String(x.bd).toLowerCase()===String(b).toLowerCase())
-          .reduce((s,x)=>s+N(x.value),0),
-        pct=t?(a/t*100):0;
-
-    return {b,t,a,pct};
-  });
-
-  $('pfBD').textContent=perfData.length;
-  $('pfTarget').textContent=M(perfData.reduce((s,x)=>s+x.t,0));
-  $('pfPO').textContent=M(perfData.reduce((s,x)=>s+x.a,0));
-
-  let pft=perfData.reduce((s,x)=>s+x.t,0),
-      pfp=perfData.reduce((s,x)=>s+x.a,0);
-
-  $('pfPct').textContent=(pft?(pfp/pft*100):0).toFixed(1)+'%';
-
-  $('performanceCards').innerHTML=perfData.map(x=>`
-    <div class="perfRow">
-      <div class="perfTop">
-        <span class="perfName">${E(x.b)}</span>
-        <span class="perfPct">${x.pct.toFixed(1)}%</span>
-      </div>
-      <div class="perfAmounts">
-        <span>PO: <b>${M(x.a)}</b></span>
-        <span>Target: <b>${M(x.t)}</b></span>
-      </div>
-      <div class="progress">
-        <span style="width:${Math.min(x.pct,100)}%"></span>
-      </div>
-    </div>
-  `).join('');
-
-  $('performanceTable').innerHTML=perfData.map(x=>`
-    <tr>
-      <td><b>${E(x.b)}</b></td>
-      <td>${M(x.t)}</td>
-      <td>${M(x.a)}</td>
-      <td>
-        <span class="pctPill ${x.pct>=100?'good':x.pct<70?'low':''}">
-          ${x.pct.toFixed(1)}%
-        </span>
-      </td>
-      <td>
-        <div class="progress">
-          <span style="width:${Math.min(x.pct,100)}%"></span>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-
-  $('potentialTable').innerHTML=potential.map(x=>`
-    <tr>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.customer)}</td>
-      <td>${M(x.value)}</td>
-      <td>${E(x.month)}</td>
-      <td>${E(x.notes)}</td>
-      <td>${btn('potential',x.id)}</td>
-    </tr>
-  `).join('');
-
-  $('customerTable').innerHTML=customers.map(x=>`
-    <tr>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.customer)}</td>
-      <td>${E(x.area)}</td>
-      <td>${E(x.month)}</td>
-      <td>${M(x.value)}</td>
-      <td>${E(x.notes)}</td>
-      <td>${btn('customer',x.id)}</td>
-    </tr>
-  `).join('');
-
-  $('lostTable').innerHTML=lost.map(x=>`
-    <tr>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.company)}</td>
-      <td>${E(x.pic)}</td>
-      <td>${M(x.amount_expected)}</td>
-      <td>${E(x.why_lost)}</td>
-      <td>${E(x.closing_month)}</td>
-      <td>${btn('lost',x.id)}</td>
-    </tr>
-  `).join('');
-
-  $('complaintTable').innerHTML=complaints.map(x=>`
-    <tr>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.company)}</td>
-      <td>${E(x.pic)}</td>
-      <td>${E(x.product)}</td>
-      <td>${N(x.quantity_order)}</td>
-      <td>${N(x.quantity_complain)}</td>
-      <td>${E(x.why_complain)}</td>
-      <td>${btn('complaint',x.id)}</td>
-    </tr>
-  `).join('');
-
-  let admin=profile?.role==='admin';
-
-  $('addPO').classList.toggle('hidden',!admin);
-
-  $('poTable').innerHTML=po.map(x=>`
-    <tr>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.customer)}</td>
-      <td>${M(x.value)}</td>
-      <td>${E(x.month)}</td>
-      <td>${E(x.notes)}</td>
-      <td>${admin?btn('po',x.id):''}</td>
-    </tr>
-  `).join('');
-
-  /*
-    FORECAST
-    Tetap menggunakan po_received untuk PO/Achievement.
-    po_monitoring tidak ikut dihitung.
-  */
-  let totalForecast=forecast.reduce((s,x)=>s+N(x.forecast),0),
-      totalTarget=forecast.reduce((s,x)=>s+N(x.target),0),
-      totalPO=po.reduce((s,x)=>s+N(x.value),0),
-      fcPct=totalTarget?(totalPO/totalTarget*100):0,
-      totalFlexo=forecast.reduce((s,x)=>s+N(x.achievement_flexo),0),
-      totalRoto=forecast.reduce((s,x)=>s+N(x.achievement_roto),0);
-
-  $('forecastHeroValue').innerHTML=M(totalForecast)+' <small>forecast</small>';
-  $('forecastTargetValue').innerHTML=M(totalTarget)+' <small>target</small>';
-  $('forecastPOValue').textContent=M(totalPO);
-  $('forecastHeroPct').textContent=fcPct.toFixed(1)+'%';
-  $('forecastHeroBar').style.width=Math.min(fcPct,100)+'%';
-
-  $('fcForecast').textContent=M(totalForecast);
-  $('fcTarget').textContent=M(totalTarget);
-  $('fcPO').textContent=M(totalPO);
-  $('fcPct').textContent=fcPct.toFixed(1)+'%';
-  $('fcFlexo').textContent=M(totalFlexo);
-  $('fcRoto').textContent=M(totalRoto);
-
-  $('forecastTable').innerHTML=forecast.map(x=>{
-    let a=po
-      .filter(p=>String(p.bd).toLowerCase()===String(x.bd).toLowerCase())
-      .reduce((s,p)=>s+N(p.value),0),
-      t=N(x.target),
-      pct=t?(a/t*100):0,
-      cl=pct>=100?'good':pct>=70?'':'low';
-
-    return `<tr>
-      <td><b>${E(x.bd)}</b></td>
-      <td>${M(x.forecast)}</td>
-      <td>${M(t)}</td>
-      <td>${M(x.achievement_flexo)}</td>
-      <td>${M(x.achievement_roto)}</td>
-      <td><b>${M(a)}</b></td>
-      <td>
-        <span class="pctPill ${cl}">${pct.toFixed(1)}%</span>
-        <div class="progressWrap">
-          <div class="progress">
-            <span style="width:${Math.min(pct,100)}%"></span>
-          </div>
-        </div>
-      </td>
-      <td>${M(x.commission_flexo)}</td>
-      <td>${M(x.commission_roto)}</td>
-      <td>${admin?btn('forecast',x.id):''}</td>
-    </tr>`;
-  }).join('');
-
-  $('adminNav').classList.toggle('hidden',!admin);
-
-  if(admin){
-    $('usersTable').innerHTML=profiles.map(p=>`
-      <tr>
-        <td>${E(p.full_name)}</td>
-        <td>${E(p.role)}</td>
-        <td>${M(p.target)}</td>
-        <td>
-          <button class="btn blue" onclick="setTarget('${p.id}')">
-            Ubah Target
-          </button>
-        </td>
-      </tr>
-    `).join('');
+  $("adminNav").classList.toggle("hidden",!isAdmin);
+  if(profile?.role==="admin"){
+    $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(displayRole(p))}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
   }
 }
 
-function renderMonitor(){
-
-  const table = document.getElementById('monitorTable');
-  const total = document.getElementById('monitorTotal');
-
-  console.log('=== DEBUG MONITORING ===');
-  console.log('monitor:', monitor);
-  console.log('jumlah monitor:', Array.isArray(monitor) ? monitor.length : 'BUKAN ARRAY');
-
-  if(!table){
-    console.error('monitorTable TIDAK DITEMUKAN');
-    return;
+function openEditor(kind,id=null){
+  editorKind=kind;editorId=id;
+  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring}[kind]||[]).find(x=>x.id===id):null;
+  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer"}[kind]||"");
+  let h="";
+  if(kind==="potential"){
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+  } else if(kind==="customer"){
+    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+  } else if(kind==="lost"){
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+  } else if(kind==="complaint") {
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+  } else if(kind==="po") {
+    if(profile.role!=="admin"){ closeModal(); return; }
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+  } else if(kind==="pomonitor") {
+    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
+  } else if(kind==="forecast") {
+    if(profile.role!=="admin"){ closeModal(); return; }
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
-
-  if(!Array.isArray(monitor)){
-    table.innerHTML = `
-      <tr>
-        <td colspan="16" style="color:red;font-weight:bold;font-size:18px">
-          DATA MONITORING BUKAN ARRAY
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  // TAMPILKAN SEMUA DATA TANPA FILTER
-  const rows = monitor;
-
-  console.log('JUMLAH ROW YANG AKAN DITAMPILKAN:', rows.length);
-
-  if(rows.length === 0){
-    table.innerHTML = `
-      <tr>
-        <td colspan="16" style="color:red;font-weight:bold;font-size:18px">
-          MONITORING KOSONG
-        </td>
-      </tr>
-    `;
-    if(total) total.textContent = 'Rp 0';
-    return;
-  }
-
-  if(total){
-    total.textContent = M(
-      rows.reduce((sum,x)=>sum + N(x.value),0)
-    );
-  }
-
-  table.innerHTML = rows.map(x => `
-    <tr>
-      <td>${E(x.po_date)}</td>
-      <td>${E(x.po_number)}</td>
-      <td>${E(x.customer_name)}</td>
-      <td>${E(x.bd)}</td>
-      <td>${E(x.article)}</td>
-      <td>${N(x.qty).toLocaleString('id-ID')}</td>
-      <td>${M(x.price_per_roll)}</td>
-      <td>${M(x.value)}</td>
-      <td>${E(x.week1)}</td>
-      <td>${E(x.week2)}</td>
-      <td>${E(x.week3)}</td>
-      <td>${E(x.week4)}</td>
-      <td>${E(x.etd)}</td>
-      <td>${N(x.delivery_qty).toLocaleString('id-ID')}</td>
-      <td>${N(x.complain_qty).toLocaleString('id-ID')}</td>
-      <td>
-        <button
-          class="btn blue"
-          onclick="openEditor('pomonitor','${x.id}')">
-          Edit
-        </button>
-
-        <button
-          class="btn red"
-          onclick="del('pomonitor','${x.id}')">
-          Hapus
-        </button>
-      </td>
-    </tr>
-  `).join('');
-
-  console.log('PO MONITORING DITAMPILKAN:', rows.length);
+  $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
-
-function field(id,label,v='',type='text'){
-  return `<div><label>${label}</label><input id="${id}" type="${type}" value="${E(v)}"></div>`;
-}
-
-function area(id,label,v=''){
-  return `<div class="full"><label>${label}</label><textarea id="${id}">${E(v)}</textarea></div>`;
-}
-
-function openEditor(k,id=null){
-  kind=k;
-  editId=id;
-
-  let arr={
-    potential,
-    customer:customers,
-    lost,
-    complaint:complaints,
-    po,
-    forecast,
-    pomonitor:monitor
-  }[k];
-
-  let d=id?arr.find(x=>x.id===id):{};
-
-  if((k==='po'||k==='forecast')&&profile.role!=='admin')return;
-
-  $('modalTitle').textContent=(id?'Edit ':'Tambah ')+k;
-
-  $('modalForm').innerHTML=
-    k==='potential'
-    ?field('bd','BD',d.bd||profile.full_name)
-     +field('customer','Customer',d.customer)
-     +field('value','Nilai',d.value||0,'number')
-     +field('month','Bulan',d.month)
-     +area('notes','Catatan',d.notes)
-
-    :k==='customer'
-    ?field('bd','BD',d.bd||profile.full_name)
-     +field('customer','Customer',d.customer)
-     +field('area','Area',d.area)
-     +field('month','Bulan',d.month)
-     +field('value','Nilai',d.value||0,'number')
-     +area('notes','Catatan',d.notes)
-
-    :k==='lost'
-    ?field('bd','BD',d.bd||profile.full_name)
-     +field('company','Company',d.company)
-     +field('pic','PIC',d.pic)
-     +field('amount','Nilai',d.amount_expected||0,'number')
-     +field('closing','Closing',d.closing_month)
-     +area('why','Alasan',d.why_lost)
-
-    :k==='complaint'
-    ?field('bd','BD',d.bd||profile.full_name)
-     +field('company','Company',d.company)
-     +field('pic','PIC',d.pic)
-     +field('product','Produk',d.product)
-     +field('qtyorder','Qty Order',d.quantity_order||0,'number')
-     +field('qtycomplain','Qty Complain',d.quantity_complain||0,'number')
-     +area('why','Alasan',d.why_complain)
-
-    :k==='po'
-    ?field('bd','BD',d.bd)
-     +field('customer','Customer',d.customer)
-     +field('value','Nilai',d.value||0,'number')
-     +field('month','Bulan',d.month)
-     +area('notes','Catatan',d.notes)
-
-    :k==='forecast'
-    ?field('bd','BD',d.bd)
-     +field('forecast','Forecast',d.forecast||0,'number')
-     +field('target','Target',d.target||0,'number')
-     +field('flexo','Ach Flexo',d.achievement_flexo||0,'number')
-     +field('roto','Ach Roto',d.achievement_roto||0,'number')
-     +field('cf','Komisi Flexo',d.commission_flexo||0,'number')
-     +field('cr','Komisi Roto',d.commission_roto||0,'number')
-
-    :field('date','PO Date',d.po_date||new Date().toISOString().slice(0,10),'date')
-     +field('number','PO Number',d.po_number)
-     +field('customer','Customer',d.customer_name)
-     +field('bd','BD',d.bd||profile.full_name)
-     +field('article','Artikel',d.article)
-     +field('qty','Qty',d.qty||0,'number')
-     +field('price','Price',d.price_per_roll||0,'number')
-     +field('value','Value',d.value||0,'number')
-     +field('etd','ETD',d.etd,'date')
-     +field('delivery','Delivery Qty',d.delivery_qty||0,'number')
-     +field('complain','Complain Qty',d.complain_qty||0,'number')
-     +field('week1','Week 1',d.week1)
-     +field('week2','Week 2',d.week2)
-     +field('week3','Week 3',d.week3)
-     +field('week4','Week 4',d.week4);
-
-  $('modal').classList.remove('hidden');
-}
-
-function closeModal(){
-  $('modal').classList.add('hidden');
-}
+function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorId=null}
 
 async function saveModal(){
-  let v=id=>$(id)?.value||'';
-
-  let map={
-    potential:[
-      'potential_leads',
-      {
-        bd:v('bd'),
-        customer:v('customer'),
-        value:N(v('value')),
-        month:v('month'),
-        notes:v('notes')
-      }
-    ],
-
-    customer:[
-      'customer_database',
-      {
-        bd:v('bd'),
-        customer:v('customer'),
-        area:v('area'),
-        month:v('month'),
-        value:N(v('value')),
-        notes:v('notes')
-      }
-    ],
-
-    lost:[
-      'lost_leads',
-      {
-        bd:v('bd'),
-        company:v('company'),
-        pic:v('pic'),
-        amount_expected:N(v('amount')),
-        closing_month:v('closing'),
-        why_lost:v('why')
-      }
-    ],
-
-    complaint:[
-      'customer_complaints',
-      {
-        bd:v('bd'),
-        company:v('company'),
-        pic:v('pic'),
-        product:v('product'),
-        quantity_order:N(v('qtyorder')),
-        quantity_complain:N(v('qtycomplain')),
-        why_complain:v('why')
-      }
-    ],
-
-    po:[
-      'po_received',
-      {
-        bd:v('bd'),
-        customer:v('customer'),
-        value:N(v('value')),
-        month:v('month'),
-        notes:v('notes')
-      }
-    ],
-
-    forecast:[
-      'forecast_targets',
-      {
-        bd:v('bd'),
-        forecast:N(v('forecast')),
-        target:N(v('target')),
-        achievement_flexo:N(v('flexo')),
-        achievement_roto:N(v('roto')),
-        commission_flexo:N(v('cf')),
-        commission_roto:N(v('cr'))
-      }
-    ],
-
-    pomonitor:[
-      'po_monitoring',
-      {
-        po_date:v('date'),
-        po_number:v('number'),
-        customer_name:v('customer'),
-        bd:v('bd'),
-        article:v('article'),
-        qty:N(v('qty')),
-        price_per_roll:N(v('price')),
-        value:N(v('value')),
-        etd:v('etd'),
-        delivery_qty:N(v('delivery')),
-        complain_qty:N(v('complain')),
-        week1:v('week1'),
-        week2:v('week2'),
-        week3:v('week3'),
-        week4:v('week4')
-      }
-    ]
-  };
-
-  let p=map[kind];
-
-  let r=editId
-    ?await sb.from(p[0]).update(p[1]).eq('id',editId)
-    :await sb.from(p[0]).insert(p[1]);
-
-  if(r.error){
-    return alert(r.error.message);
-  }
-
-  closeModal();
-  load();
+  let table,payload;
+  const val=id=>$(id)?.value??"";
+  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}}
+  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
+  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
+  if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
+  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
+  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
+  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
+  if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
+  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
+  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
+  closeModal();await load();
 }
 
-async function del(k,id){
-  if(!confirm('Hapus data ini?'))return;
+async function removeRow(kind,id){
+  if(!confirm("Hapus data ini?"))return;
+  if((kind==="po"||kind==="forecast") && profile?.role!=="admin") return;
+  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring"}[kind];
+  const r=await sb.from(table).delete().eq("id",id);
+  if(r.error)alert(r.error.message);else await load();
+}
 
-  let t={
-    potential:'potential_leads',
-    customer:'customer_database',
-    lost:'lost_leads',
-    complaint:'customer_complaints',
-    po:'po_received',
-    forecast:'forecast_targets',
-    pomonitor:'po_monitoring'
-  }[k];
+function downloadAllExcel(){
+  try{
+    if(typeof XLSX==='undefined'){
+      alert('Fitur Excel belum siap. Coba refresh halaman lalu ulangi.');
+      return;
+    }
+    const wb=XLSX.utils.book_new();
+    const cleanRows=(rows)=>rows.map(r=>{
+      const o={};
+      Object.keys(r||{}).forEach(k=>{ if(k!=='id') o[k]=r[k]; });
+      return o;
+    });
+    const addSheet=(name,rows)=>{
+      const data=cleanRows(rows||[]);
+      const ws=XLSX.utils.json_to_sheet(data.length?data:[{}]);
+      XLSX.utils.book_append_sheet(wb,ws,name.slice(0,31));
+    };
+    addSheet('Potential',potential);
+    addSheet('Database Customer',customers);
+    addSheet('Lost Leads',lost);
+    addSheet('Complaint Customer',complaints);
+    addSheet('PO Received',po);
+    addSheet('Forecast & Target',forecast);
+    addSheet('Monitoring PO Customer',poMonitoring);
+    addSheet('User & Target',profiles.map(p=>({full_name:p.full_name,role:displayRole(p),target:p.target})));
 
-  let r=await sb.from(t).delete().eq('id',id);
-
-  if(r.error){
-    alert(r.error.message);
-  }else{
-    load();
+    const now=new Date();
+    const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('');
+    XLSX.writeFile(wb,`Cetakdong_Team_Azki_All_Data_${stamp}.xlsx`);
+  }catch(err){
+    console.error(err);
+    alert('Gagal membuat file Excel: '+(err?.message||'silakan coba lagi.'));
   }
 }
+window.downloadAllExcel=downloadAllExcel;
+
+function reloadCalculator(){
+  const frame=$("calculatorFrame");
+  if(frame){
+    frame.src="?embed="+Date.now();
+  }
+}
+function openCalculatorNewTab(){
+  window.open("","_blank","noopener,noreferrer");
+}
+const calculatorFrame=$("calculatorFrame");
+if(calculatorFrame){
+  calculatorFrame.addEventListener("error",()=>{
+    $("calculatorFallback").style.display="block";
+    calculatorFrame.style.display="none";
+  });
+}
+
+window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
 
 async function setTarget(id){
-  let p=profiles.find(x=>x.id===id),
-      v=prompt('Target baru',p.target||0);
-
-  if(v===null)return;
-
-  let r=await sb
-    .from('profiles')
-    .update({target:N(v)})
-    .eq('id',id);
-
-  if(r.error)alert(r.error.message);
-  else load();
-}
-
-function downloadExcel(){
-  let wb=XLSX.utils.book_new();
-
-  [
-    {n:'Potential',d:potential},
-    {n:'Customer',d:customers},
-    {n:'Lost',d:lost},
-    {n:'Complaint',d:complaints},
-    {n:'PO',d:po},
-    {n:'Forecast',d:forecast},
-    {n:'Monitoring PO',d:monitor}
-  ].forEach(x=>{
-    XLSX.utils.book_append_sheet(
-      wb,
-      XLSX.utils.json_to_sheet(x.d),
-      x.n
-    );
-  });
-
-  XLSX.writeFile(wb,'Cetakdong_Team_Azki.xlsx');
-}
-
-async function start(){
-  sb=sb||supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-  let s=await sb.auth.getSession();
-
-  if(!s.data.session)return;
-
-  user=s.data.session.user;
-
-  let p=await sb
-    .from('profiles')
-    .select('*')
-    .eq('id',user.id)
-    .single();
-
-  if(p.error)throw p.error;
-
-  profile=p.data;
-
-  $('login').classList.add('hidden');
-  $('app').classList.remove('hidden');
-
-  $('who').textContent=
-    (profile.full_name||user.email)+' • '+(profile.role||'BD');
-
+  if(profile.role!=="admin")return;
+  const p=profiles.find(x=>x.id===id);if(!p)return;
+  const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;
+  const n=num(v);
+  let r=await sb.from("profiles").update({target:n}).eq("id",id);
+  if(r.error){alert(r.error.message);return}
+  const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
+  if(f){r=await sb.from("forecast_targets").update({target:n}).eq("id",f.id);if(r.error)alert(r.error.message)}
   await load();
 }
 
-$('loginForm').onsubmit=async e=>{
+async function start(){
+  if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("config.js belum terbaca.");
+  sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+  const s=await sb.auth.getSession();if(!s.data.session)return;
+  user=s.data.session.user;
+  const p=await sb.from("profiles").select("*").eq("id",user.id).single();
+  if(p.error||!p.data)throw new Error("Profil user belum dibuat di tabel profiles.");
+  profile=p.data;
+  $("login").classList.add("hidden");$("app").classList.remove("hidden");
+  $("who").textContent=(profile.full_name||user.email)+" • "+displayRole(profile);
+  await load();
+  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_monitoring"},load).subscribe();
+}
+
+function authErrorMessage(err){
+  const msg=String(err?.message||"").toLowerCase();
+  if(msg.includes("invalid login credentials")||msg.includes("invalid credentials")||msg.includes("invalid email or password")){
+    return "Username/email atau password salah.";
+  }
+  if(msg.includes("email not confirmed")){
+    return "Email akun belum dikonfirmasi di Supabase.";
+  }
+  if(msg.includes("rate limit")){
+    return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
+  }
+  if(msg.includes("email")) return err.message;
+  return err?.message||"Login gagal.";
+}
+
+$("loginForm").onsubmit=async e=>{
   e.preventDefault();
-
+  const btn=e.submitter||$("loginForm").querySelector("button[type=submit]");
   try{
-    sb=sb||supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
-
-    let r=await sb.auth.signInWithPassword({
-      email:$('email').value.trim(),
-      password:$('password').value
-    });
-
-    if(r.error)throw r.error;
-
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Memproses login...";
+    if(btn) btn.disabled=true;
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const email=$("email").value.trim();
+    const password=$("password").value;
+    const r=await sb.auth.signInWithPassword({email,password});
+    if(r.error) throw r.error;
     await start();
-
-  }catch(e){
-    $('loginMsg').textContent=e.message;
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent=authErrorMessage(err);
+  }finally{
+    if(btn) btn.disabled=false;
   }
 };
 
-$('logout').onclick=async()=>{
-  await sb.auth.signOut();
-  location.reload();
+$("magic").onclick=async()=>{
+  const btn=$("magic");
+  try{
+    const a=$("email").value.trim();
+    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
+    btn.disabled=true;
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Mengirim Magic Link...";
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(r.error) throw r.error;
+    $("loginMsg").className="msg success";
+    $("loginMsg").textContent="Magic Link sudah diminta. Cek Inbox/Spam email.";
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent="Magic Link gagal: "+(err?.message||"coba lagi.");
+  }finally{btn.disabled=false}
 };
 
-document.querySelectorAll('.nav button').forEach(b=>{
-  b.onclick=()=>go(b.dataset.page);
-});
-
-$('searchPOMonitor').oninput=renderMonitor;
-$('statusFilter').onchange=renderMonitor;
-
-document.querySelectorAll('.eye').forEach(b=>{
-  b.onclick=()=>{
-    let e=$(b.dataset.target);
-    e.type=e.type==='password'?'text':'password';
-  };
-});
-
-$('changePass').onclick=()=>$('passModal').classList.remove('hidden');
-
-$('savePass').onclick=async()=>{
-  let a=$('pass1').value,
-      b=$('pass2').value;
-
-  if(a.length<6||a!==b)
-    return $('passMsg').textContent=
-      'Password minimal 6 karakter dan harus sama.';
-
-  let r=await sb.auth.updateUser({password:a});
-
-  $('passMsg').textContent=
-    r.error?r.error.message:'Password berhasil diubah.';
+$("forgot").onclick=async()=>{
+  const btn=$("forgot");
+  try{
+    const a=$("email").value.trim();
+    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
+    btn.disabled=true;
+    $("loginMsg").className="msg";
+    $("loginMsg").textContent="Memproses reset password...";
+    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});
+    if(r.error) throw r.error;
+    $("loginMsg").className="msg success";
+    $("loginMsg").textContent="Permintaan reset sudah dikirim. Cek Inbox/Spam email.";
+  }catch(err){
+    $("loginMsg").className="msg error";
+    $("loginMsg").textContent="Reset password gagal: "+(err?.message||"coba lagi.");
+  }finally{btn.disabled=false}
 };
 
-window.addEventListener(
-  'load',
-  ()=>start().catch(e=>$('loginMsg').textContent=e.message)
-);
+$("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
+
+function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim()}
+function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
+["searchPotential","searchCustomer","searchLost","searchComplaint"].forEach(id=>$(id)?.addEventListener("input",()=>{
+  const q=normSearch($(id).value);
+  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
+}));
+
+$("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
+$("closePass").onclick=()=>$("passModal").classList.add("hidden");
+$("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
+
+window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
+document.querySelectorAll(".eyeBtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const el=$(btn.dataset.target);
+    if(!el)return;
+    const show=el.type==="password";
+    el.type=show?"text":"password";
+    btn.textContent=show?"🙈":"👁";
+    btn.setAttribute("aria-label",show?"Sembunyikan password":"Tampilkan password");
+  });
+});
+
+$("saveReset").onclick=async()=>{
+  const a=$("reset1").value,b=$("reset2").value;
+  $("resetMsg").className="msg";
+  if(a.length<6){$("resetMsg").className="msg error";$("resetMsg").textContent="Password minimal 6 karakter.";return}
+  if(a!==b){$("resetMsg").className="msg error";$("resetMsg").textContent="Password tidak sama.";return}
+  const btn=$("saveReset");
+  try{
+    btn.disabled=true;
+    const r=await sb.auth.updateUser({password:a});
+    if(r.error)throw r.error;
+    $("resetMsg").className="msg success";
+    $("resetMsg").textContent="Password berhasil diubah. Silakan login kembali.";
+    setTimeout(async()=>{await sb.auth.signOut();location.href=location.origin+location.pathname},1200);
+  }catch(err){
+    $("resetMsg").className="msg error";
+    $("resetMsg").textContent=err?.message||"Gagal mengubah password.";
+  }finally{btn.disabled=false}
+};
+
+window.addEventListener("DOMContentLoaded",()=>{
+  try{
+    const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+    c.auth.onAuthStateChange(async(event,session)=>{
+      if(event==="PASSWORD_RECOVERY"&&session){
+        sb=c;
+        $("reset1").value="";$("reset2").value="";$("resetMsg").textContent="";
+        $("resetModal").classList.remove("hidden");
+      }
+    });
+  }catch(e){}
+});
 </script>
-</body>
-</html>
+</body></html>
