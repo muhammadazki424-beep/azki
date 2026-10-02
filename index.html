@@ -39,12 +39,6 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 .totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
 tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
 
-.calculatorFrameWrap{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:10px;margin-top:16px;box-shadow:0 4px 18px #00000008}
-.calculatorToolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 4px 12px}
-.calculatorFrame{width:100%;height:calc(100vh - 175px);min-height:680px;border:0;border-radius:12px;background:#fff;display:block}
-.calculatorFallback{display:none;padding:30px;text-align:center;color:#667085;background:#f8fafc;border-radius:12px}
-.calculatorFallback h3{margin:0 0 8px;color:#172033}
-@media(max-width:760px){.calculatorFrame{height:calc(100vh - 230px);min-height:600px}}
 
 </style>
 </head>
@@ -90,7 +84,6 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
       <button data-page="complaints">💬 Complaint Customer</button>
       <button data-page="po">📦 PO Received</button>
       <button data-page="pomonitor">📋 Monitoring PO Customer</button>
-      <button data-page="calculator">🧮 Kalkulator</button>
       <button data-page="forecast">📈 Forecast</button>
       <button data-page="performance">👥 BD Performance</button>
       <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
@@ -165,7 +158,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
     <section id="po" class="section">
       <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
-      <div class="panel"><div style="display:flex;justify-content:flex-end;margin-bottom:14px;font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
+      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPO" class="search" placeholder="Cari customer / BD / bulan / catatan..."><div style="font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="pomonitor" class="section">
@@ -176,34 +169,6 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
           <div style="font-weight:800">Total Value: <span id="poMonitorTotal">Rp 0</span></div>
         </div>
         <div class="poMonitor" style="margin-top:12px"><table><thead><tr><th>No</th><th>PO Date</th><th>PO Number</th><th>Customer Name</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price (Rp/Roll)</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery Qty</th><th>Complain Qty</th><th>Need Help?</th><th>Aksi</th></tr></thead><tbody id="poMonitorTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="calculator" class="section">
-      <div class="top">
-        <div>
-          <h1>🧮 Kalkulator</h1>
-          <div class="muted">Kalkulator team ditampilkan langsung di dalam dashboard Cetakdong Team Azki.</div>
-        </div>
-        <div class="toolbar">
-          <button class="btn gray" onclick="reloadCalculator()">↻ Refresh Kalkulator</button>
-          <button class="btn blue" onclick="openCalculatorNewTab()">↗ Buka Full Screen</button>
-        </div>
-      </div>
-
-      <div class="calculatorFrameWrap">
-        <div class="calculatorToolbar">
-          <div class="muted">Sumber: ctkdong.adijayamontana.com/dashboard</div>
-          <div class="badge green">TERHUBUNG</div>
-        </div>
-
-        <div id="calculatorFallback" class="calculatorFallback">
-          <h3>Kalkulator tidak dapat ditampilkan di dalam dashboard</h3>
-          <div>Website kalkulator mungkin memblokir tampilan melalui iframe.</div>
-          <div style="margin-top:14px">
-            <button class="btn blue" onclick="openCalculatorNewTab()">Buka Kalkulator</button>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -470,13 +435,20 @@ function render(){
   $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
   $("poActionHead")?.classList.toggle("hidden",!isAdmin);
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
-  $("poTable").innerHTML=po.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Belum ada PO.</td></tr>`;
+  renderPOTable($("searchPO")?.value||"");
   $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
     $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(displayRole(p))}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
   }
+}
+
+function renderPOTable(filter=""){
+  const q=normSearch(filter);
+  const isAdmin=profile?.role==="admin";
+  const rows=po.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q));
+  $("poTable").innerHTML=rows.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Tidak ada data yang cocok.</td></tr>`;
 }
 
 function openEditor(kind,id=null){
@@ -564,23 +536,6 @@ function downloadAllExcel(){
   }
 }
 window.downloadAllExcel=downloadAllExcel;
-
-function reloadCalculator(){
-  const frame=$("calculatorFrame");
-  if(frame){
-    frame.src="?embed="+Date.now();
-  }
-}
-function openCalculatorNewTab(){
-  window.open("","_blank","noopener,noreferrer");
-}
-const calculatorFrame=$("calculatorFrame");
-if(calculatorFrame){
-  calculatorFrame.addEventListener("error",()=>{
-    $("calculatorFallback").style.display="block";
-    calculatorFrame.style.display="none";
-  });
-}
 
 window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
 
@@ -689,12 +644,13 @@ document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.p
 
 function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim()}
 function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
-["searchPotential","searchCustomer","searchLost","searchComplaint"].forEach(id=>$(id)?.addEventListener("input",()=>{
+["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
   if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchPO")renderPOTable(q);
 }));
 
 $("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
