@@ -307,17 +307,29 @@ function monthLabel(key){
   const names=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   return y&&m?`${names[Number(m)-1]||m} ${y}`:key;
 }
+const START_MONTH_KEY='2026-09';
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=new Set([currentMonthKey()]);
+  // Periode dashboard dimulai dari September 2026.
+  // Bulan setelahnya akan otomatis muncul ketika bulan baru berjalan,
+  // sedangkan data bulan sebelumnya tetap tersimpan di database.
+  const keys=new Set();
+  const start=new Date(2026,8,1); // September 2026
+  const now=new Date();
+  const end=new Date(now.getFullYear(),now.getMonth(),1);
+  for(let d=new Date(start); d<=end; d.setMonth(d.getMonth()+1)){
+    keys.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+  // Jika ada data mulai September, pastikan periodenya tetap tersedia.
   [potential,customers,po,monthlyTargets].forEach(rows=>(rows||[]).forEach(x=>{
     const k=monthKey(x.month||x.po_date||'');
-    if(/^\d{4}-\d{2}$/.test(k))keys.add(k);
+    if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
   }));
-  const sorted=[...keys].sort().reverse();
+  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
   const wanted=selectedMonthKey||currentMonthKey();
-  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=sorted.includes(wanted)?wanted:(sorted[0]||currentMonthKey());
+  const safeWanted=wanted>=START_MONTH_KEY && sorted.includes(wanted)?wanted:(sorted.includes(currentMonthKey())?currentMonthKey():sorted[0]);
+  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===safeWanted?'selected':''}>${monthLabel(k)}</option>`).join('');
+  selectedMonthKey=safeWanted||currentMonthKey();
   sel.value=selectedMonthKey;
 }
 function activeMonthRows(rows,field='month'){
