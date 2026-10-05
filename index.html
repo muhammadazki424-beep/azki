@@ -40,6 +40,16 @@ label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border
 tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
 
 
+
+.monthSelector{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.monthSelector label{margin:0;color:#667085}
+.monthSelector select{width:auto;min-width:170px;font-weight:800}
+.importBox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.importBox input[type=file]{max-width:280px;padding:8px;background:#fff}
+.importPreview{max-height:360px;overflow:auto;margin-top:12px;border:1px solid #e8ecf2;border-radius:10px}
+.importPreview table{min-width:700px}
+.importInfo{font-size:12px;color:#667085;line-height:1.55}
+
 </style>
 </head>
 <body>
@@ -97,9 +107,42 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
   <main class="main">
     <section id="dashboard" class="section active">
       <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan Potential, Database Customer, dan PO Received per BD.</div></div>
-        <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
-        <div id="sync" class="badge green">ONLINE</div>
+        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
+        <div class="toolbar">
+          <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
+          <div id="sync" class="badge green">ONLINE</div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:0">
+        <div class="panelHead">
+          <div>
+            <h2>📅 Periode Dashboard</h2>
+            <div class="sectionNote">Dashboard otomatis mengikuti bulan yang dipilih. Saat masuk bulan baru, pilih bulan baru atau gunakan periode berjalan.</div>
+          </div>
+          <div class="monthSelector">
+            <label for="dashboardMonth">Bulan</label>
+            <select id="dashboardMonth"></select>
+            <button class="btn gray small" id="currentMonthBtn">Bulan Berjalan</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panelHead">
+          <div>
+            <h2>📥 Import Data Excel</h2>
+            <div class="importInfo">Upload file Excel berisi sheet data. Sistem akan membaca sheet berdasarkan nama: Potential, Database Customer, Lost Leads, Complaint Customer, PO Received, Forecast & Target, dan Monitoring PO Customer.</div>
+          </div>
+          <div class="importBox">
+            <input id="excelImportFile" type="file" accept=".xlsx,.xls">
+            <button class="btn blue" id="previewImportBtn">Preview Import</button>
+          </div>
+        </div>
+        <div id="importMsg" class="msg"></div>
+        <div id="importPreview" class="importPreview hidden"></div>
+        <div class="actions" id="importActions" style="display:none">
+          <button class="btn gray" id="cancelImportBtn">Batal</button>
+          <button class="btn blue" id="confirmImportBtn">Konfirmasi Import</button>
+        </div>
       </div>
       <div class="cards">
         <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
@@ -214,7 +257,8 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 </div></div>
 
 <script>
-let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[];
+let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
+let selectedMonthKey=''; let pendingImport=null;
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -226,6 +270,11 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
+$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;render()};
+$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();render()};
+$("previewImportBtn").onclick=previewImport;
+$("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
+$("confirmImportBtn").onclick=confirmImport;
 $("searchPOMonitor").oninput=renderPOMonitor;
 $("poMonitorMonthFilter").onchange=renderPOMonitor;
 $("poMonitorStatusFilter").onchange=renderPOMonitor;
@@ -239,12 +288,45 @@ async function load(){
     sb.from("customer_complaints").select("*").order("created_at",{ascending:false}),
     sb.from("po_received").select("*").order("created_at",{ascending:false}),
     sb.from("forecast_targets").select("*").order("bd"),
-    sb.from("po_monitoring").select("*").order("po_date",{ascending:false}).order("created_at",{ascending:false})
+    sb.from("po_monitoring").select("*").order("po_date",{ascending:false}).order("created_at",{ascending:false}),
+    sb.from("monthly_targets").select("*").order("month").order("bd")
   ]);
-  const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring"];
+  const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring","monthly_targets"];
   for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
-  [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring]=qs.map(x=>x.data||[]);
+  [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring,monthlyTargets]=qs.map(x=>x.data||[]);
   render();
+}
+
+
+function currentMonthKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function monthLabel(key){
+  const [y,m]=String(key||'').split('-');
+  const names=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return y&&m?`${names[Number(m)-1]||m} ${y}`:key;
+}
+function ensureMonthOptions(){
+  const sel=$('dashboardMonth'); if(!sel)return;
+  const keys=new Set([currentMonthKey()]);
+  [potential,customers,po,monthlyTargets].forEach(rows=>(rows||[]).forEach(x=>{
+    const k=monthKey(x.month||x.po_date||'');
+    if(/^\d{4}-\d{2}$/.test(k))keys.add(k);
+  }));
+  const sorted=[...keys].sort().reverse();
+  const wanted=selectedMonthKey||currentMonthKey();
+  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
+  selectedMonthKey=sorted.includes(wanted)?wanted:(sorted[0]||currentMonthKey());
+  sel.value=selectedMonthKey;
+}
+function activeMonthRows(rows,field='month'){
+  return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
+}
+function targetRowsForMonth(){
+  const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
+  if(rows.length)return rows;
+  return [];
 }
 
 const bdNames=()=>{
@@ -284,7 +366,7 @@ const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.starts
 function renderPotentialByBD(){
   const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
   const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
-    const rows=potential.filter(x=>bdEq(x.bd,bd));
+    const rows=activeMonthRows(potential).filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
     return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
   }).join('');
@@ -317,7 +399,7 @@ function renderPOByBD(){
     return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
   });
   $('dashPOBD').innerHTML=names.map(bd=>{
-    const rows=po.filter(x=>bdEq(x.bd,bd));
+    const rows=activeMonthRows(po).filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
     const byYear=[2024,2025,2026].map(y=>{
       const r=rows.filter(x=>yearOf(x.month)===String(y));
@@ -333,11 +415,11 @@ function poStatusOptions(value=""){
 }
 function renderPOMonitor(){
   const q=String($("searchPOMonitor")?.value||"").trim().toLowerCase();
-  const mf=$("poMonitorMonthFilter")?.value||"all";
+  const mf=$("poMonitorMonthFilter")?.value||selectedMonthKey||"all";
   const sf=$("poMonitorStatusFilter")?.value||"all";
   const months=[...new Set(poMonitoring.map(x=>String(x.po_date||"").slice(0,7)).filter(Boolean))].sort().reverse();
   const sel=$("poMonitorMonthFilter");
-  if(sel){ const current=sel.value||"all"; sel.innerHTML='<option value="all">Semua Bulan</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join(''); sel.value=months.includes(current)?current:"all"; }
+  if(sel){ const current=sel.value||"all"; sel.innerHTML='<option value="all">Semua Bulan</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join(''); sel.value=months.includes(current)?current:(months.includes(selectedMonthKey)?selectedMonthKey:"all"); }
   const rows=poMonitoring.filter(x=>{
     const hay=[x.po_number,x.customer_name,x.bd,x.article,x.need_help].join(' ').toLowerCase();
     const matchQ=!q||hay.includes(q);
@@ -375,14 +457,25 @@ function displayRole(profileOrRole){
 }
 
 function render(){
+  ensureMonthOptions();
   renderPotentialByBD();
   renderCustomerMonthly();
   renderPOByBD();
   renderPOMonitor();
-  const totalTarget=forecast.reduce((a,x)=>a+num(x.target),0);
-  const totalPO=po.reduce((a,x)=>a+num(x.value),0);
-  const totalPotential=potential.reduce((a,x)=>a+num(x.value),0);
-  $("target").textContent=money(totalTarget);$("achievement").textContent=money(totalPO);$("potentialTotal").textContent=money(totalPotential);$("poTotal").textContent=money(totalPO);$("dashPotentialGrandTotal").textContent=money(totalPotential);$("dashPOGrandTotal").textContent=money(totalPO);
+
+  const monthPotential=activeMonthRows(potential);
+  const monthPO=activeMonthRows(po);
+  const monthTargets=targetRowsForMonth();
+
+  const totalTarget=monthTargets.reduce((a,x)=>a+num(x.target),0);
+  const totalPO=monthPO.reduce((a,x)=>a+num(x.value),0);
+  const totalPotential=monthPotential.reduce((a,x)=>a+num(x.value),0);
+  $("target").textContent=money(totalTarget);
+  $("achievement").textContent=money(totalPO);
+  $("potentialTotal").textContent=money(totalPotential);
+  $("poTotal").textContent=money(totalPO);
+  $("dashPotentialGrandTotal").textContent=money(totalPotential);
+  $("dashPOGrandTotal").textContent=money(totalPO);
 
   const perfSeen=new Set();
   const perf=profiles
@@ -394,49 +487,48 @@ function render(){
     .filter(p=>{
       const n=String(p.full_name||"").trim().toLowerCase();
       if(perfSeen.has(n)) return false;
-      perfSeen.add(n);
-      return true;
+      perfSeen.add(n); return true;
     })
     .map(p=>{
       const n=String(p.full_name||"").trim().toLowerCase();
-      const f=forecast.find(x=>String(x.bd||"").trim().toLowerCase()===n);
-      const target=f?num(f.target):num(p.target);
-      const ach=f?num(f.total):po.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
+      const f=monthTargets.find(x=>String(x.bd||"").trim().toLowerCase()===n);
+      const target=f?num(f.target):0;
+      const ach=monthPO.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
       return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
     }).join("");
   $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
   $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
 
-  $("potentialSectionTotal").textContent=money(potential.reduce((a,x)=>a+num(x.value),0));
-  $("poSectionTotal").textContent=money(po.reduce((a,x)=>a+num(x.value),0));
+  $("potentialSectionTotal").textContent=money(totalPotential);
+  $("poSectionTotal").textContent=money(totalPO);
 
-  const forecastSum=forecast.reduce((a,x)=>a+num(x.forecast),0);
-  const targetSum=forecast.reduce((a,x)=>a+num(x.target),0);
-  const flexoSum=forecast.reduce((a,x)=>a+num(x.achievement_flexo),0);
-  const rotoSum=forecast.reduce((a,x)=>a+num(x.achievement_roto),0);
-  const forecastTotalSum=forecast.reduce((a,x)=>a+num(x.total),0);
-  const poGrandSum=po.reduce((a,x)=>a+num(x.value),0);
-  const commissionFlexoSum=forecast.reduce((a,x)=>a+num(x.commission_flexo),0);
-  const commissionRotoSum=forecast.reduce((a,x)=>a+num(x.commission_roto),0);
+  const forecastSum=monthTargets.reduce((a,x)=>a+num(x.forecast),0);
+  const targetSum=monthTargets.reduce((a,x)=>a+num(x.target),0);
+  const flexoSum=monthTargets.reduce((a,x)=>a+num(x.achievement_flexo),0);
+  const rotoSum=monthTargets.reduce((a,x)=>a+num(x.achievement_roto),0);
+  const forecastTotalSum=monthTargets.reduce((a,x)=>a+num(x.total),0);
+  const commissionFlexoSum=monthTargets.reduce((a,x)=>a+num(x.commission_flexo),0);
+  const commissionRotoSum=monthTargets.reduce((a,x)=>a+num(x.commission_roto),0);
   $("forecastGrandTotal").textContent=money(forecastSum);
   $("forecastTargetGrandTotal").textContent=money(targetSum);
   $("forecastFlexoGrandTotal").textContent=money(flexoSum);
   $("forecastRotoGrandTotal").textContent=money(rotoSum);
-  $("forecastPOGrandTotal").textContent=money(poGrandSum);
-  $("forecastPercentGrandTotal").textContent=targetSum?((forecastTotalSum/targetSum)*100).toFixed(1)+"%":"-";
+  $("forecastPOGrandTotal").textContent=money(totalPO);
+  $("forecastPercentGrandTotal").textContent=targetSum?((totalPO/targetSum)*100).toFixed(1)+"%":"-";
   $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
-  $("potentialTable").innerHTML=potential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data.</td></tr>`;
+  $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
   $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
+
   const isAdmin=profile?.role==="admin";
   $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
   $("poActionHead")?.classList.toggle("hidden",!isAdmin);
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
   renderPOTable($("searchPO")?.value||"");
-  $("forecastTable").innerHTML=forecast.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("forecast",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada forecast.</td></tr>`;
+  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
@@ -447,14 +539,14 @@ function render(){
 function renderPOTable(filter=""){
   const q=normSearch(filter);
   const isAdmin=profile?.role==="admin";
-  const rows=po.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q));
+  const rows=activeMonthRows(po).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q));
   $("poTable").innerHTML=rows.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Tidak ada data yang cocok.</td></tr>`;
 }
 
 function openEditor(kind,id=null){
   editorKind=kind;editorId=id;
-  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring}[kind]||[]).find(x=>x.id===id):null;
-  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer"}[kind]||"");
+  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring,monthlyTarget:monthlyTargets}[kind]||[]).find(x=>x.id===id):null;
+  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
@@ -472,6 +564,9 @@ function openEditor(kind,id=null){
   } else if(kind==="forecast") {
     if(profile.role!=="admin"){ closeModal(); return; }
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
+  } else if(kind==="monthlyTarget") {
+    if(profile.role!=="admin"){ closeModal(); return; }
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
   $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
@@ -486,8 +581,9 @@ async function saveModal(){
   if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
   if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
   if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
-  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
-  if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
+  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
+  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim()),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
+  if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
   let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
   if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
   closeModal();await load();
@@ -495,10 +591,111 @@ async function saveModal(){
 
 async function removeRow(kind,id){
   if(!confirm("Hapus data ini?"))return;
-  if((kind==="po"||kind==="forecast") && profile?.role!=="admin") return;
-  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring"}[kind];
+  if((kind==="po"||kind==="forecast"||kind==="monthlyTarget") && profile?.role!=="admin") return;
+  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring",monthlyTarget:"monthly_targets"}[kind];
   const r=await sb.from(table).delete().eq("id",id);
   if(r.error)alert(r.error.message);else await load();
+}
+
+
+const importSheetMap={
+  "Potential":"potential_leads",
+  "Database Customer":"customer_database",
+  "Lost Leads":"lost_leads",
+  "Complaint Customer":"customer_complaints",
+  "PO Received":"po_received",
+  "Forecast & Target":"monthly_targets",
+  "Monitoring PO Customer":"po_monitoring"
+};
+function pick(obj,...keys){
+  const map={}; Object.keys(obj||{}).forEach(k=>map[normSearch(k).replace(/[^a-z0-9]/g,'')]=obj[k]);
+  for(const k of keys){const v=map[normSearch(k).replace(/[^a-z0-9]/g,'')];if(v!==undefined)return v;}
+  return "";
+}
+function excelDate(v){
+  if(v instanceof Date)return v.toISOString().slice(0,10);
+  if(typeof v==="number" && XLSX?.SSF?.parse_date_code){
+    const d=XLSX.SSF.parse_date_code(v); if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+  }
+  return String(v??"").trim();
+}
+function mapImportRow(sheet,row){
+  if(sheet==="Potential") return {bd:String(pick(row,"BD","BD / Marketing")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),value:num(pick(row,"Nilai","Value")),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),notes:String(pick(row,"Catatan","Notes")).trim()};
+  if(sheet==="Database Customer") return {bd:String(pick(row,"BD","BD / Marketing")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),area:String(pick(row,"Area")).trim(),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),value:num(pick(row,"Nilai","Value")),notes:String(pick(row,"Catatan","Notes")).trim()};
+  if(sheet==="Lost Leads") return {bd:String(pick(row,"BD")).trim(),company:String(pick(row,"Company")).trim(),pic:String(pick(row,"PIC")).trim(),packaging:String(pick(row,"Packaging / Spec","Packaging")).trim(),product:String(pick(row,"Customer Product","Product")).trim(),production_system:String(pick(row,"Production System")).trim(),quantity_expected:num(pick(row,"Quantity Expected","Qty")),amount_expected:num(pick(row,"Amount Expected","Nilai","Value")),why_lost:String(pick(row,"Why Lost?","Why Lost")).trim(),closing_month:monthKey(pick(row,"Closing Expected","Closing","Closing Month")),description:String(pick(row,"Description")).trim()};
+  if(sheet==="Complaint Customer") return {bd:String(pick(row,"BD")).trim(),company:String(pick(row,"Company")).trim(),pic:String(pick(row,"PIC")).trim(),packaging:String(pick(row,"Packaging / Spec","Packaging")).trim(),product:String(pick(row,"Customer Product","Product")).trim(),article:String(pick(row,"Article")).trim(),production_system:String(pick(row,"Production System")).trim(),quantity_order:num(pick(row,"Quantity Order","Qty Order")),quantity_complain:num(pick(row,"Quantity Reject / Complain","Qty Complain")),why_complain:String(pick(row,"Why Complain?","Why Complain")).trim(),description:String(pick(row,"Description")).trim()};
+  if(sheet==="PO Received") return {bd:String(pick(row,"BD")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),value:num(pick(row,"Nilai","Value")),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),notes:String(pick(row,"Catatan","Notes")).trim()};
+  if(sheet==="Forecast & Target") return {bd:String(pick(row,"BD")).trim(),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),forecast:num(pick(row,"Forecast")),target:num(pick(row,"Target")),achievement_flexo:num(pick(row,"Ach. Flexo","Achievement Flexo")),achievement_roto:num(pick(row,"Ach. Roto","Achievement Roto")),total:num(pick(row,"Total")),percentage:num(pick(row,"Percentage","%")),commission_flexo:num(pick(row,"Komisi Flexo")),commission_roto:num(pick(row,"Komisi Roto"))};
+  if(sheet==="Monitoring PO Customer") return {po_date:excelDate(pick(row,"PO Date")),po_number:String(pick(row,"PO Number","PO")).trim(),customer_name:String(pick(row,"Customer Name","Customer")).trim(),bd:String(pick(row,"BD")).trim(),article:String(pick(row,"Artikel","Article")).trim(),qty:num(pick(row,"Qty","Quantity")),price_per_roll:num(pick(row,"Price (Rp/Roll)","Price")),value:num(pick(row,"Value","Nilai")),week1:String(pick(row,"Week 1")).trim(),week2:String(pick(row,"Week 2")).trim(),week3:String(pick(row,"Week 3")).trim(),week4:String(pick(row,"Week 4")).trim(),etd:excelDate(pick(row,"ETD")),delivery_qty:num(pick(row,"Delivery Qty","Delivery")),complain_qty:num(pick(row,"Complain Qty","Complain")),need_help:String(pick(row,"Need Help?","Need Help")).trim()};
+}
+function importRequiredOk(sheet,row){
+  if(sheet==="Potential"||sheet==="Database Customer"||sheet==="PO Received") return !!row.bd&&!!row.customer;
+  if(sheet==="Lost Leads"||sheet==="Complaint Customer") return !!row.bd&&!!row.company;
+  if(sheet==="Forecast & Target") return !!row.bd&&/^\d{4}-\d{2}$/.test(row.month);
+  if(sheet==="Monitoring PO Customer") return !!row.bd&&!!row.po_number&&!!row.customer_name;
+  return false;
+}
+async function previewImport(){
+  const file=$("excelImportFile")?.files?.[0];
+  if(!file){$("importMsg").className="msg error";$("importMsg").textContent="Pilih file Excel terlebih dahulu.";return}
+  if(profile?.role!=="admin"){alert("Hanya Admin yang dapat melakukan import Excel.");return}
+  try{
+    $("importMsg").className="msg";$("importMsg").textContent="Membaca file Excel...";
+    const data=await file.arrayBuffer();
+    const wb=XLSX.read(data,{type:"array",cellDates:true});
+    const parsed=[];
+    for(const sheet of Object.keys(importSheetMap)){
+      const actual=wb.SheetNames.find(n=>normSearch(n)===normSearch(sheet));
+      if(!actual)continue;
+      const raw=XLSX.utils.sheet_to_json(wb.Sheets[actual],{defval:""});
+      const rows=raw.map(r=>mapImportRow(sheet,r)).filter(r=>Object.values(r).some(v=>String(v??"").trim()!==""));
+      const valid=rows.filter(r=>importRequiredOk(sheet,r));
+      parsed.push({sheet,table:importSheetMap[sheet],rows:valid,rawCount:rows.length,invalid:rows.length-valid.length});
+    }
+    if(!parsed.length)throw new Error("Tidak ditemukan sheet dengan nama yang dikenali.");
+    pendingImport={parsed,fileName:file.name};
+    $("importPreview").innerHTML=parsed.map(x=>`<div style="padding:12px;border-bottom:1px solid #eee"><strong>${esc(x.sheet)}</strong> → ${esc(x.table)}<br>${x.rows.length} baris siap diimport${x.invalid?` • ${x.invalid} baris dilewati karena kolom wajib kosong`:''}</div>`).join('');
+    $("importPreview").classList.remove("hidden");
+    $("importActions").style.display="flex";
+    $("importMsg").className="msg success";$("importMsg").textContent=`File "${file.name}" siap diimport.`;
+  }catch(err){
+    console.error(err);pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";
+    $("importMsg").className="msg error";$("importMsg").textContent="Gagal membaca Excel: "+(err?.message||"format tidak dikenali.");
+  }
+}
+async function confirmImport(){
+  if(!pendingImport)return;
+  if(profile?.role!=="admin"){alert("Hanya Admin yang dapat melakukan import Excel.");return}
+  const btn=$("confirmImportBtn");btn.disabled=true;
+  try{
+    let inserted=0,updated=0;
+    for(const group of pendingImport.parsed){
+      for(const row of group.rows){
+        let existing=null;
+        if(group.sheet==="Forecast & Target"){
+          existing=monthlyTargets.find(x=>bdEq(x.bd,row.bd)&&monthKey(x.month)===row.month);
+        }else if(group.sheet==="Potential"){
+          existing=potential.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month);
+        }else if(group.sheet==="Database Customer"){
+          existing=customers.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month);
+        }else if(group.sheet==="PO Received"){
+          existing=po.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month&&num(x.value)===num(row.value));
+        }else if(group.sheet==="Monitoring PO Customer"){
+          existing=poMonitoring.find(x=>normSearch(x.po_number)===normSearch(row.po_number));
+        }
+        const result=existing
+          ? await sb.from(group.table).update(row).eq("id",existing.id)
+          : await sb.from(group.table).insert(row);
+        if(result.error)throw new Error(`${group.sheet}: ${result.error.message}`);
+        existing?updated++:inserted++;
+      }
+    }
+    pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("excelImportFile").value="";
+    $("importMsg").className="msg success";$("importMsg").textContent=`Import berhasil. ${inserted} data baru, ${updated} data diperbarui.`;
+    await load();
+  }catch(err){
+    console.error(err);$("importMsg").className="msg error";$("importMsg").textContent="Import gagal: "+(err?.message||"silakan cek struktur Excel.");
+  }finally{btn.disabled=false}
 }
 
 function downloadAllExcel(){
@@ -523,7 +720,7 @@ function downloadAllExcel(){
     addSheet('Lost Leads',lost);
     addSheet('Complaint Customer',complaints);
     addSheet('PO Received',po);
-    addSheet('Forecast & Target',forecast);
+    addSheet('Forecast & Target',monthlyTargets);
     addSheet('Monitoring PO Customer',poMonitoring);
     addSheet('User & Target',profiles.map(p=>({full_name:p.full_name,role:displayRole(p),target:p.target})));
 
@@ -546,8 +743,13 @@ async function setTarget(id){
   const n=num(v);
   let r=await sb.from("profiles").update({target:n}).eq("id",id);
   if(r.error){alert(r.error.message);return}
-  const f=forecast.find(x=>x.bd?.trim().toLowerCase()===p.full_name?.trim().toLowerCase());
-  if(f){r=await sb.from("forecast_targets").update({target:n}).eq("id",f.id);if(r.error)alert(r.error.message)}
+  const existing=monthlyTargets.find(x=>bdEq(x.bd,p.full_name)&&monthKey(x.month)===selectedMonthKey);
+  if(existing){
+    r=await sb.from("monthly_targets").update({target:n}).eq("id",existing.id);
+  }else{
+    r=await sb.from("monthly_targets").insert({bd:p.full_name,month:selectedMonthKey,target:n,forecast:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0});
+  }
+  if(r.error){alert(r.error.message);return}
   await load();
 }
 
@@ -562,7 +764,7 @@ async function start(){
   $("login").classList.add("hidden");$("app").classList.remove("hidden");
   $("who").textContent=(profile.full_name||user.email)+" • "+displayRole(profile);
   await load();
-  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_monitoring"},load).subscribe();
+  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"monthly_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_monitoring"},load).subscribe();
 }
 
 function authErrorMessage(err){
