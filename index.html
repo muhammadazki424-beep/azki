@@ -258,6 +258,8 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
+const START_MONTH_KEY='2026-09';
+const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey=''; let pendingImport=null;
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
@@ -341,7 +343,11 @@ function ensureMonthOptions(){
   let wanted=selectedMonthKey;
   if(!wanted || !sorted.includes(wanted)){
     const current=currentMonthKey();
-    wanted=sorted.includes(current)?current:sorted[0];
+    const currentHasData = [potential,customers,po,monthlyTargets,forecast,lost,poMonitoring].some(rows => (rows||[]).some(row => {
+      const fields=['month','closing_month','po_date','etd'];
+      return fields.some(field => monthKey(row?.[field]??'')===current);
+    }));
+    wanted = sorted.includes(current) && currentHasData ? current : (sorted.includes(START_MONTH_KEY) ? START_MONTH_KEY : sorted[0]);
   }
   sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
   selectedMonthKey=wanted;
@@ -372,14 +378,16 @@ const bdNames=()=>{
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
   const s=String(m??"").trim();
+  if(!s)return "";
   let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
   if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
   x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
   if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
   const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  x=s.toLowerCase().match(/([a-z]+)/);
+  const lower=s.toLowerCase();
+  const word=lower.match(/[a-z]+/);
   const y=s.match(/20\d{2}/);
-  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
+  if(word&&names[word[0]])return `${y?y[0]:DEFAULT_DATA_YEAR}-${names[word[0]]}`;
   return s.slice(0,7);
 }
 function yearOf(m){
