@@ -3,916 +3,2383 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cetakdong Team Azki</title>
+<title>Cetakdong Team Azki — Sales Dashboard</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="config.js"></script>
+<script src="./config.js"></script>
+
 <style>
-:root{--navy:#0b1220;--navy2:#111a2b;--line:#e7ebf2;--muted:#6b7280;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--bg:#f4f6fa}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#172033}
-button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:900;font-size:26px;letter-spacing:-.7px}.brand img{width:32px;height:32px;object-fit:cover;border-radius:50%}.brandText{color:#fff}.brandSmall{font-size:11px;color:#9ca8bb;margin:3px 0 0 42px}
-.login{min-height:100vh;display:grid;grid-template-columns:1.25fr .75fr;background:#070c14}
-.loginHero{position:relative;min-height:100vh;background:linear-gradient(90deg,#050a12d9,#050a128f),url("image 127.jpg") center/cover no-repeat;display:flex;align-items:center;padding:7vw}
-.loginHeroContent{max-width:650px}.loginHero .brand{font-size:58px}.loginHero .brand img{width:62px;height:62px}.heroSub{color:#e8edf6;font-size:18px;margin-top:16px}.loginQuote{margin-top:18px;max-width:590px;color:#dbe5f4;font-size:16px;line-height:1.65;font-style:italic;border-left:3px solid #fff;padding-left:16px}.loginQuote span{display:block;margin-top:7px;color:#9ca8bb;font-size:12px;font-style:normal;font-weight:700;letter-spacing:.4px}
-.loginSide{display:flex;align-items:center;justify-content:center;padding:30px;background:#070c14}.loginbox{width:min(470px,100%);padding:34px;border:1px solid #273247;border-radius:20px;background:#0d1421;box-shadow:0 18px 50px #0008}
-.loginbox h1{color:#fff;font-size:28px;margin:20px 0 8px}.loginbox p{color:#9ca8bb}.loginbox label{color:#dce3ee}
-input,select,textarea{width:100%;padding:11px 13px;border:1px solid #d6dce7;border-radius:10px;background:#fff;color:#172033}textarea{min-height:90px;resize:vertical}
-.loginbox input{background:#0a101b;color:#fff;border-color:#2b384e}.loginbox input::placeholder{color:#77839a}.passwrap{position:relative}.passwrap input{padding-right:48px}.eyeBtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9ca8bb;font-size:18px;padding:6px 8px;line-height:1}.eyeBtn:hover{color:#fff}
-label{display:block;font-size:12px;font-weight:800;margin:13px 0 6px}.btn{border:0;border-radius:10px;padding:10px 14px;background:#172033;color:#fff;font-weight:800}.btn.white{background:#fff;color:#0b1220}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}.btn.gray{background:#e9edf3;color:#172033}.btn.small{padding:6px 9px;font-size:11px}.btn.ghost{background:transparent;border:1px solid #d9dee8;color:#172033}
-.msg{font-size:13px;margin-top:10px}.error{color:#ef4444}.success{color:#22c55e}
-.layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr}.side{background:var(--navy);color:#fff;padding:22px 15px;min-height:100vh;position:sticky;top:0;height:100vh}.side .brand{margin:0 8px}.side .brand img{width:34px;height:34px}.role{font-size:12px;color:#9ca8bb;margin:8px 8px 22px}.nav button{width:100%;text-align:left;background:none;border:0;color:#cfd7e5;padding:11px 10px;border-radius:9px;margin:2px 0}.nav button.active,.nav button:hover{background:#1b2940;color:#fff}
-.main{padding:26px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.top h1{margin:0;font-size:27px}.muted{color:var(--muted);font-size:13px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border-radius:15px;padding:18px;box-shadow:0 4px 18px #0000000a;border:1px solid #edf0f5}.card .k{font-size:11px;color:#697386;font-weight:900}.card .v{font-size:23px;font-weight:900;margin-top:8px}.card .s{font-size:11px;color:#8a93a3;margin-top:5px}
-.panel{background:#fff;border:1px solid #e8ecf2;border-radius:15px;padding:18px;margin-top:16px;box-shadow:0 4px 18px #00000008}.panel h2{font-size:16px;margin:0 0 14px}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section{display:none}.section.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px;vertical-align:top}th{font-size:11px;color:#667085;background:#fafbfc;position:sticky;top:0}td .btn{margin-right:4px;margin-bottom:3px}
-.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-size:10px;font-weight:800}.badge.red{background:#fee2e2;color:#991b1b}.badge.green{background:#dcfce7;color:#166534}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.full{grid-column:1/-1}
-.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalbox{background:#fff;border-radius:17px;padding:22px;width:min(760px,100%);max-height:92vh;overflow:auto}.modalbox h2{margin:0 0 10px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap}.search{max-width:280px}.readonly{background:#f7f8fa}.poMonitor{overflow:auto}.poMonitor table{min-width:1500px}.poStatus{min-width:130px}.poStatus select{min-width:120px}.poSummary{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px;margin-bottom:14px}.poSummary .mini{background:#0f1724;border:1px solid #263246;border-radius:12px;padding:12px;color:#fff}.poSummary .mini .k{font-size:10px;color:#9aa8bd;font-weight:800}.poSummary .mini .v{font-size:18px;font-weight:900;margin-top:5px}@media(max-width:900px){.poSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:1050px){.login{grid-template-columns:1fr}.loginHero{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto;min-height:auto}.main{padding:15px}.cards,.formgrid{grid-template-columns:1fr}.loginbox{padding:24px}}
+*{box-sizing:border-box}
+:root{
+  --bg:#f4f7fb;
+  --card:#fff;
+  --text:#172033;
+  --muted:#718096;
+  --line:#e7edf5;
+  --primary:#2563eb;
+  --primary2:#1d4ed8;
+  --green:#16a34a;
+  --red:#dc2626;
+  --orange:#ea580c;
+  --shadow:0 8px 28px rgba(15,23,42,.07);
+}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
 
-.bdCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bdMini{background:#0f1724;border:1px solid #263246;border-radius:14px;padding:16px}.bdMini h3{margin:0 0 8px;color:#fff;font-size:16px}.bdMini .big{font-size:22px;font-weight:800;color:#fff}.bdMini .sub{font-size:12px;color:#9aa8bd;margin-top:5px}.yearbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.yearbar select{background:#0a101b;color:#fff;border:1px solid #2b384e;border-radius:8px;padding:9px 12px}.monthMatrix{overflow:auto}.monthMatrix table{min-width:980px}.monthMatrix th,.monthMatrix td{text-align:center;white-space:nowrap}.monthMatrix th:first-child,.monthMatrix td:first-child{text-align:left;position:sticky;left:0;background:inherit}.monthMatrix td strong{color:#172033;font-weight:800}.sectionNote{font-size:12px;color:#8f9db2;margin-top:4px}.bdBreakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.bdPanel{border:1px solid #263246;border-radius:14px;padding:14px;background:#0f1724}.bdPanel h3{margin:0 0 10px;color:#fff}.bdPanel table{min-width:0}.bdPanel th,.bdPanel td{background:transparent;color:#dce3ee}@media(max-width:900px){.bdCards{grid-template-columns:repeat(2,minmax(0,1fr))}.bdBreakdown{grid-template-columns:1fr}}@media(max-width:560px){.bdCards{grid-template-columns:1fr}}
+/* LOGIN */
+#login{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0f172a,#1d4ed8);
+  padding:20px;
+}
+.loginBox{
+  width:420px;
+  max-width:100%;
+  background:#fff;
+  border-radius:24px;
+  padding:34px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+.logo{
+  text-align:center;
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.logo span{color:#2563eb}
+.team{
+  text-align:center;
+  color:#64748b;
+  margin-top:4px;
+  margin-bottom:28px;
+  font-weight:700;
+}
+.loginBox label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin:15px 0 7px;
+}
+.inputWrap{position:relative}
+.inputWrap input{padding-right:50px}
+input,select,textarea{
+  width:100%;
+  border:1px solid #dbe3ee;
+  border-radius:11px;
+  padding:12px 13px;
+  outline:none;
+  background:#fff;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+textarea{min-height:90px;resize:vertical}
+.eyeBtn{
+  position:absolute;
+  right:7px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:transparent;
+  font-size:19px;
+  padding:7px;
+}
+.primary{
+  width:100%;
+  border:0;
+  background:var(--primary);
+  color:#fff;
+  padding:13px;
+  border-radius:11px;
+  font-weight:800;
+  margin-top:20px;
+}
+.primary:hover{background:var(--primary2)}
+.secondary{
+  border:1px solid #dbe3ee;
+  background:#fff;
+  color:#334155;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:700;
+}
+.loginActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.loginActions button{
+  border:0;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:11px;
+  border-radius:10px;
+  font-weight:700;
+}
+.error{
+  color:#dc2626;
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  padding:10px;
+  border-radius:10px;
+  margin-top:14px;
+  font-size:13px;
+}
 
-.totalValueBox{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 16px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05)}
-.totalValueBox span{font-size:12px;font-weight:800;letter-spacing:.4px;color:#d8d8d8}.totalValueBox strong{font-size:20px;color:#fff;white-space:nowrap}
-tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid rgba(255,255,255,.15)}
+/* APP */
+.app{
+  min-height:100vh;
+  display:flex;
+}
+.sidebar{
+  width:245px;
+  background:#0f172a;
+  color:#fff;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  overflow:auto;
+  padding:22px 14px;
+}
+.sideLogo{
+  font-size:21px;
+  font-weight:900;
+  padding:5px 10px 0;
+}
+.sideTeam{
+  color:#94a3b8;
+  font-size:11px;
+  font-weight:700;
+  padding:2px 10px 22px;
+  letter-spacing:.8px;
+}
+.navBtn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#cbd5e1;
+  text-align:left;
+  padding:11px 12px;
+  border-radius:9px;
+  margin:2px 0;
+  font-weight:700;
+}
+.navBtn:hover,.navBtn.active{
+  background:#1e3a8a;
+  color:#fff;
+}
+.sideBottom{
+  border-top:1px solid rgba(255,255,255,.1);
+  margin-top:18px;
+  padding-top:15px;
+}
+.userName{
+  padding:8px 10px;
+  font-size:12px;
+  color:#cbd5e1;
+}
+.logout{
+  width:100%;
+  background:#7f1d1d;
+  color:#fff;
+  border:0;
+  padding:10px;
+  border-radius:9px;
+  font-weight:700;
+  margin-top:5px;
+}
+.content{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:25px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+.title h1{
+  margin:0;
+  font-size:27px;
+}
+.title p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+.periodBox{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.periodBox select{
+  min-width:170px;
+}
+.periodBox button{
+  border:0;
+  background:#0f172a;
+  color:#fff;
+  padding:11px 13px;
+  border-radius:10px;
+  font-weight:700;
+}
 
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:19px;
+  box-shadow:var(--shadow);
+}
+.cardLabel{
+  color:#64748b;
+  font-size:12px;
+  font-weight:700;
+}
+.cardValue{
+  font-size:25px;
+  font-weight:900;
+  margin-top:7px;
+}
+.cardSmall{
+  font-size:11px;
+  color:#94a3b8;
+  margin-top:6px;
+}
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+.panelTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.panelTitle h3{
+  margin:0;
+  font-size:17px;
+}
+.tableWrap{overflow:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th{
+  text-align:left;
+  background:#f8fafc;
+  color:#475569;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid #edf1f6;
+  white-space:nowrap;
+}
+.right{text-align:right}
+.center{text-align:center}
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  background:#eff6ff;
+  color:#1d4ed8;
+}
+.progress{
+  width:100px;
+  height:7px;
+  background:#e5e7eb;
+  border-radius:99px;
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  background:#2563eb;
+}
+.actionBtn{
+  border:1px solid #dbe3ee;
+  background:#fff;
+  padding:5px 8px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:700;
+}
+.actionBtn.delete{
+  color:#dc2626;
+}
+.empty{
+  text-align:center;
+  color:#94a3b8;
+  padding:25px;
+}
 
+/* SECTIONS */
+.section{display:none}
+.section.active{display:block}
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:15px;
+}
+.toolbar h2{
+  margin:0;
+  font-size:21px;
+}
+.toolbarRight{
+  display:flex;
+  gap:8px;
+}
+.addBtn{
+  border:0;
+  background:#2563eb;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  font-weight:800;
+}
+.greenBtn{
+  background:#16a34a;
+  color:#fff;
+  border:0;
+  padding:10px 14px;
+  border-radius:9px;
+  font-weight:800;
+}
 
-.monthSelector{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.monthSelector label{margin:0;color:#667085}
-.monthSelector select{width:auto;min-width:170px;font-weight:800}
-.importBox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.importBox input[type=file]{max-width:280px;padding:8px;background:#fff}
-.importPreview{max-height:360px;overflow:auto;margin-top:12px;border:1px solid #e8ecf2;border-radius:10px}
-.importPreview table{min-width:700px}
-.importInfo{font-size:12px;color:#667085;line-height:1.55}
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+.modalBox{
+  width:650px;
+  max-width:100%;
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
+}
+.modalHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.modalHead h3{margin:0}
+.closeBtn{
+  border:0;
+  background:#f1f5f9;
+  border-radius:8px;
+  padding:7px 10px;
+}
+.formGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.formGroup label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.formGroup.full{grid-column:1/-1}
+.modalFoot{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:18px;
+}
 
+/* MONTH */
+.monthInfo{
+  background:#eff6ff;
+  border:1px solid #dbeafe;
+  color:#1e40af;
+  padding:10px 13px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+}
+@media(max-width:750px){
+  .sidebar{
+    position:relative;
+    width:100%;
+    bottom:auto;
+  }
+  .app{display:block}
+  .content{
+    margin-left:0;
+    width:100%;
+    padding:15px;
+  }
+  .topbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .periodBox{flex-wrap:wrap}
+  .periodBox select{flex:1}
+  .cards{grid-template-columns:1fr 1fr}
+  .formGrid{grid-template-columns:1fr}
+  .formGroup.full{grid-column:auto}
+}
 </style>
 </head>
+
 <body>
 
-<div id="login" class="login">
-  <div class="loginHero">
-    <div class="loginHeroContent">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <div class="heroSub">Real-Time Sales Dashboard</div>
-      <div class="loginQuote">“Target memberi arah, proses memberi hasil, dan konsistensi membawa kita lebih jauh.”<span>— CETAKDONG TEAM AZKI</span></div>
-    </div>
-  </div>
-  <div class="loginSide">
-    <div class="loginbox">
-      <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-      <div class="brandSmall">TEAM AZKI</div>
-      <h1>Login ke Dashboard</h1>
-      <p>Masuk menggunakan akun BD atau Admin.</p>
-      <form id="loginForm">
-        <label>Email</label><input id="email" type="email" placeholder="email@perusahaan.com" required>
-        <label>Password</label><div class="passwrap"><input id="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-target="password" aria-label="Tampilkan password">👁</button></div>
-        <button class="btn white" style="width:100%;margin-top:17px">Login →</button>
-      </form>
-      <button id="magic" class="btn gray" style="width:100%;margin-top:9px">Kirim Magic Link</button>
-      <button id="forgot" class="btn gray" style="width:100%;margin-top:9px">Reset Password</button>
-      <div id="loginMsg" class="msg"></div>
-    </div>
+<!-- LOGIN -->
+<div id="login">
+  <div class="loginBox">
+    <div class="logo">CETAK<span>DONG</span></div>
+    <div class="team">TEAM AZKI • REAL-TIME SALES DASHBOARD</div>
+
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="email@perusahaan.com" required>
+
+      <label>Password</label>
+      <div class="inputWrap">
+        <input id="password" type="password" placeholder="Password" required>
+        <button type="button" class="eyeBtn" data-target="password">👁</button>
+      </div>
+
+      <button class="primary" type="submit">Login →</button>
+
+      <div class="loginActions">
+        <button type="button" id="magicBtn">Kirim Magic Link</button>
+        <button type="button" id="resetBtn">Reset Password</button>
+      </div>
+
+      <div id="loginError" class="error hidden"></div>
+    </form>
   </div>
 </div>
 
-<div id="app" class="layout hidden">
-  <aside class="side">
-    <div class="brand"><img src="brand-icon.png" alt=""><span class="brandText">cetakdong</span></div>
-    <div class="brandSmall">TEAM AZKI</div>
-    <div id="who" class="role"></div>
-    <div class="nav">
-      <button data-page="dashboard" class="active">📊 Dashboard</button>
-      <button data-page="potential">🎯 Potential</button>
-      <button data-page="customers">🏢 Database Customer</button>
-      <button data-page="lost">⚠️ Lost Leads</button>
-      <button data-page="complaints">💬 Complaint Customer</button>
-      <button data-page="po">📦 PO Received</button>
-      <button data-page="pomonitor">📋 Monitoring PO Customer</button>
-      <button data-page="forecast">📈 Forecast</button>
-      <button data-page="performance">👥 BD Performance</button>
-      <button id="adminNav" data-page="admin" class="hidden">⚙️ User & Target</button>
-    </div>
-    <div style="margin-top:24px">
-      <button id="changePass" class="btn blue" style="width:100%">🔐 Ubah Password</button>
-      <button id="logout" class="btn" style="width:100%;margin-top:8px;background:#29364b">Logout</button>
+<!-- APP -->
+<div id="app" class="app hidden">
+
+  <aside class="sidebar">
+    <div class="sideLogo">CETAKDONG</div>
+    <div class="sideTeam">TEAM AZKI</div>
+
+    <button class="navBtn active" data-section="dashboard">📊 Dashboard</button>
+    <button class="navBtn" data-section="potential">🎯 Potential</button>
+    <button class="navBtn" data-section="customers">👥 Database Customer</button>
+    <button class="navBtn" data-section="lost">❌ Lost Leads</button>
+    <button class="navBtn" data-section="complaints">⚠️ Complaint Customer</button>
+    <button class="navBtn" data-section="po">📦 PO Received</button>
+    <button class="navBtn" data-section="monitoring">🚚 Monitoring PO Customer</button>
+    <button class="navBtn" data-section="forecast">📈 Forecast</button>
+    <button class="navBtn" data-section="performance">🏆 BD Performance</button>
+    <button class="navBtn adminOnly" data-section="users">⚙️ User & Target</button>
+
+    <div class="sideBottom">
+      <div class="userName" id="who">-</div>
+      <button class="navBtn" id="changePasswordBtn">🔐 Ubah Password</button>
+      <button class="logout" id="logoutBtn">Logout</button>
     </div>
   </aside>
 
-  <main class="main">
+  <main class="content">
+
+    <!-- DASHBOARD -->
     <section id="dashboard" class="section active">
-      <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
-        <div class="toolbar">
-          <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
-          <div id="sync" class="badge green">ONLINE</div>
+      <div class="topbar">
+        <div class="title">
+          <h1>Sales Dashboard</h1>
+          <p>Team Azki • <span id="activePeriodLabel">September 2026</span></p>
+        </div>
+
+        <div class="periodBox">
+          <select id="dashboardMonth"></select>
+          <button id="currentMonthBtn">Bulan Sekarang</button>
         </div>
       </div>
-      <div class="panel" style="margin-top:0">
-        <div class="panelHead">
-          <div>
-            <h2>📅 Periode Dashboard</h2>
-            <div class="sectionNote">Dashboard otomatis mengikuti bulan yang dipilih. Saat masuk bulan baru, pilih bulan baru atau gunakan periode berjalan.</div>
-          </div>
-          <div class="monthSelector">
-            <label for="dashboardMonth">Bulan</label>
-            <select id="dashboardMonth"></select>
-            <button class="btn gray small" id="currentMonthBtn">Bulan Berjalan</button>
-          </div>
-        </div>
+
+      <div class="monthInfo">
+        Periode aktif: <span id="periodText">September 2026</span>.
+        Data bulan sebelumnya tetap tersimpan dan dapat dibuka kembali.
       </div>
-      <div class="panel">
-        <div class="panelHead">
-          <div>
-            <h2>📥 Import Data Excel</h2>
-            <div class="importInfo">Upload file Excel berisi sheet data. Sistem akan membaca sheet berdasarkan nama: Potential, Database Customer, Lost Leads, Complaint Customer, PO Received, Forecast & Target, dan Monitoring PO Customer.</div>
-          </div>
-          <div class="importBox">
-            <input id="excelImportFile" type="file" accept=".xlsx,.xls">
-            <button class="btn blue" id="previewImportBtn">Preview Import</button>
-          </div>
-        </div>
-        <div id="importMsg" class="msg"></div>
-        <div id="importPreview" class="importPreview hidden"></div>
-        <div class="actions" id="importActions" style="display:none">
-          <button class="btn gray" id="cancelImportBtn">Batal</button>
-          <button class="btn blue" id="confirmImportBtn">Konfirmasi Import</button>
-        </div>
-      </div>
+
       <div class="cards">
-        <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
-        <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
-        <div class="card"><div class="k">POTENTIAL</div><div id="potentialTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
-        <div class="card"><div class="k">PO RECEIVED</div><div id="poTotal" class="v">Rp 0</div><div class="s">Semua BD</div></div>
-      </div>
-
-      <div class="panel">
-        <div class="panelHead"><div><h2>🎯 Potential per BD</h2><div class="sectionNote">Masing-masing BD ditampilkan terpisah.</div></div><button class="btn gray small" onclick="go('potential')">Kelola Potential</button></div>
-        <div id="dashPotentialBD" class="bdCards"></div><div class="totalValueBox" style="margin-top:14px"><span>TOTAL VALUE POTENTIAL — SEMUA BD</span><strong id="dashPotentialGrandTotal">Rp 0</strong></div>
-      </div>
-
-      <div class="panel">
-        <div class="panelHead"><div><h2>🏢 Database Customer per BD — Bulanan 2024–2026</h2><div class="sectionNote">Jumlah database customer per bulan untuk setiap BD.</div></div><button class="btn gray small" onclick="go('customers')">Kelola Customer</button></div>
-        <div class="yearbar"><label style="margin:0">Tahun</label><select id="customerYearFilter"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="all">Semua Tahun</option></select></div>
-        <div id="dashCustomerMonthly" class="monthMatrix"></div>
-      </div>
-
-      <div class="panel">
-        <div class="panelHead"><div><h2>📦 PO Received per BD</h2><div class="sectionNote">Nilai PO dan jumlah PO dipisahkan berdasarkan BD.</div></div><button class="btn gray small" onclick="go('po')">Lihat PO Received</button></div>
-        <div class="totalValueBox"><span>TOTAL VALUE PO RECEIVED — SEMUA BD</span><strong id="dashPOGrandTotal">Rp 0</strong></div><div id="dashPOBD" class="bdBreakdown"></div>
-      </div>
-
-      <div class="panel">
-        <div class="panelHead"><div><h2>📋 Monitoring PO Customer</h2><div class="sectionNote">Monitoring progress PO berdasarkan tanggal, customer, BD, dan status Week 1–4.</div></div><button class="btn gray small" onclick="go('pomonitor')">Kelola Monitoring PO</button></div>
-        <div id="dashPOMonitorSummary" class="poSummary"></div>
-        <div class="table"><table><thead><tr><th>PO</th><th>Customer</th><th>BD</th><th>Value</th><th>Status</th><th>ETD</th></tr></thead><tbody id="dashPOMonitor"></tbody></table></div>
-      </div>
-
-      <div class="panel">
-        <div class="panelHead"><h2>👥 BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
-        <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
-      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
-    </section>
-
-    <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
-    </section>
-
-    <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
-    </section>
-
-    <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
-      <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
-    </section>
-
-    <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
-      <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPO" class="search" placeholder="Cari customer / BD / bulan / catatan..."><div style="font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
-    </section>
-
-    <section id="pomonitor" class="section">
-      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
-      <div class="panel">
-        <div class="toolbar" style="justify-content:space-between;align-items:center">
-          <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
-          <div style="font-weight:800">Total Value: <span id="poMonitorTotal">Rp 0</span></div>
+        <div class="card">
+          <div class="cardLabel">TOTAL TARGET BD</div>
+          <div class="cardValue" id="dashTarget">Rp0</div>
+          <div class="cardSmall">Target periode aktif</div>
         </div>
-        <div class="poMonitor" style="margin-top:12px"><table><thead><tr><th>No</th><th>PO Date</th><th>PO Number</th><th>Customer Name</th><th>BD</th><th>Artikel</th><th>Qty</th><th>Price (Rp/Roll)</th><th>Value</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>ETD</th><th>Delivery Qty</th><th>Complain Qty</th><th>Need Help?</th><th>Aksi</th></tr></thead><tbody id="poMonitorTable"></tbody></table></div>
+
+        <div class="card">
+          <div class="cardLabel">TOTAL PO RECEIVED</div>
+          <div class="cardValue" id="dashAchievement">Rp0</div>
+          <div class="cardSmall">PO periode aktif</div>
+        </div>
+
+        <div class="card">
+          <div class="cardLabel">TOTAL POTENTIAL</div>
+          <div class="cardValue" id="dashPotential">Rp0</div>
+          <div class="cardSmall">Potential periode aktif</div>
+        </div>
+
+        <div class="card">
+          <div class="cardLabel">ACHIEVEMENT</div>
+          <div class="cardValue" id="dashPercent">0%</div>
+          <div class="cardSmall">PO dibanding target</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+
+        <div class="panel">
+          <div class="panelTitle">
+            <h3>BD Performance</h3>
+          </div>
+          <div class="tableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>BD</th>
+                  <th>Target</th>
+                  <th>PO</th>
+                  <th>Achievement</th>
+                </tr>
+              </thead>
+              <tbody id="dashPerformance"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle">
+            <h3>PO Received</h3>
+          </div>
+          <div class="tableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>BD</th>
+                  <th>Customer</th>
+                  <th>Nilai</th>
+                  <th>Bulan</th>
+                </tr>
+              </thead>
+              <tbody id="dashPO"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </section>
 
+    <!-- POTENTIAL -->
+    <section id="potential" class="section">
+      <div class="toolbar">
+        <h2>Potential</h2>
+        <div class="toolbarRight">
+          <button class="addBtn" onclick="openEditor('potential')">+ Tambah Potential</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Customer</th>
+                <th>Nilai</th>
+                <th>Bulan</th>
+                <th>Catatan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="potentialTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMER -->
+    <section id="customers" class="section">
+      <div class="toolbar">
+        <h2>Database Customer</h2>
+        <button class="addBtn" onclick="openEditor('customer')">+ Tambah Customer</button>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD / Marketing</th>
+                <th>Customer</th>
+                <th>Area</th>
+                <th>Bulan</th>
+                <th>Nilai</th>
+                <th>Catatan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="customerTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOST -->
+    <section id="lost" class="section">
+      <div class="toolbar">
+        <h2>Lost Leads</h2>
+        <button class="addBtn" onclick="openEditor('lost')">+ Tambah Lost Lead</button>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Company</th>
+                <th>PIC</th>
+                <th>Nilai</th>
+                <th>Alasan</th>
+                <th>Closing</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="lostTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPLAINT -->
+    <section id="complaints" class="section">
+      <div class="toolbar">
+        <h2>Complaint Customer</h2>
+        <button class="addBtn" onclick="openEditor('complaint')">+ Tambah Complaint</button>
+      </div>
+
+      <div class="panel">
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Company</th>
+                <th>PIC</th>
+                <th>Produk</th>
+                <th>Qty Order</th>
+                <th>Qty Complain</th>
+                <th>Alasan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="complaintTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PO -->
+    <section id="po" class="section">
+      <div class="toolbar">
+        <h2>PO Received</h2>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Customer</th>
+                <th>Nilai</th>
+                <th>Bulan</th>
+                <th>Catatan</th>
+              </tr>
+            </thead>
+            <tbody id="poTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- MONITORING -->
+    <section id="monitoring" class="section">
+      <div class="toolbar">
+        <h2>Monitoring PO Customer</h2>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">PO Monitoring mengikuti periode aktif.</div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PO Date</th>
+                <th>PO Number</th>
+                <th>Customer</th>
+                <th>BD</th>
+                <th>Article</th>
+                <th>Qty</th>
+                <th>Value</th>
+                <th>ETD</th>
+                <th>Delivery</th>
+                <th>Complain</th>
+                <th>Need Help</th>
+              </tr>
+            </thead>
+            <tbody id="monitoringTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORECAST -->
     <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
+      <div class="toolbar">
+        <h2>Forecast & Target</h2>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Forecast</th>
+                <th>Target</th>
+                <th>Ach Flexo</th>
+                <th>Ach Roto</th>
+                <th>Total</th>
+                <th>%</th>
+                <th>Komisi Flexo</th>
+                <th>Komisi Roto</th>
+              </tr>
+            </thead>
+            <tbody id="forecastTable"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
+    <!-- PERFORMANCE -->
     <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
-      <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
+      <div class="toolbar">
+        <h2>BD Performance</h2>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">Periode: <span class="periodDynamic"></span></div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>BD</th>
+                <th>Target</th>
+                <th>PO Received</th>
+                <th>Achievement</th>
+                <th>Progress</th>
+              </tr>
+            </thead>
+            <tbody id="performanceTable"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
-    <section id="admin" class="section">
-      <div class="top"><div><h1>User & Target</h1><div class="muted">Menu Admin. BD biasa tidak dapat mengubah target.</div></div></div>
-      <div class="panel"><h2>User & Target</h2><div class="table"><table><thead><tr><th>Nama</th><th>Role</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
+    <!-- USERS -->
+    <section id="users" class="section">
+      <div class="toolbar">
+        <h2>User & Target</h2>
+      </div>
+
+      <div class="panel">
+        <div class="monthInfo">
+          Admin dapat melihat user dan target. BD biasa tidak dapat mengubah target.
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Target</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
+
   </main>
 </div>
 
-<div id="modal" class="modal hidden"><div class="modalbox">
-  <h2 id="modalTitle">Tambah Data</h2>
-  <div id="modalForm"></div>
-  <div id="modalMsg" class="msg"></div>
-  <div class="actions"><button class="btn gray" onclick="closeModal()">Batal</button><button class="btn blue" onclick="saveModal()">Simpan</button></div>
-</div></div>
+<!-- EDITOR MODAL -->
+<div id="editorModal" class="modal hidden">
+  <div class="modalBox">
+    <div class="modalHead">
+      <h3 id="editorTitle">Tambah Data</h3>
+      <button class="closeBtn" onclick="closeEditor()">✕</button>
+    </div>
 
-<div id="passModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔐 Ubah Password</h2>
-  <label>Password Baru</label><div class="passwrap"><input id="pass1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="pass2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="pass2" aria-label="Tampilkan password">👁</button></div>
-  <div id="passMsg" class="msg"></div>
-  <div class="actions"><button id="closePass" class="btn gray">Batal</button><button id="savePass" class="btn blue">Simpan</button></div>
-</div></div>
+    <form id="editorForm">
+      <div id="editorFields" class="formGrid"></div>
 
-<div id="resetModal" class="modal hidden"><div class="modalbox" style="max-width:430px">
-  <h2>🔑 Buat Password Baru</h2>
-  <p class="muted">Masukkan password baru setelah membuka link reset dari email.</p>
-  <label>Password Baru</label><div class="passwrap"><input id="reset1" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset1" aria-label="Tampilkan password">👁</button></div>
-  <label>Ulangi Password</label><div class="passwrap"><input id="reset2" type="password" autocomplete="new-password"><button type="button" class="eyeBtn" data-target="reset2" aria-label="Tampilkan password">👁</button></div>
-  <div id="resetMsg" class="msg"></div>
-  <div class="actions"><button id="saveReset" class="btn blue">Simpan Password</button></div>
-</div></div>
+      <div class="modalFoot">
+        <button type="button" class="secondary" onclick="closeEditor()">Batal</button>
+        <button type="submit" class="addBtn">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div id="passwordModal" class="modal hidden">
+  <div class="modalBox" style="max-width:450px">
+    <div class="modalHead">
+      <h3>Ubah Password</h3>
+      <button class="closeBtn" onclick="closePasswordModal()">✕</button>
+    </div>
+
+    <form id="passwordForm">
+      <label style="font-size:12px;font-weight:800">Password Baru</label>
+      <div class="inputWrap" style="margin-top:6px">
+        <input id="pass1" type="password" required minlength="6">
+        <button type="button" class="eyeBtn" data-target="pass1">👁</button>
+      </div>
+
+      <label style="font-size:12px;font-weight:800;display:block;margin-top:13px">Konfirmasi Password</label>
+      <input id="pass2" type="password" required minlength="6" style="margin-top:6px">
+
+      <div id="passError" class="error hidden"></div>
+
+      <div class="modalFoot">
+        <button type="button" class="secondary" onclick="closePasswordModal()">Batal</button>
+        <button class="addBtn" type="submit">Simpan Password</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
-let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
-let selectedMonthKey=''; let pendingImport=null;
-let editorKind=null,editorId=null;
-const $=id=>document.getElementById(id);
-const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
-const num=n=>Number(n)||0;
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const rowBtn=(kind,id)=>`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
-const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option>${profiles.map(p=>`<option ${p.full_name===value?"selected":""}>${esc(p.full_name)}</option>`).join("")}<option ${value==="Others"?"selected":""}>Others</option></select>`;
-const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
-const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
-const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
-$("customerYearFilter").onchange=renderCustomerMonthly;
-$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;render()};
-$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();render()};
-$("previewImportBtn").onclick=previewImport;
-$("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
-$("confirmImportBtn").onclick=confirmImport;
-$("searchPOMonitor").oninput=renderPOMonitor;
-$("poMonitorMonthFilter").onchange=renderPOMonitor;
-$("poMonitorStatusFilter").onchange=renderPOMonitor;
+/* =========================================================
+   CETAKDONG TEAM AZKI
+   MONTH HISTORY STARTS FROM SEPTEMBER 2026
+   ========================================================= */
 
-async function load(){
-  const qs=await Promise.all([
-    sb.from("profiles").select("*").order("full_name"),
-    sb.from("potential_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_database").select("*").order("created_at",{ascending:false}),
-    sb.from("lost_leads").select("*").order("created_at",{ascending:false}),
-    sb.from("customer_complaints").select("*").order("created_at",{ascending:false}),
-    sb.from("po_received").select("*").order("created_at",{ascending:false}),
-    sb.from("forecast_targets").select("*").order("bd"),
-    sb.from("po_monitoring").select("*").order("po_date",{ascending:false}).order("created_at",{ascending:false}),
-    sb.from("monthly_targets").select("*").order("month").order("bd")
-  ]);
-  const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring","monthly_targets"];
-  for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
-  [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring,monthlyTargets]=qs.map(x=>x.data||[]);
-  render();
+let sb=null;
+let user=null;
+let profile=null;
+
+let profiles=[];
+let potential=[];
+let customers=[];
+let lost=[];
+let complaints=[];
+let po=[];
+let forecast=[];
+let poMonitoring=[];
+let monthlyTargets=[];
+
+let selectedMonthKey="";
+let editorKind=null;
+let editorId=null;
+
+const START_MONTH_KEY="2026-09";
+
+const $=id=>document.getElementById(id);
+
+const money=n=>{
+  return new Intl.NumberFormat("id-ID",{
+    style:"currency",
+    currency:"IDR",
+    maximumFractionDigits:0
+  }).format(Number(n)||0);
+};
+
+const num=n=>Number(n)||0;
+
+function escapeHtml(v){
+  return String(v??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
+/* =========================================================
+   MONTH FUNCTIONS
+   ========================================================= */
+
+function monthKey(v){
+  const s=String(v??"").trim();
+
+  let m=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
+  if(m){
+    return `${m[1]}-${String(m[2]).padStart(2,"0")}`;
+  }
+
+  m=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
+  if(m){
+    return `${m[2]}-${String(m[1]).padStart(2,"0")}`;
+  }
+
+  const names={
+    jan:"01",january:"01",
+    feb:"02",february:"02",
+    mar:"03",march:"03",
+    apr:"04",april:"04",
+    may:"05",
+    jun:"06",june:"06",
+    jul:"07",july:"07",
+    aug:"08",august:"08",
+    sep:"09",sept:"09",september:"09",
+    oct:"10",october:"10",
+    nov:"11",november:"11",
+    dec:"12",december:"12"
+  };
+
+  const word=s.toLowerCase().match(/[a-z]+/);
+  const year=s.match(/20\d{2}/);
+
+  if(word && year && names[word[0]]){
+    return `${year[0]}-${names[word[0]]}`;
+  }
+
+  return /^\d{4}-\d{2}$/.test(s) ? s : s.slice(0,7);
+}
+
+function yearOf(v){
+  const m=String(v??"").match(/20\d{2}/);
+  return m?m[0]:"";
+}
+
+function monthLabel(k){
+  if(!k || !/^\d{4}-\d{2}$/.test(k))return k||"-";
+
+  const [y,m]=k.split("-");
+  const names=[
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  return `${names[Number(m)-1]} ${y}`;
+}
 
 function currentMonthKey(){
   const d=new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
 }
-function monthLabel(key){
-  const [y,m]=String(key||'').split('-');
-  const names=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  return y&&m?`${names[Number(m)-1]||m} ${y}`:key;
-}
-const START_MONTH_KEY='2026-09';
+
+/* =========================================================
+   MONTH DROPDOWN
+   ========================================================= */
+
 function ensureMonthOptions(){
-  const sel=$('dashboardMonth'); if(!sel)return;
-  // Periode dashboard dimulai dari September 2026.
-  // Bulan setelahnya akan otomatis muncul ketika bulan baru berjalan,
-  // sedangkan data bulan sebelumnya tetap tersimpan di database.
+
+  const sel=$("dashboardMonth");
+  if(!sel)return;
+
   const keys=new Set();
-  const start=new Date(2026,8,1); // September 2026
+
+  /* SELALU MULAI DARI SEPTEMBER 2026 */
+  const start=new Date(2026,8,1);
   const now=new Date();
   const end=new Date(now.getFullYear(),now.getMonth(),1);
-  for(let d=new Date(start); d<=end; d.setMonth(d.getMonth()+1)){
-    keys.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+
+  for(
+    let d=new Date(start);
+    d<=end;
+    d.setMonth(d.getMonth()+1)
+  ){
+    keys.add(
+      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`
+    );
   }
-  // Jika ada data mulai September, pastikan periodenya tetap tersedia.
-  [potential,customers,po,monthlyTargets].forEach(rows=>(rows||[]).forEach(x=>{
-    const k=monthKey(x.month||x.po_date||'');
-    if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
-  }));
-  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
-  const wanted=selectedMonthKey||currentMonthKey();
-  const safeWanted=wanted>=START_MONTH_KEY && sorted.includes(wanted)?wanted:(sorted.includes(currentMonthKey())?currentMonthKey():sorted[0]);
-  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===safeWanted?'selected':''}>${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=safeWanted||currentMonthKey();
-  sel.value=selectedMonthKey;
-}
-function activeMonthRows(rows,field='month'){
-  return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
-}
-function targetRowsForMonth(){
-  const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
-  if(rows.length)return rows;
-  return [];
-}
 
-const bdNames=()=>{
-  const names=[...profiles.map(p=>p.full_name).filter(Boolean),...potential.map(x=>x.bd),...customers.map(x=>x.bd),...po.map(x=>x.bd)].filter(Boolean);
-  const seen=new Set();
-  const clean=[];
-  for(const raw of names){
-    const name=String(raw).trim();
-    const key=name.toLowerCase();
-    if(!key || key==='marketing' || key==='azki' || key==='kahar' || key==='yappy' || key==='yappy sunandi' || seen.has(key)) continue;
-    seen.add(key);
-    clean.push(name);
-  }
-  return clean.sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
-};
-const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function monthKey(m){
-  const s=String(m??"").trim();
-  let x=s.match(/(20\\d{2})[-\\/](0?[1-9]|1[0-2])/);
-  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
-  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
-  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
-  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  x=s.toLowerCase().match(/([a-z]+)/);
-  const y=s.match(/20\\d{2}/);
-  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
-  return s.slice(0,7);
-}
-function yearOf(m){
-  const s=String(m??"");
-  const y=s.match(/20\\d{2}/);
-  return y?y[0]:s.slice(0,4);
-}
-const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
-const bdEq=(a,b)=>normBD(a)===normBD(b);
-const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
-function renderPotentialByBD(){
-  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
-  const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
-    const rows=activeMonthRows(potential).filter(x=>bdEq(x.bd,bd));
-    const total=rows.reduce((a,x)=>a+num(x.value),0);
-    return `<div class="bdMini"><h3>${esc(bd)}</h3><div class="big">${money(total)}</div><div class="sub">${rows.length} potential</div></div>`;
-  }).join('');
-  $('dashPotentialBD').innerHTML=html||'<div class="muted">Belum ada data Potential.</div>';
-}
-function renderCustomerMonthly(){
-  const filter=$('customerYearFilter')?.value||'2026';
-  const names=bdNames();
-  const years=filter==='all'?[2024,2025,2026]:[Number(filter)];
-  let out='';
-  for(const year of years){
-    out+=`<h3 style="color:#fff;margin:10px 0">${year}</h3><table><thead><tr><th>BD</th>${monthNames.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
-    out+=names.map(bd=>{
-      let total=0;
-      const cells=monthNames.map((_,i)=>{
-        const key=`${year}-${String(i+1).padStart(2,'0')}`;
-        const n=customers.filter(x=>bdEq(x.bd,bd)&&monthKey(x.month)===key).length; total+=n;
-        return `<td>${n||'-'}</td>`;
-      }).join('');
-      return `<tr><td><strong>${esc(bd)}</strong></td>${cells}<td><strong>${total}</strong></td></tr>`;
-    }).join('');
-    out+='</tbody></table>';
-  }
-  $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
-}
-function renderPOByBD(){
-  // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
-  const names=bdNames().filter(bd=>{
-    const n=String(bd||'').trim().toLowerCase();
-    return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
-  });
-  $('dashPOBD').innerHTML=names.map(bd=>{
-    const rows=activeMonthRows(po).filter(x=>bdEq(x.bd,bd));
-    const total=rows.reduce((a,x)=>a+num(x.value),0);
-    const byYear=[2024,2025,2026].map(y=>{
-      const r=rows.filter(x=>yearOf(x.month)===String(y));
-      return `<tr><td>${y}</td><td>${r.length}</td><td>${money(r.reduce((a,x)=>a+num(x.value),0))}</td></tr>`;
-    }).join('');
-    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total</div><div class="table"><table><thead><tr><th>Tahun</th><th>Qty PO</th><th>Nilai</th></tr></thead><tbody>${byYear}</tbody></table></div></div>`;
-  }).join('')||'<div class="muted">Belum ada data PO Received.</div>';
-}
+  function addFromRows(rows,fields){
 
-function poStatusOptions(value=""){
-  const opts=["","File Design","RPO","Produksi","Delivery","Selesai","Pending"];
-  return opts.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${o||'Pilih Status'}</option>`).join('');
-}
-function renderPOMonitor(){
-  const q=String($("searchPOMonitor")?.value||"").trim().toLowerCase();
-  const mf=$("poMonitorMonthFilter")?.value||selectedMonthKey||"all";
-  const sf=$("poMonitorStatusFilter")?.value||"all";
-  const months=[...new Set(poMonitoring.map(x=>String(x.po_date||"").slice(0,7)).filter(Boolean))].sort().reverse();
-  const sel=$("poMonitorMonthFilter");
-  if(sel){ const current=sel.value||"all"; sel.innerHTML='<option value="all">Semua Bulan</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join(''); sel.value=months.includes(current)?current:(months.includes(selectedMonthKey)?selectedMonthKey:"all"); }
-  const rows=poMonitoring.filter(x=>{
-    const hay=[x.po_number,x.customer_name,x.bd,x.article,x.need_help].join(' ').toLowerCase();
-    const matchQ=!q||hay.includes(q);
-    const matchM=mf==='all'||String(x.po_date||'').slice(0,7)===mf;
-    const statuses=[x.week1,x.week2,x.week3,x.week4].filter(Boolean);
-    const matchS=sf==='all'||statuses.includes(sf);
-    return matchQ&&matchM&&matchS;
-  });
-  const total=rows.reduce((a,x)=>a+num(x.value),0);
-  $("poMonitorTotal").textContent=money(total);
-  const statusOf=x=>x.week4||x.week3||x.week2||x.week1||'Pending';
-  const done=rows.filter(x=>statusOf(x)==='Selesai').length;
-  const process=rows.filter(x=>['File Design','RPO','Produksi','Delivery'].includes(statusOf(x))).length;
-  const pending=rows.filter(x=>statusOf(x)==='Pending').length;
-  const complain=rows.reduce((a,x)=>a+num(x.complain_qty),0);
-  const summary=[['TOTAL PO',rows.length],['TOTAL VALUE',money(total)],['PROSES',process],['SELESAI',done],['COMPLAIN QTY',complain]];
-  $("dashPOMonitorSummary").innerHTML=summary.map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
-  $("dashPOMonitor").innerHTML=rows.slice(0,10).map(x=>`<tr><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${money(x.value)}</td><td><span class="badge">${esc(statusOf(x))}</span></td><td>${esc(x.etd||'-')}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada monitoring PO.</td></tr>';
-  $("poMonitorTable").innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.po_date||'-')}</td><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${esc(x.article||'-')}</td><td>${num(x.qty).toLocaleString('id-ID')}</td><td>${money(x.price_per_roll)}</td><td>${money(x.value)}</td><td><span class="badge">${esc(x.week1||'-')}</span></td><td><span class="badge">${esc(x.week2||'-')}</span></td><td><span class="badge">${esc(x.week3||'-')}</span></td><td><span class="badge">${esc(x.week4||'-')}</span></td><td>${esc(x.etd||'-')}</td><td>${num(x.delivery_qty).toLocaleString('id-ID')}</td><td>${num(x.complain_qty).toLocaleString('id-ID')}</td><td>${esc(x.need_help||'-')}</td><td>${rowBtn('pomonitor',x.id)}</td></tr>`).join('')||'<tr><td colspan="18">Belum ada data Monitoring PO Customer.</td></tr>';
-}
+    (rows||[]).forEach(row=>{
 
-function displayRole(profileOrRole){
-  const role = typeof profileOrRole === "string"
-    ? profileOrRole
-    : (profileOrRole?.role || "");
-  const name = typeof profileOrRole === "object"
-    ? String(profileOrRole?.full_name || "").trim().toLowerCase()
-    : "";
-  if(name === "azki") return "BD Head";
-  if(name === "kahar") return "BD Manager";
-  if(name === "nicolas") return "BD Senior";
-  if(name === "anggri") return "BD Senior";
-  if(name === "yappy sunandi") return "HOD";
-  return String(role).toLowerCase() === "admin" ? "Admin" : "BD";
-}
+      fields.forEach(field=>{
 
-function render(){
-  ensureMonthOptions();
-  renderPotentialByBD();
-  renderCustomerMonthly();
-  renderPOByBD();
-  renderPOMonitor();
+        const k=monthKey(row?.[field]);
 
-  const monthPotential=activeMonthRows(potential);
-  const monthPO=activeMonthRows(po);
-  const monthTargets=targetRowsForMonth();
-
-  const totalTarget=monthTargets.reduce((a,x)=>a+num(x.target),0);
-  const totalPO=monthPO.reduce((a,x)=>a+num(x.value),0);
-  const totalPotential=monthPotential.reduce((a,x)=>a+num(x.value),0);
-  $("target").textContent=money(totalTarget);
-  $("achievement").textContent=money(totalPO);
-  $("potentialTotal").textContent=money(totalPotential);
-  $("poTotal").textContent=money(totalPO);
-  $("dashPotentialGrandTotal").textContent=money(totalPotential);
-  $("dashPOGrandTotal").textContent=money(totalPO);
-
-  const perfSeen=new Set();
-  const perf=profiles
-    .filter(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      return n && n!=="azki" && n!=="kahar" && n!=="marketing" && n!=="yappy" && n!=="yappy sunandi";
-    })
-    .sort((a,b)=>String(a.full_name||"").trim().localeCompare(String(b.full_name||"").trim(),"id",{sensitivity:"base"}))
-    .filter(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      if(perfSeen.has(n)) return false;
-      perfSeen.add(n); return true;
-    })
-    .map(p=>{
-      const n=String(p.full_name||"").trim().toLowerCase();
-      const f=monthTargets.find(x=>String(x.bd||"").trim().toLowerCase()===n);
-      const target=f?num(f.target):0;
-      const ach=monthPO.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
-      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
-    }).join("");
-  $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-  $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
-
-  $("potentialSectionTotal").textContent=money(totalPotential);
-  $("poSectionTotal").textContent=money(totalPO);
-
-  const forecastSum=monthTargets.reduce((a,x)=>a+num(x.forecast),0);
-  const targetSum=monthTargets.reduce((a,x)=>a+num(x.target),0);
-  const flexoSum=monthTargets.reduce((a,x)=>a+num(x.achievement_flexo),0);
-  const rotoSum=monthTargets.reduce((a,x)=>a+num(x.achievement_roto),0);
-  const forecastTotalSum=monthTargets.reduce((a,x)=>a+num(x.total),0);
-  const commissionFlexoSum=monthTargets.reduce((a,x)=>a+num(x.commission_flexo),0);
-  const commissionRotoSum=monthTargets.reduce((a,x)=>a+num(x.commission_roto),0);
-  $("forecastGrandTotal").textContent=money(forecastSum);
-  $("forecastTargetGrandTotal").textContent=money(targetSum);
-  $("forecastFlexoGrandTotal").textContent=money(flexoSum);
-  $("forecastRotoGrandTotal").textContent=money(rotoSum);
-  $("forecastPOGrandTotal").textContent=money(totalPO);
-  $("forecastPercentGrandTotal").textContent=targetSum?((totalPO/targetSum)*100).toFixed(1)+"%":"-";
-  $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
-  $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
-
-  $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
-
-  const isAdmin=profile?.role==="admin";
-  $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
-  $("poActionHead")?.classList.toggle("hidden",!isAdmin);
-  $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
-  renderPOTable($("searchPO")?.value||"");
-  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-
-  $("adminNav").classList.toggle("hidden",!isAdmin);
-  if(profile?.role==="admin"){
-    $("usersTable").innerHTML=profiles.map(p=>`<tr><td>${esc(p.full_name)}</td><td>${esc(displayRole(p))}</td><td>${money(p.target)}</td><td><button class="btn blue small" onclick="setTarget('${p.id}')">Ubah Target</button></td></tr>`).join("");
-  }
-}
-
-function renderPOTable(filter=""){
-  const q=normSearch(filter);
-  const isAdmin=profile?.role==="admin";
-  const rows=activeMonthRows(po).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q));
-  $("poTable").innerHTML=rows.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td>${isAdmin?`<td>${rowBtn("po",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?6:5}">Tidak ada data yang cocok.</td></tr>`;
-}
-
-function openEditor(kind,id=null){
-  editorKind=kind;editorId=id;
-  const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring,monthlyTarget:monthlyTargets}[kind]||[]).find(x=>x.id===id):null;
-  $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
-  let h="";
-  if(kind==="potential"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="customer"){
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="lost"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else if(kind==="complaint") {
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
-  } else if(kind==="po") {
-    if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
-  } else if(kind==="pomonitor") {
-    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
-  } else if(kind==="forecast") {
-    if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
-  } else if(kind==="monthlyTarget") {
-    if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
-  }
-  $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
-}
-function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorId=null}
-
-async function saveModal(){
-  let table,payload;
-  const val=id=>$(id)?.value??"";
-  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}}
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
-  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
-  if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
-  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim()),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
-  if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
-  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
-  closeModal();await load();
-}
-
-async function removeRow(kind,id){
-  if(!confirm("Hapus data ini?"))return;
-  if((kind==="po"||kind==="forecast"||kind==="monthlyTarget") && profile?.role!=="admin") return;
-  const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring",monthlyTarget:"monthly_targets"}[kind];
-  const r=await sb.from(table).delete().eq("id",id);
-  if(r.error)alert(r.error.message);else await load();
-}
-
-
-const importSheetMap={
-  "Potential":"potential_leads",
-  "Database Customer":"customer_database",
-  "Lost Leads":"lost_leads",
-  "Complaint Customer":"customer_complaints",
-  "PO Received":"po_received",
-  "Forecast & Target":"monthly_targets",
-  "Monitoring PO Customer":"po_monitoring"
-};
-function pick(obj,...keys){
-  const map={}; Object.keys(obj||{}).forEach(k=>map[normSearch(k).replace(/[^a-z0-9]/g,'')]=obj[k]);
-  for(const k of keys){const v=map[normSearch(k).replace(/[^a-z0-9]/g,'')];if(v!==undefined)return v;}
-  return "";
-}
-function excelDate(v){
-  if(v instanceof Date)return v.toISOString().slice(0,10);
-  if(typeof v==="number" && XLSX?.SSF?.parse_date_code){
-    const d=XLSX.SSF.parse_date_code(v); if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
-  }
-  return String(v??"").trim();
-}
-function mapImportRow(sheet,row){
-  if(sheet==="Potential") return {bd:String(pick(row,"BD","BD / Marketing")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),value:num(pick(row,"Nilai","Value")),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),notes:String(pick(row,"Catatan","Notes")).trim()};
-  if(sheet==="Database Customer") return {bd:String(pick(row,"BD","BD / Marketing")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),area:String(pick(row,"Area")).trim(),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),value:num(pick(row,"Nilai","Value")),notes:String(pick(row,"Catatan","Notes")).trim()};
-  if(sheet==="Lost Leads") return {bd:String(pick(row,"BD")).trim(),company:String(pick(row,"Company")).trim(),pic:String(pick(row,"PIC")).trim(),packaging:String(pick(row,"Packaging / Spec","Packaging")).trim(),product:String(pick(row,"Customer Product","Product")).trim(),production_system:String(pick(row,"Production System")).trim(),quantity_expected:num(pick(row,"Quantity Expected","Qty")),amount_expected:num(pick(row,"Amount Expected","Nilai","Value")),why_lost:String(pick(row,"Why Lost?","Why Lost")).trim(),closing_month:monthKey(pick(row,"Closing Expected","Closing","Closing Month")),description:String(pick(row,"Description")).trim()};
-  if(sheet==="Complaint Customer") return {bd:String(pick(row,"BD")).trim(),company:String(pick(row,"Company")).trim(),pic:String(pick(row,"PIC")).trim(),packaging:String(pick(row,"Packaging / Spec","Packaging")).trim(),product:String(pick(row,"Customer Product","Product")).trim(),article:String(pick(row,"Article")).trim(),production_system:String(pick(row,"Production System")).trim(),quantity_order:num(pick(row,"Quantity Order","Qty Order")),quantity_complain:num(pick(row,"Quantity Reject / Complain","Qty Complain")),why_complain:String(pick(row,"Why Complain?","Why Complain")).trim(),description:String(pick(row,"Description")).trim()};
-  if(sheet==="PO Received") return {bd:String(pick(row,"BD")).trim(),customer:String(pick(row,"Customer","Customer Name")).trim(),value:num(pick(row,"Nilai","Value")),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),notes:String(pick(row,"Catatan","Notes")).trim()};
-  if(sheet==="Forecast & Target") return {bd:String(pick(row,"BD")).trim(),month:monthKey(pick(row,"Bulan","Month")||selectedMonthKey),forecast:num(pick(row,"Forecast")),target:num(pick(row,"Target")),achievement_flexo:num(pick(row,"Ach. Flexo","Achievement Flexo")),achievement_roto:num(pick(row,"Ach. Roto","Achievement Roto")),total:num(pick(row,"Total")),percentage:num(pick(row,"Percentage","%")),commission_flexo:num(pick(row,"Komisi Flexo")),commission_roto:num(pick(row,"Komisi Roto"))};
-  if(sheet==="Monitoring PO Customer") return {po_date:excelDate(pick(row,"PO Date")),po_number:String(pick(row,"PO Number","PO")).trim(),customer_name:String(pick(row,"Customer Name","Customer")).trim(),bd:String(pick(row,"BD")).trim(),article:String(pick(row,"Artikel","Article")).trim(),qty:num(pick(row,"Qty","Quantity")),price_per_roll:num(pick(row,"Price (Rp/Roll)","Price")),value:num(pick(row,"Value","Nilai")),week1:String(pick(row,"Week 1")).trim(),week2:String(pick(row,"Week 2")).trim(),week3:String(pick(row,"Week 3")).trim(),week4:String(pick(row,"Week 4")).trim(),etd:excelDate(pick(row,"ETD")),delivery_qty:num(pick(row,"Delivery Qty","Delivery")),complain_qty:num(pick(row,"Complain Qty","Complain")),need_help:String(pick(row,"Need Help?","Need Help")).trim()};
-}
-function importRequiredOk(sheet,row){
-  if(sheet==="Potential"||sheet==="Database Customer"||sheet==="PO Received") return !!row.bd&&!!row.customer;
-  if(sheet==="Lost Leads"||sheet==="Complaint Customer") return !!row.bd&&!!row.company;
-  if(sheet==="Forecast & Target") return !!row.bd&&/^\d{4}-\d{2}$/.test(row.month);
-  if(sheet==="Monitoring PO Customer") return !!row.bd&&!!row.po_number&&!!row.customer_name;
-  return false;
-}
-async function previewImport(){
-  const file=$("excelImportFile")?.files?.[0];
-  if(!file){$("importMsg").className="msg error";$("importMsg").textContent="Pilih file Excel terlebih dahulu.";return}
-  if(profile?.role!=="admin"){alert("Hanya Admin yang dapat melakukan import Excel.");return}
-  try{
-    $("importMsg").className="msg";$("importMsg").textContent="Membaca file Excel...";
-    const data=await file.arrayBuffer();
-    const wb=XLSX.read(data,{type:"array",cellDates:true});
-    const parsed=[];
-    for(const sheet of Object.keys(importSheetMap)){
-      const actual=wb.SheetNames.find(n=>normSearch(n)===normSearch(sheet));
-      if(!actual)continue;
-      const raw=XLSX.utils.sheet_to_json(wb.Sheets[actual],{defval:""});
-      const rows=raw.map(r=>mapImportRow(sheet,r)).filter(r=>Object.values(r).some(v=>String(v??"").trim()!==""));
-      const valid=rows.filter(r=>importRequiredOk(sheet,r));
-      parsed.push({sheet,table:importSheetMap[sheet],rows:valid,rawCount:rows.length,invalid:rows.length-valid.length});
-    }
-    if(!parsed.length)throw new Error("Tidak ditemukan sheet dengan nama yang dikenali.");
-    pendingImport={parsed,fileName:file.name};
-    $("importPreview").innerHTML=parsed.map(x=>`<div style="padding:12px;border-bottom:1px solid #eee"><strong>${esc(x.sheet)}</strong> → ${esc(x.table)}<br>${x.rows.length} baris siap diimport${x.invalid?` • ${x.invalid} baris dilewati karena kolom wajib kosong`:''}</div>`).join('');
-    $("importPreview").classList.remove("hidden");
-    $("importActions").style.display="flex";
-    $("importMsg").className="msg success";$("importMsg").textContent=`File "${file.name}" siap diimport.`;
-  }catch(err){
-    console.error(err);pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";
-    $("importMsg").className="msg error";$("importMsg").textContent="Gagal membaca Excel: "+(err?.message||"format tidak dikenali.");
-  }
-}
-async function confirmImport(){
-  if(!pendingImport)return;
-  if(profile?.role!=="admin"){alert("Hanya Admin yang dapat melakukan import Excel.");return}
-  const btn=$("confirmImportBtn");btn.disabled=true;
-  try{
-    let inserted=0,updated=0;
-    for(const group of pendingImport.parsed){
-      for(const row of group.rows){
-        let existing=null;
-        if(group.sheet==="Forecast & Target"){
-          existing=monthlyTargets.find(x=>bdEq(x.bd,row.bd)&&monthKey(x.month)===row.month);
-        }else if(group.sheet==="Potential"){
-          existing=potential.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month);
-        }else if(group.sheet==="Database Customer"){
-          existing=customers.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month);
-        }else if(group.sheet==="PO Received"){
-          existing=po.find(x=>bdEq(x.bd,row.bd)&&normSearch(x.customer)===normSearch(row.customer)&&monthKey(x.month)===row.month&&num(x.value)===num(row.value));
-        }else if(group.sheet==="Monitoring PO Customer"){
-          existing=poMonitoring.find(x=>normSearch(x.po_number)===normSearch(row.po_number));
+        if(
+          /^\d{4}-\d{2}$/.test(k) &&
+          k>=START_MONTH_KEY
+        ){
+          keys.add(k);
         }
-        const result=existing
-          ? await sb.from(group.table).update(row).eq("id",existing.id)
-          : await sb.from(group.table).insert(row);
-        if(result.error)throw new Error(`${group.sheet}: ${result.error.message}`);
-        existing?updated++:inserted++;
-      }
-    }
-    pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("excelImportFile").value="";
-    $("importMsg").className="msg success";$("importMsg").textContent=`Import berhasil. ${inserted} data baru, ${updated} data diperbarui.`;
-    await load();
-  }catch(err){
-    console.error(err);$("importMsg").className="msg error";$("importMsg").textContent="Import gagal: "+(err?.message||"silakan cek struktur Excel.");
-  }finally{btn.disabled=false}
-}
 
-function downloadAllExcel(){
-  try{
-    if(typeof XLSX==='undefined'){
-      alert('Fitur Excel belum siap. Coba refresh halaman lalu ulangi.');
-      return;
-    }
-    const wb=XLSX.utils.book_new();
-    const cleanRows=(rows)=>rows.map(r=>{
-      const o={};
-      Object.keys(r||{}).forEach(k=>{ if(k!=='id') o[k]=r[k]; });
-      return o;
+      });
+
     });
-    const addSheet=(name,rows)=>{
-      const data=cleanRows(rows||[]);
-      const ws=XLSX.utils.json_to_sheet(data.length?data:[{}]);
-      XLSX.utils.book_append_sheet(wb,ws,name.slice(0,31));
-    };
-    addSheet('Potential',potential);
-    addSheet('Database Customer',customers);
-    addSheet('Lost Leads',lost);
-    addSheet('Complaint Customer',complaints);
-    addSheet('PO Received',po);
-    addSheet('Forecast & Target',monthlyTargets);
-    addSheet('Monitoring PO Customer',poMonitoring);
-    addSheet('User & Target',profiles.map(p=>({full_name:p.full_name,role:displayRole(p),target:p.target})));
 
-    const now=new Date();
-    const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('');
-    XLSX.writeFile(wb,`Cetakdong_Team_Azki_All_Data_${stamp}.xlsx`);
-  }catch(err){
-    console.error(err);
-    alert('Gagal membuat file Excel: '+(err?.message||'silakan coba lagi.'));
   }
-}
-window.downloadAllExcel=downloadAllExcel;
 
-window.openEditor=openEditor;window.removeRow=removeRow;window.go=go;
+  addFromRows(potential,["month"]);
+  addFromRows(customers,["month"]);
+  addFromRows(po,["month"]);
+  addFromRows(monthlyTargets,["month"]);
+  addFromRows(forecast,["month"]);
+  addFromRows(lost,["closing_month"]);
+  addFromRows(poMonitoring,["po_date","etd"]);
 
-async function setTarget(id){
-  if(profile.role!=="admin")return;
-  const p=profiles.find(x=>x.id===id);if(!p)return;
-  const v=prompt("Target baru untuk "+p.full_name,p.target||0);if(v===null)return;
-  const n=num(v);
-  let r=await sb.from("profiles").update({target:n}).eq("id",id);
-  if(r.error){alert(r.error.message);return}
-  const existing=monthlyTargets.find(x=>bdEq(x.bd,p.full_name)&&monthKey(x.month)===selectedMonthKey);
-  if(existing){
-    r=await sb.from("monthly_targets").update({target:n}).eq("id",existing.id);
-  }else{
-    r=await sb.from("monthly_targets").insert({bd:p.full_name,month:selectedMonthKey,target:n,forecast:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0});
+  let sorted=[...keys]
+    .filter(k=>k>=START_MONTH_KEY)
+    .sort()
+    .reverse();
+
+  if(!sorted.length){
+    sorted=[START_MONTH_KEY];
   }
-  if(r.error){alert(r.error.message);return}
-  await load();
+
+  let wanted=selectedMonthKey;
+
+  if(!wanted || !sorted.includes(wanted)){
+
+    const current=currentMonthKey();
+
+    wanted=
+      sorted.includes(current)
+        ? current
+        : sorted[0];
+  }
+
+  sel.innerHTML=sorted.map(k=>`
+    <option value="${k}" ${k===wanted?"selected":""}>
+      ${monthLabel(k)}
+    </option>
+  `).join("");
+
+  selectedMonthKey=wanted;
+  sel.value=wanted;
+
+  if($("activePeriodLabel")){
+    $("activePeriodLabel").textContent=monthLabel(selectedMonthKey);
+  }
+
+  if($("periodText")){
+    $("periodText").textContent=monthLabel(selectedMonthKey);
+  }
+
+  document.querySelectorAll(".periodDynamic")
+    .forEach(el=>el.textContent=monthLabel(selectedMonthKey));
 }
+
+/* =========================================================
+   ACTIVE MONTH
+   ========================================================= */
+
+function activeMonthRows(rows,field="month"){
+
+  return (rows||[]).filter(row=>{
+
+    return monthKey(row?.[field])===selectedMonthKey;
+
+  });
+
+}
+
+/* =========================================================
+   ROLE
+   ========================================================= */
+
+function displayRole(p){
+
+  if(!p)return "";
+
+  const r=String(p.role||"").toLowerCase();
+
+  if(r==="admin")return "ADMIN";
+
+  return "BD";
+}
+
+function isAdmin(){
+
+  return String(profile?.role||"").toLowerCase()==="admin";
+
+}
+
+/* =========================================================
+   AUTH
+   ========================================================= */
 
 async function start(){
-  if(!window.SUPABASE_URL||!window.SUPABASE_ANON_KEY)throw new Error("config.js belum terbaca.");
-  sb=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-  const s=await sb.auth.getSession();if(!s.data.session)return;
-  user=s.data.session.user;
-  const p=await sb.from("profiles").select("*").eq("id",user.id).single();
-  if(p.error||!p.data)throw new Error("Profil user belum dibuat di tabel profiles.");
-  profile=p.data;
-  $("login").classList.add("hidden");$("app").classList.remove("hidden");
-  $("who").textContent=(profile.full_name||user.email)+" • "+displayRole(profile);
-  await load();
-  sb.channel("cetakdong-live").on("postgres_changes",{event:"*",schema:"public",table:"potential_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_database"},load).on("postgres_changes",{event:"*",schema:"public",table:"lost_leads"},load).on("postgres_changes",{event:"*",schema:"public",table:"customer_complaints"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_received"},load).on("postgres_changes",{event:"*",schema:"public",table:"forecast_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"monthly_targets"},load).on("postgres_changes",{event:"*",schema:"public",table:"po_monitoring"},load).subscribe();
+
+  try{
+
+    if(!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY){
+
+      throw new Error(
+        "config.js belum terbaca. Pastikan file config.js ada di GitHub."
+      );
+
+    }
+
+    sb=supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+
+    const sessionResult=await sb.auth.getSession();
+
+    if(!sessionResult.data.session){
+      return;
+    }
+
+    user=sessionResult.data.session.user;
+
+    const p=await sb
+      .from("profiles")
+      .select("*")
+      .eq("id",user.id)
+      .single();
+
+    if(p.error || !p.data){
+
+      throw new Error(
+        "Profil user belum dibuat di tabel profiles."
+      );
+
+    }
+
+    profile=p.data;
+
+    showApp();
+
+    await load();
+
+    subscribeRealtime();
+
+  }catch(err){
+
+    console.error(err);
+
+    showLoginError(
+      err?.message ||
+      "Terjadi kesalahan saat membuka dashboard."
+    );
+
+  }
+
 }
 
-function authErrorMessage(err){
-  const msg=String(err?.message||"").toLowerCase();
-  if(msg.includes("invalid login credentials")||msg.includes("invalid credentials")||msg.includes("invalid email or password")){
-    return "Username/email atau password salah.";
-  }
-  if(msg.includes("email not confirmed")){
-    return "Email akun belum dikonfirmasi di Supabase.";
-  }
-  if(msg.includes("rate limit")){
-    return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
-  }
-  if(msg.includes("email")) return err.message;
-  return err?.message||"Login gagal.";
-}
+function showApp(){
 
-$("loginForm").onsubmit=async e=>{
-  e.preventDefault();
-  const btn=e.submitter||$("loginForm").querySelector("button[type=submit]");
-  try{
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses login...";
-    if(btn) btn.disabled=true;
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const email=$("email").value.trim();
-    const password=$("password").value;
-    const r=await sb.auth.signInWithPassword({email,password});
-    if(r.error) throw r.error;
-    await start();
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent=authErrorMessage(err);
-  }finally{
-    if(btn) btn.disabled=false;
-  }
-};
+  $("login").classList.add("hidden");
+  $("app").classList.remove("hidden");
 
-$("magic").onclick=async()=>{
-  const btn=$("magic");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Mengirim Magic Link...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.signInWithOtp({email:a,options:{emailRedirectTo:location.origin+location.pathname}});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Magic Link sudah diminta. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Magic Link gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
+  $("who").textContent=
+    `${profile?.full_name||user?.email||"-"} • ${displayRole(profile)}`;
 
-$("forgot").onclick=async()=>{
-  const btn=$("forgot");
-  try{
-    const a=$("email").value.trim();
-    if(!a){$("loginMsg").className="msg error";$("loginMsg").textContent="Isi email dulu.";return}
-    btn.disabled=true;
-    $("loginMsg").className="msg";
-    $("loginMsg").textContent="Memproses reset password...";
-    sb=sb||supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    const r=await sb.auth.resetPasswordForEmail(a,{redirectTo:location.origin+location.pathname});
-    if(r.error) throw r.error;
-    $("loginMsg").className="msg success";
-    $("loginMsg").textContent="Permintaan reset sudah dikirim. Cek Inbox/Spam email.";
-  }catch(err){
-    $("loginMsg").className="msg error";
-    $("loginMsg").textContent="Reset password gagal: "+(err?.message||"coba lagi.");
-  }finally{btn.disabled=false}
-};
-
-$("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
-
-function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim()}
-function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
-["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
-  const q=normSearch($(id).value);
-  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchPO")renderPOTable(q);
-}));
-
-$("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
-$("closePass").onclick=()=>$("passModal").classList.add("hidden");
-$("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
-
-window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
-document.querySelectorAll(".eyeBtn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const el=$(btn.dataset.target);
-    if(!el)return;
-    const show=el.type==="password";
-    el.type=show?"text":"password";
-    btn.textContent=show?"🙈":"👁";
-    btn.setAttribute("aria-label",show?"Sembunyikan password":"Tampilkan password");
-  });
-});
-
-$("saveReset").onclick=async()=>{
-  const a=$("reset1").value,b=$("reset2").value;
-  $("resetMsg").className="msg";
-  if(a.length<6){$("resetMsg").className="msg error";$("resetMsg").textContent="Password minimal 6 karakter.";return}
-  if(a!==b){$("resetMsg").className="msg error";$("resetMsg").textContent="Password tidak sama.";return}
-  const btn=$("saveReset");
-  try{
-    btn.disabled=true;
-    const r=await sb.auth.updateUser({password:a});
-    if(r.error)throw r.error;
-    $("resetMsg").className="msg success";
-    $("resetMsg").textContent="Password berhasil diubah. Silakan login kembali.";
-    setTimeout(async()=>{await sb.auth.signOut();location.href=location.origin+location.pathname},1200);
-  }catch(err){
-    $("resetMsg").className="msg error";
-    $("resetMsg").textContent=err?.message||"Gagal mengubah password.";
-  }finally{btn.disabled=false}
-};
-
-window.addEventListener("DOMContentLoaded",()=>{
-  try{
-    const c=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
-    c.auth.onAuthStateChange(async(event,session)=>{
-      if(event==="PASSWORD_RECOVERY"&&session){
-        sb=c;
-        $("reset1").value="";$("reset2").value="";$("resetMsg").textContent="";
-        $("resetModal").classList.remove("hidden");
-      }
+  document.querySelectorAll(".adminOnly")
+    .forEach(el=>{
+      el.style.display=isAdmin()?"block":"none";
     });
-  }catch(e){}
-});
+
+}
+
+function showLoginError(msg){
+
+  const box=$("loginError");
+
+  box.textContent=msg;
+  box.classList.remove("hidden");
+
+}
+
+async function login(email,password){
+
+  const r=await sb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(r.error)throw r.error;
+
+  user=r.data.user;
+
+  const p=await sb
+    .from("profiles")
+    .select("*")
+    .eq("id",user.id)
+    .single();
+
+  if(p.error || !p.data){
+
+    await sb.auth.signOut();
+
+    throw new Error(
+      "Login berhasil tetapi profil user belum tersedia di tabel profiles."
+    );
+
+  }
+
+  profile=p.data;
+
+  showApp();
+
+  await load();
+
+  subscribeRealtime();
+
+}
+
+async function logout(){
+
+  if(sb){
+    await sb.auth.signOut();
+  }
+
+  location.reload();
+
+}
+
+/* =========================================================
+   LOAD DATA
+   ========================================================= */
+
+async function load(){
+
+  const results=await Promise.all([
+
+    sb.from("profiles").select("*"),
+
+    sb.from("potential_leads").select("*"),
+
+    sb.from("customer_database").select("*"),
+
+    sb.from("lost_leads").select("*"),
+
+    sb.from("customer_complaints").select("*"),
+
+    sb.from("po_received").select("*"),
+
+    sb.from("forecast_targets").select("*"),
+
+    sb.from("po_monitoring").select("*"),
+
+    sb.from("monthly_targets").select("*")
+
+  ]);
+
+  profiles=results[0].data||[];
+  potential=results[1].data||[];
+  customers=results[2].data||[];
+  lost=results[3].data||[];
+  complaints=results[4].data||[];
+  po=results[5].data||[];
+  forecast=results[6].data||[];
+  poMonitoring=results[7].data||[];
+  monthlyTargets=results[8].data||[];
+
+  ensureMonthOptions();
+
+  render();
+
+}
+
+/* =========================================================
+   REALTIME
+   ========================================================= */
+
+function subscribeRealtime(){
+
+  if(!sb)return;
+
+  const tables=[
+    "profiles",
+    "potential_leads",
+    "customer_database",
+    "lost_leads",
+    "customer_complaints",
+    "po_received",
+    "forecast_targets",
+    "po_monitoring",
+    "monthly_targets"
+  ];
+
+  tables.forEach(table=>{
+
+    sb
+      .channel(`live-${table}`)
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table
+        },
+        async()=>{
+          await load();
+        }
+      )
+      .subscribe();
+
+  });
+
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render(){
+
+  ensureMonthOptions();
+
+  renderDashboard();
+  renderPotential();
+  renderCustomers();
+  renderLost();
+  renderComplaints();
+  renderPO();
+  renderMonitoring();
+  renderForecast();
+  renderPerformance();
+  renderUsers();
+
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function renderDashboard(){
+
+  const activePO=activeMonthRows(po,"month");
+  const activePotential=activeMonthRows(potential,"month");
+
+  const targetRows=activeMonthRows(monthlyTargets,"month");
+
+  let target=0;
+
+  targetRows.forEach(r=>{
+    target+=num(
+      r.target ??
+      r.value ??
+      r.amount
+    );
+  });
+
+  if(!target){
+
+    forecast
+      .filter(r=>monthKey(r.month)===selectedMonthKey)
+      .forEach(r=>{
+        target+=num(r.target);
+      });
+
+  }
+
+  const achievement=activePO.reduce(
+    (sum,r)=>sum+num(r.value),
+    0
+  );
+
+  const potentialValue=activePotential.reduce(
+    (sum,r)=>sum+num(r.value),
+    0
+  );
+
+  const percent=target
+    ? achievement/target*100
+    : 0;
+
+  $("dashTarget").textContent=money(target);
+  $("dashAchievement").textContent=money(achievement);
+  $("dashPotential").textContent=money(potentialValue);
+  $("dashPercent").textContent=
+    `${percent.toFixed(1)}%`;
+
+  ensureMonthOptions();
+
+  /* PERFORMANCE */
+
+  const bdSet=new Set();
+
+  profiles.forEach(p=>{
+    if(p.full_name)bdSet.add(p.full_name);
+  });
+
+  activePO.forEach(r=>{
+    if(r.bd)bdSet.add(r.bd);
+  });
+
+  targetRows.forEach(r=>{
+    if(r.bd)bdSet.add(r.bd);
+  });
+
+  const performanceRows=[];
+
+  [...bdSet]
+    .filter(Boolean)
+    .sort()
+    .forEach(bd=>{
+
+      const t=targetRows
+        .filter(r=>String(r.bd||"").toLowerCase()===String(bd).toLowerCase())
+        .reduce((s,r)=>s+num(r.target),0);
+
+      const p=activePO
+        .filter(r=>String(r.bd||"").toLowerCase()===String(bd).toLowerCase())
+        .reduce((s,r)=>s+num(r.value),0);
+
+      const pct=t?p/t*100:0;
+
+      performanceRows.push({
+        bd,
+        target:t,
+        po:p,
+        pct
+      });
+
+    });
+
+  $("dashPerformance").innerHTML=
+    performanceRows.length
+      ? performanceRows.map(r=>`
+        <tr>
+          <td><strong>${escapeHtml(r.bd)}</strong></td>
+          <td>${money(r.target)}</td>
+          <td>${money(r.po)}</td>
+          <td>
+            <span class="badge">${r.pct.toFixed(1)}%</span>
+          </td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="4" class="empty">Belum ada data</td></tr>`;
+
+  /* PO */
+
+  $("dashPO").innerHTML=
+    activePO.length
+      ? activePO.slice(0,10).map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.customer)}</td>
+          <td>${money(r.value)}</td>
+          <td>${monthLabel(monthKey(r.month))}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="4" class="empty">Belum ada PO pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   POTENTIAL
+   ========================================================= */
+
+function renderPotential(){
+
+  const rows=activeMonthRows(potential,"month");
+
+  $("potentialTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.customer)}</td>
+          <td>${money(r.value)}</td>
+          <td>${monthLabel(monthKey(r.month))}</td>
+          <td>${escapeHtml(r.notes)}</td>
+          <td>
+            <button class="actionBtn" onclick="openEditor('potential','${r.id}')">Edit</button>
+            <button class="actionBtn delete" onclick="deleteRow('potential_leads','${r.id}')">Hapus</button>
+          </td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="6" class="empty">Belum ada potential pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   CUSTOMER
+   ========================================================= */
+
+function renderCustomers(){
+
+  const rows=activeMonthRows(customers,"month");
+
+  $("customerTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.customer)}</td>
+          <td>${escapeHtml(r.area)}</td>
+          <td>${monthLabel(monthKey(r.month))}</td>
+          <td>${money(r.value)}</td>
+          <td>${escapeHtml(r.notes)}</td>
+          <td>
+            <button class="actionBtn" onclick="openEditor('customer','${r.id}')">Edit</button>
+            <button class="actionBtn delete" onclick="deleteRow('customer_database','${r.id}')">Hapus</button>
+          </td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="7" class="empty">Belum ada customer pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   LOST
+   ========================================================= */
+
+function renderLost(){
+
+  const rows=activeMonthRows(lost,"closing_month");
+
+  $("lostTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.company)}</td>
+          <td>${escapeHtml(r.pic)}</td>
+          <td>${money(r.amount_expected)}</td>
+          <td>${escapeHtml(r.why_lost)}</td>
+          <td>${monthLabel(monthKey(r.closing_month))}</td>
+          <td>
+            <button class="actionBtn" onclick="openEditor('lost','${r.id}')">Edit</button>
+            <button class="actionBtn delete" onclick="deleteRow('lost_leads','${r.id}')">Hapus</button>
+          </td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="7" class="empty">Belum ada lost lead pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   COMPLAINT
+   ========================================================= */
+
+function renderComplaints(){
+
+  $("complaintTable").innerHTML=
+    complaints.length
+      ? complaints.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.company)}</td>
+          <td>${escapeHtml(r.pic)}</td>
+          <td>${escapeHtml(r.product)}</td>
+          <td>${num(r.quantity_order)}</td>
+          <td>${num(r.quantity_complain)}</td>
+          <td>${escapeHtml(r.why_complain)}</td>
+          <td>
+            <button class="actionBtn" onclick="openEditor('complaint','${r.id}')">Edit</button>
+            <button class="actionBtn delete" onclick="deleteRow('customer_complaints','${r.id}')">Hapus</button>
+          </td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="8" class="empty">Belum ada complaint</td></tr>`;
+
+}
+
+/* =========================================================
+   PO
+   ========================================================= */
+
+function renderPO(){
+
+  const rows=activeMonthRows(po,"month");
+
+  $("poTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.customer)}</td>
+          <td>${money(r.value)}</td>
+          <td>${monthLabel(monthKey(r.month))}</td>
+          <td>${escapeHtml(r.notes)}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="5" class="empty">Belum ada PO pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   MONITORING
+   ========================================================= */
+
+function renderMonitoring(){
+
+  const rows=poMonitoring.filter(r=>{
+
+    const k1=monthKey(r.po_date);
+    const k2=monthKey(r.etd);
+
+    return k1===selectedMonthKey || k2===selectedMonthKey;
+
+  });
+
+  $("monitoringTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.po_date)}</td>
+          <td>${escapeHtml(r.po_number)}</td>
+          <td>${escapeHtml(r.customer_name)}</td>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${escapeHtml(r.article)}</td>
+          <td>${num(r.qty)}</td>
+          <td>${money(r.value)}</td>
+          <td>${escapeHtml(r.etd)}</td>
+          <td>${num(r.delivery_qty)}</td>
+          <td>${num(r.complain_qty)}</td>
+          <td>${escapeHtml(r.need_help)}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="11" class="empty">Belum ada monitoring PO pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   FORECAST
+   ========================================================= */
+
+function renderForecast(){
+
+  const rows=forecast.filter(
+    r=>monthKey(r.month)===selectedMonthKey
+  );
+
+  $("forecastTable").innerHTML=
+    rows.length
+      ? rows.map(r=>`
+        <tr>
+          <td>${escapeHtml(r.bd)}</td>
+          <td>${money(r.forecast)}</td>
+          <td>${money(r.target)}</td>
+          <td>${money(r.achievement_flexo)}</td>
+          <td>${money(r.achievement_roto)}</td>
+          <td>${money(r.total)}</td>
+          <td>${num(r.percentage).toFixed(1)}%</td>
+          <td>${money(r.commission_flexo)}</td>
+          <td>${money(r.commission_roto)}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="9" class="empty">Belum ada data forecast pada periode ini</td></tr>`;
+
+}
+
+/* =========================================================
+   PERFORMANCE
+   ========================================================= */
+
+function renderPerformance(){
+
+  const targetRows=activeMonthRows(monthlyTargets,"month");
+  const poRows=activeMonthRows(po,"month");
+
+  const bdSet=new Set();
+
+  profiles.forEach(p=>{
+    if(p.full_name)bdSet.add(p.full_name);
+  });
+
+  targetRows.forEach(r=>{
+    if(r.bd)bdSet.add(r.bd);
+  });
+
+  poRows.forEach(r=>{
+    if(r.bd)bdSet.add(r.bd);
+  });
+
+  const rows=[...bdSet].filter(Boolean).sort();
+
+  $("performanceTable").innerHTML=
+    rows.length
+      ? rows.map(bd=>{
+
+          const target=targetRows
+            .filter(r=>String(r.bd||"").toLowerCase()===String(bd).toLowerCase())
+            .reduce((s,r)=>s+num(r.target),0);
+
+          const received=poRows
+            .filter(r=>String(r.bd||"").toLowerCase()===String(bd).toLowerCase())
+            .reduce((s,r)=>s+num(r.value),0);
+
+          const pct=target?received/target*100:0;
+
+          return `
+            <tr>
+              <td><strong>${escapeHtml(bd)}</strong></td>
+              <td>${money(target)}</td>
+              <td>${money(received)}</td>
+              <td><span class="badge">${pct.toFixed(1)}%</span></td>
+              <td>
+                <div class="progress">
+                  <span style="width:${Math.min(pct,100)}%"></span>
+                </div>
+              </td>
+            </tr>
+          `;
+
+        }).join("")
+      : `<tr><td colspan="5" class="empty">Belum ada data performance</td></tr>`;
+
+}
+
+/* =========================================================
+   USERS
+   ========================================================= */
+
+function renderUsers(){
+
+  $("usersTable").innerHTML=
+    profiles.length
+      ? profiles.map(p=>`
+        <tr>
+          <td>${escapeHtml(p.full_name)}</td>
+          <td>${escapeHtml(p.email||"")}</td>
+          <td>${escapeHtml(p.role||"BD")}</td>
+          <td>${money(p.target)}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="4" class="empty">Belum ada user</td></tr>`;
+
+}
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+const editorConfig={
+
+  potential:{
+    title:"Potential",
+    table:"potential_leads",
+    fields:[
+      ["bd","BD","text"],
+      ["customer","Customer","text"],
+      ["value","Nilai","number"],
+      ["month","Bulan","month"],
+      ["notes","Catatan","textarea"]
+    ]
+  },
+
+  customer:{
+    title:"Database Customer",
+    table:"customer_database",
+    fields:[
+      ["bd","BD / Marketing","text"],
+      ["customer","Customer","text"],
+      ["area","Area","text"],
+      ["month","Bulan","month"],
+      ["value","Nilai","number"],
+      ["notes","Catatan","textarea"]
+    ]
+  },
+
+  lost:{
+    title:"Lost Lead",
+    table:"lost_leads",
+    fields:[
+      ["bd","BD","text"],
+      ["company","Company","text"],
+      ["pic","PIC","text"],
+      ["packaging","Packaging","text"],
+      ["product","Product","text"],
+      ["production_system","Production System","text"],
+      ["quantity_expected","Quantity Expected","number"],
+      ["amount_expected","Nilai Expected","number"],
+      ["why_lost","Alasan Lost","text"],
+      ["closing_month","Closing Month","month"],
+      ["description","Description","textarea"]
+    ]
+  },
+
+  complaint:{
+    title:"Complaint Customer",
+    table:"customer_complaints",
+    fields:[
+      ["bd","BD","text"],
+      ["company","Company","text"],
+      ["pic","PIC","text"],
+      ["packaging","Packaging","text"],
+      ["product","Product","text"],
+      ["article","Article","text"],
+      ["production_system","Production System","text"],
+      ["quantity_order","Qty Order","number"],
+      ["quantity_complain","Qty Complain","number"],
+      ["why_complain","Alasan Complaint","text"],
+      ["description","Description","textarea"]
+    ]
+  }
+
+};
+
+function openEditor(kind,id=null){
+
+  if(!editorConfig[kind])return;
+
+  editorKind=kind;
+  editorId=id;
+
+  const cfg=editorConfig[kind];
+
+  $("editorTitle").textContent=
+    `${id?"Edit":"Tambah"} ${cfg.title}`;
+
+  let old={};
+
+  if(id){
+
+    const source={
+      potential,
+      customer:customers,
+      lost,
+      complaint:complaints
+    }[kind]||[];
+
+    old=source.find(x=>String(x.id)===String(id))||{};
+
+  }
+
+  $("editorFields").innerHTML=
+    cfg.fields.map(([name,label,type])=>{
+
+      let value=old[name]??"";
+
+      if(!value && (name==="month"||name==="closing_month")){
+        value=selectedMonthKey;
+      }
+
+      if(type==="textarea"){
+
+        return `
+          <div class="formGroup full">
+            <label>${label}</label>
+            <textarea name="${name}">${escapeHtml(value)}</textarea>
+          </div>
+        `;
+
+      }
+
+      return `
+        <div class="formGroup">
+          <label>${label}</label>
+          <input
+            name="${name}"
+            type="${type}"
+            value="${escapeHtml(value)}"
+            ${name==="month"||name==="closing_month"?"":"required"}
+          >
+        </div>
+      `;
+
+    }).join("");
+
+  $("editorModal").classList.remove("hidden");
+
+}
+
+function closeEditor(){
+
+  $("editorModal").classList.add("hidden");
+  editorKind=null;
+  editorId=null;
+
+}
+
+async function saveEditor(e){
+
+  e.preventDefault();
+
+  const cfg=editorConfig[editorKind];
+
+  const data={};
+
+  cfg.fields.forEach(([name])=>{
+
+    const el=document.querySelector(
+      `#editorFields [name="${name}"]`
+    );
+
+    if(!el)return;
+
+    if(el.type==="number"){
+      data[name]=Number(el.value)||0;
+    }else{
+      data[name]=el.value;
+    }
+
+  });
+
+  try{
+
+    let result;
+
+    if(editorId){
+
+      result=await sb
+        .from(cfg.table)
+        .update(data)
+        .eq("id",editorId);
+
+    }else{
+
+      result=await sb
+        .from(cfg.table)
+        .insert(data);
+
+    }
+
+    if(result.error)throw result.error;
+
+    closeEditor();
+
+    await load();
+
+  }catch(err){
+
+    alert(
+      "Gagal menyimpan data:\n"+
+      (err?.message||err)
+    );
+
+  }
+
+}
+
+async function deleteRow(table,id){
+
+  if(!confirm("Yakin ingin menghapus data ini?"))return;
+
+  try{
+
+    const r=await sb
+      .from(table)
+      .delete()
+      .eq("id",id);
+
+    if(r.error)throw r.error;
+
+    await load();
+
+  }catch(err){
+
+    alert(
+      "Gagal menghapus data:\n"+
+      (err?.message||err)
+    );
+
+  }
+
+}
+
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+function openPasswordModal(){
+
+  $("passwordModal").classList.remove("hidden");
+  $("pass1").value="";
+  $("pass2").value="";
+  $("passError").classList.add("hidden");
+
+}
+
+function closePasswordModal(){
+
+  $("passwordModal").classList.add("hidden");
+
+}
+
+async function changePassword(e){
+
+  e.preventDefault();
+
+  const p1=$("pass1").value;
+  const p2=$("pass2").value;
+
+  if(p1.length<6){
+
+    $("passError").textContent=
+      "Password minimal 6 karakter.";
+
+    $("passError").classList.remove("hidden");
+
+    return;
+  }
+
+  if(p1!==p2){
+
+    $("passError").textContent=
+      "Konfirmasi password tidak sama.";
+
+    $("passError").classList.remove("hidden");
+
+    return;
+  }
+
+  const r=await sb.auth.updateUser({
+    password:p1
+  });
+
+  if(r.error){
+
+    $("passError").textContent=r.error.message;
+    $("passError").classList.remove("hidden");
+
+    return;
+  }
+
+  alert("Password berhasil diubah.");
+
+  closePasswordModal();
+
+}
+
+/* =========================================================
+   MAGIC LINK
+   ========================================================= */
+
+async function sendMagicLink(){
+
+  const email=$("email").value.trim();
+
+  if(!email){
+
+    showLoginError("Masukkan email terlebih dahulu.");
+    return;
+
+  }
+
+  const r=await sb.auth.signInWithOtp({
+    email,
+    options:{
+      emailRedirectTo:location.origin
+    }
+  });
+
+  if(r.error){
+
+    showLoginError(r.error.message);
+    return;
+
+  }
+
+  alert(
+    "Magic Link sudah dikirim ke email. Silakan cek inbox."
+  );
+
+}
+
+/* =========================================================
+   RESET PASSWORD
+   ========================================================= */
+
+async function resetPassword(){
+
+  const email=$("email").value.trim();
+
+  if(!email){
+
+    showLoginError(
+      "Masukkan email terlebih dahulu untuk reset password."
+    );
+
+    return;
+  }
+
+  const r=await sb.auth.resetPasswordForEmail(
+    email,
+    {
+      redirectTo:location.origin
+    }
+  );
+
+  if(r.error){
+
+    showLoginError(r.error.message);
+    return;
+
+  }
+
+  alert(
+    "Link reset password sudah dikirim ke email."
+  );
+
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+document.querySelectorAll(".navBtn[data-section]")
+  .forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+      const section=btn.dataset.section;
+
+      document.querySelectorAll(".navBtn[data-section]")
+        .forEach(x=>x.classList.remove("active"));
+
+      btn.classList.add("active");
+
+      document.querySelectorAll(".section")
+        .forEach(x=>x.classList.remove("active"));
+
+      const target=$(section);
+
+      if(target){
+        target.classList.add("active");
+      }
+
+    });
+
+  });
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+
+$("loginForm").addEventListener(
+  "submit",
+  async e=>{
+
+    e.preventDefault();
+
+    $("loginError").classList.add("hidden");
+
+    try{
+
+      await login(
+        $("email").value.trim(),
+        $("password").value
+      );
+
+    }catch(err){
+
+      showLoginError(
+        err?.message||
+        "Email atau password salah."
+      );
+
+    }
+
+  }
+);
+
+$("magicBtn").addEventListener(
+  "click",
+  sendMagicLink
+);
+
+$("resetBtn").addEventListener(
+  "click",
+  resetPassword
+);
+
+$("logoutBtn").addEventListener(
+  "click",
+  logout
+);
+
+$("changePasswordBtn").addEventListener(
+  "click",
+  openPasswordModal
+);
+
+$("passwordForm").addEventListener(
+  "submit",
+  changePassword
+);
+
+$("editorForm").addEventListener(
+  "submit",
+  saveEditor
+);
+
+/* =========================================================
+   MONTH SELECTOR
+   ========================================================= */
+
+$("dashboardMonth").addEventListener(
+  "change",
+  ()=>{
+
+    selectedMonthKey=
+      $("dashboardMonth").value;
+
+    ensureMonthOptions();
+
+    render();
+
+  }
+);
+
+$("currentMonthBtn").addEventListener(
+  "click",
+  ()=>{
+
+    const k=currentMonthKey();
+
+    selectedMonthKey=
+      k<START_MONTH_KEY
+        ? START_MONTH_KEY
+        : k;
+
+    ensureMonthOptions();
+
+    render();
+
+  }
+);
+
+/* =========================================================
+   EYE BUTTON
+   ========================================================= */
+
+document.querySelectorAll(".eyeBtn")
+  .forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+      const el=$(btn.dataset.target);
+
+      if(!el)return;
+
+      const show=el.type==="password";
+
+      el.type=
+        show
+          ? "text"
+          : "password";
+
+      btn.textContent=
+        show
+          ? "🙈"
+          : "👁";
+
+      btn.setAttribute(
+        "aria-label",
+        show
+          ? "Sembunyikan password"
+          : "Tampilkan password"
+      );
+
+    });
+
+  });
+
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+async function authState(){
+
+  if(!sb)return;
+
+  sb.auth.onAuthStateChange(
+    async(event,session)=>{
+
+      if(event==="SIGNED_OUT"){
+
+        $("app").classList.add("hidden");
+        $("login").classList.remove("hidden");
+
+      }
+
+      if(
+        event==="PASSWORD_RECOVERY" &&
+        session
+      ){
+
+        openPasswordModal();
+
+      }
+
+    }
+  );
+
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+(async()=>{
+
+  await start();
+
+  await authState();
+
+})();
 </script>
-</body></html>
+
+</body>
+</html>
