@@ -359,6 +359,10 @@ function activeMonthRows(rows,field='month'){
 function targetRowsForMonth(){
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
+  // September 2026 pada database lama disimpan di forecast_targets tanpa kolom bulan.
+  if(selectedMonthKey===START_MONTH_KEY && (forecast||[]).length){
+    return (forecast||[]).map(x=>({...x,__legacyForecast:true}));
+  }
   return [];
 }
 
@@ -563,7 +567,7 @@ function render(){
   $("poActionHead")?.classList.toggle("hidden",!isAdmin);
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
   renderPOTable($("searchPO")?.value||"");
-  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
+  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn(e.__legacyForecast?"forecast":"monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
@@ -624,9 +628,37 @@ async function saveModal(){
   if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
   if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim()),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
   if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
-  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
-  closeModal();await load();
+  let r;
+  if(editorId){
+    r=await sb.from(table).update(payload).eq("id",editorId).select("*").single();
+  }else{
+    r=await sb.from(table).insert(payload).select("*").single();
+  }
+  if(r.error){
+    $("modalMsg").className="msg error";
+    $("modalMsg").textContent="GAGAL MENYIMPAN: "+r.error.message;
+    return;
+  }
+
+  // Khusus Potential: setelah berhasil disimpan, langsung tampilkan data
+  // pada periode yang baru saja dipilih/disimpan, tanpa menunggu realtime.
+  if(editorKind==="potential" && r.data){
+    selectedMonthKey=monthKey(r.data.month)||selectedMonthKey||START_MONTH_KEY;
+    if(editorId){
+      const idx=potential.findIndex(x=>x.id===editorId);
+      if(idx>=0) potential[idx]=r.data; else potential.unshift(r.data);
+    }else{
+      potential.unshift(r.data);
+    }
+    closeModal();
+    ensureMonthOptions();
+    render();
+    alert("Data Potential berhasil disimpan ke "+monthLabel(selectedMonthKey)+".");
+    return;
+  }
+
+  closeModal();
+  await load();
 }
 
 async function removeRow(kind,id){
