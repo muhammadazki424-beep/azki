@@ -720,6 +720,24 @@ async function saveModal(){
 async function removeRow(kind,id){
   if(!confirm("Hapus data ini?"))return;
   if((kind==="po"||kind==="forecast"||kind==="monthlyTarget") && profile?.role!=="admin") return;
+
+  // Data fallback Oktober memakai ID seperti oct-p3, bukan UUID.
+  // Hapus secara lokal dan jangan kirim ID palsu tersebut ke Supabase.
+  const isUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(id||""));
+  if(!isUuid){
+    if(kind==="potential") potential=potential.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="customer") customers=customers.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="lost") lost=lost.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="complaint") complaints=complaints.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="po") po=po.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="forecast") forecast=forecast.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="pomonitor") poMonitoring=poMonitoring.filter(x=>String(x?.id)!==String(id));
+    else if(kind==="monthlyTarget") monthlyTargets=monthlyTargets.filter(x=>String(x?.id)!==String(id));
+    render();
+    alert("Data berhasil dihapus.");
+    return;
+  }
+
   const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring",monthlyTarget:"monthly_targets"}[kind];
   const r=await sb.from(table).delete().eq("id",id);
   if(r.error)alert(r.error.message);else await load();
