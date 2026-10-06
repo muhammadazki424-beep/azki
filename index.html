@@ -108,7 +108,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
   <main class="main">
     <section id="dashboard" class="section active">
       <div class="top">
-        <div><h1>Sales Dashboard</h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
+        <div><h1>Sales Dashboard <span id="activeMonthBadge" class="badge">September 2026</span></h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
         <div class="toolbar">
           <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
           <div id="sync" class="badge green">ONLINE</div>
@@ -274,6 +274,19 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
+function setActiveMonth(value){
+  const k=monthKey(value);
+  if(!/^\d{4}-\d{2}$/.test(k)) return;
+  selectedMonthKey=k;
+  try{localStorage.setItem('cetakteam_selected_month',k)}catch(e){}
+  const dash=$("dashboardMonth");
+  if(dash) dash.value=k;
+  document.querySelectorAll(".pageMonthSelect").forEach(sel=>sel.value=k);
+  const pm=$("poMonitorMonthFilter");
+  if(pm && [...pm.options].some(o=>o.value===k)) pm.value=k;
+  // Render langsung memakai k yang baru; jangan menunggu reload database.
+  render();
+}
 function syncPageMonthSelectors(){
   const main=$("dashboardMonth");
   const selects=[...document.querySelectorAll(".pageMonthSelect")];
@@ -281,16 +294,15 @@ function syncPageMonthSelectors(){
   selects.forEach(sel=>{
     sel.innerHTML=main?.innerHTML||`<option value="${value}">${monthLabel(value)}</option>`;
     sel.value=value;
-    sel.onchange=()=>{
-      selectedMonthKey=sel.value;
-      try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-      const pm=$("poMonitorMonthFilter");
-      if(pm) pm.value=selectedMonthKey;
-      render();
-    };
   });
 }
-$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){};render()};
+// Gunakan event delegation supaya selector tetap bekerja walaupun elemen dirender ulang.
+document.addEventListener("change",function(ev){
+  const el=ev.target;
+  if(el?.id==="dashboardMonth" || el?.classList?.contains("pageMonthSelect")){
+    setActiveMonth(el.value);
+  }
+});
 $("currentMonthBtn").onclick=()=>{
   const k=currentMonthKey();
   selectedMonthKey = k < START_MONTH_KEY ? START_MONTH_KEY : k;
@@ -362,10 +374,10 @@ function ensureMonthOptions(){
   ['2026-09','2026-10','2026-11','2026-12'].forEach(k=>keys.add(k));
   const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
   let wanted=selectedMonthKey;
-  if(!/^\d{4}-\d{2}$/.test(wanted) || wanted<START_MONTH_KEY){
+  if(!/^\d{4}-\d{2}$/.test(wanted) || wanted<START_MONTH_KEY || !sorted.includes(wanted)){
     wanted=START_MONTH_KEY;
   }
-  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
+  sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
   selectedMonthKey=wanted;
   sel.value=wanted;
   syncPageMonthSelectors();
@@ -540,6 +552,8 @@ function displayRole(profileOrRole){
 
 function render(){
   ensureMonthOptions();
+  const activeBadge=$("activeMonthBadge");
+  if(activeBadge) activeBadge.textContent=monthLabel(selectedMonthKey);
   renderPotentialByBD();
   renderCustomerMonthly();
   renderPOByBD();
