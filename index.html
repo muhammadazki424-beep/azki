@@ -41,6 +41,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 
 
+.pageMonth{display:flex;align-items:center;gap:7px;white-space:nowrap}.pageMonth label{margin:0;color:#667085;font-size:12px;font-weight:800}.pageMonth select{width:auto;min-width:165px;font-weight:800}.pageMonth select:focus{outline:2px solid #2563eb55;outline-offset:1px}
 .monthSelector{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .monthSelector label{margin:0;color:#667085}
 .monthSelector select{width:auto;min-width:170px;font-weight:800}
@@ -144,7 +145,6 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
           <button class="btn blue" id="confirmImportBtn">Konfirmasi Import</button>
         </div>
       </div>
-      <div class="panel" style="margin-top:12px;padding:12px 16px"><div class="sectionNote"><strong>Periode aktif:</strong> <span id="activePeriodLabel">-</span> &nbsp;•&nbsp; Potential: <span id="activePotentialCount">0</span> &nbsp;•&nbsp; PO: <span id="activePOCount">0</span> &nbsp;•&nbsp; Target: <span id="activeTargetCount">0</span></div></div>
       <div class="cards">
         <div class="card"><div class="k">TARGET</div><div id="target" class="v">Rp 0</div><div class="s">Total target BD</div></div>
         <div class="card"><div class="k">ACHIEVEMENT</div><div id="achievement" class="v">Rp 0</div><div class="s">Total PO Received</div></div>
@@ -171,42 +171,42 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
       <div class="panel">
         <div class="panelHead"><div><h2>📋 Monitoring PO Customer</h2><div class="sectionNote">Monitoring progress PO berdasarkan tanggal, customer, BD, dan status Week 1–4.</div></div><button class="btn gray small" onclick="go('pomonitor')">Kelola Monitoring PO</button></div>
         <div id="dashPOMonitorSummary" class="poSummary"></div>
-        <div class="table"><table><thead><tr><th>PO</th><th>Customer</th><th>BD</th><th>Bulan</th><th>Value</th><th>Status</th><th>ETD</th></tr></thead><tbody id="dashPOMonitor"></tbody></table></div>
+        <div class="table"><table><thead><tr><th>PO</th><th>Customer</th><th>BD</th><th>Value</th><th>Status</th><th>ETD</th></tr></thead><tbody id="dashPOMonitor"></tbody></table></div>
       </div>
 
       <div class="panel">
         <div class="panelHead"><h2>👥 BD Performance</h2><button class="btn gray small" onclick="go('performance')">Lihat Semua</button></div>
-        <div class="table"><table><thead><tr><th>BD</th><th>Bulan</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
+        <div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>Achievement</th><th>%</th></tr></thead><tbody id="dashPerf"></tbody></table></div>
       </div>
     </section>
 
     <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
+      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
     </section>
 
     <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
+      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
     </section>
 
     <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
+      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Closing / Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
     </section>
 
     <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
+      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Data complaint belum memiliki kolom bulan di database.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
     </section>
 
     <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
+      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPO" class="search" placeholder="Cari customer / BD / bulan / catatan..."><div style="font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="pomonitor" class="section">
-      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
+      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div></div>
       <div class="panel">
         <div class="toolbar" style="justify-content:space-between;align-items:center">
           <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
@@ -217,12 +217,12 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     </section>
 
     <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
+      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
     </section>
 
     <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
+      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
     </section>
 
@@ -262,6 +262,7 @@ let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[]
 const START_MONTH_KEY='2026-09';
 const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey=''; let pendingImport=null;
+try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||''; }catch(e){}
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -273,10 +274,27 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-$("dashboardMonth").onchange=()=>{const k=$("dashboardMonth").value;if(/^\d{4}-\d{2}$/.test(k)){selectedMonthKey=k;try{localStorage.setItem("cetakteam_selected_month",k)}catch(e){}};render()};
+function syncPageMonthSelectors(){
+  const main=$("dashboardMonth");
+  const selects=[...document.querySelectorAll(".pageMonthSelect")];
+  const value=selectedMonthKey||START_MONTH_KEY;
+  selects.forEach(sel=>{
+    sel.innerHTML=main?.innerHTML||`<option value="${value}">${monthLabel(value)}</option>`;
+    sel.value=value;
+    sel.onchange=()=>{
+      selectedMonthKey=sel.value;
+      try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
+      const pm=$("poMonitorMonthFilter");
+      if(pm) pm.value=selectedMonthKey;
+      render();
+    };
+  });
+}
+$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){};render()};
 $("currentMonthBtn").onclick=()=>{
   const k=currentMonthKey();
   selectedMonthKey = k < START_MONTH_KEY ? START_MONTH_KEY : k;
+  try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
   ensureMonthOptions();
   render();
 };
@@ -302,13 +320,6 @@ async function load(){
   const names=["profiles","potential","customers","lost","complaints","po","forecast","po_monitoring","monthly_targets"];
   for(let i=0;i<qs.length;i++) if(qs[i].error) throw new Error(names[i]+": "+qs[i].error.message);
   [profiles,potential,customers,lost,complaints,po,forecast,poMonitoring,monthlyTargets]=qs.map(x=>x.data||[]);
-  potential=potential.map(x=>({...x,month:monthKey(x.month)}));
-  customers=customers.map(x=>({...x,month:monthKey(x.month)}));
-  po=po.map(x=>({...x,month:monthKey(x.month)}));
-  monthlyTargets=monthlyTargets.map(x=>({...x,month:monthKey(x.month)}));
-  forecast=forecast.map(x=>({...x,month:monthKey(x.month)}));
-  lost=lost.map(x=>({...x,closing_month:monthKey(x.closing_month)}));
-  poMonitoring=poMonitoring.map(x=>({...x,po_date:excelDate(x.po_date),etd:excelDate(x.etd)}));
   render();
 }
 
@@ -324,24 +335,89 @@ function monthLabel(key){
 }
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=new Set(['2026-09','2026-10']);
-  const add=(rows,fields)=> (rows||[]).forEach(row=>fields.forEach(field=>{
-    const k=monthKey(row?.[field]);
-    if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
-  }));
-  add(potential,['month']); add(customers,['month']); add(po,['month']);
-  add(monthlyTargets,['month']); add(forecast,['month']); add(lost,['closing_month']); add(poMonitoring,['po_date','etd']);
-  const sorted=[...keys].filter(k=>/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY).sort().reverse();
-  let wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
-  if(!sorted.includes(wanted)) wanted=sorted.includes(START_MONTH_KEY)?START_MONTH_KEY:sorted[0];
-  sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=wanted; sel.value=wanted;
-  try{localStorage.setItem('cetakteam_selected_month',wanted)}catch(e){}
+  const keys=new Set();
+  const start=new Date(2026,8,1); // September 2026
+  const now=new Date();
+  const end=new Date(now.getFullYear(),now.getMonth(),1);
+  for(let d=new Date(start);d<=end;d.setMonth(d.getMonth()+1)){
+    keys.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+  const addFromRows=(rows,fields)=>{
+    (rows||[]).forEach(row=>{
+      fields.forEach(field=>{
+        const k=monthKey(row?.[field]);
+        if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
+      });
+    });
+  };
+  addFromRows(potential,['month']);
+  addFromRows(customers,['month']);
+  addFromRows(po,['month']);
+  addFromRows(monthlyTargets,['month']);
+  addFromRows(forecast,['month']);
+  addFromRows(lost,['closing_month']);
+  addFromRows(poMonitoring,['po_date','etd']);
+  // Selalu sediakan September-Desember 2026 agar bulan baru bisa dipilih
+  // walaupun belum mempunyai satu pun data.
+  ['2026-09','2026-10','2026-11','2026-12'].forEach(k=>keys.add(k));
+  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
+  let wanted=selectedMonthKey;
+  if(!/^\d{4}-\d{2}$/.test(wanted) || wanted<START_MONTH_KEY){
+    wanted=START_MONTH_KEY;
+  }
+  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
+  selectedMonthKey=wanted;
+  sel.value=wanted;
+  syncPageMonthSelectors();
 }
 function activeMonthRows(rows,field='month'){
-  return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
+  const actual=(rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
+  if(selectedMonthKey==='2026-10' && field==='month'){
+    if(rows===potential) return mergeOctoberSeed(actual,OCTOBER_POTENTIAL_SEED,x=>`${normBD(x.bd)}|${normSearch(x.customer)}|${num(x.value)}`);
+    if(rows===po) return mergeOctoberSeed(actual,OCTOBER_PO_SEED,x=>`${normBD(x.bd)}|${normSearch(x.customer)}|${num(x.value)}`);
+  }
+  return actual;
 }
+const OCTOBER_FORECAST_SEED=[
+  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:60240000,achievement_roto:0,total:60240000,percentage:0.16,commission_flexo:0,commission_roto:0},
+  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:32550000,achievement_roto:0,total:32550000,percentage:0.13,commission_flexo:0,commission_roto:0},
+  {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Others',forecast:0,target:0,achievement_flexo:39600000,achievement_roto:0,total:39600000,percentage:0,commission_flexo:0,commission_roto:0}
+].map(x=>({...x,id:null,month:'2026-10',__octoberSeed:true}));
+
+const OCTOBER_POTENTIAL_SEED=[
+  ['Anggri','karniv',48000000],['Anggri','Refli kosmedika',14000000],
+  ['Nicolas','CV Bin Suef',240000000],['Nicolas','Olabasket Bumi Indonesia',143000000],
+  ['Johnsen','Ibu Susi',110000000],['Johnsen','PT. INACO',475000000],['Johnsen','PT. INACO',250000000],
+  ['Nirina','PT. Rasa Eco Dijamin',47166000]
+].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
+
+const OCTOBER_PO_SEED=[
+  ['Nicolas','Dapur MYMY',17740000],['Nicolas','Rajawali Hyoto',42500000],
+  ['Johnsen','PT. Jaya Aditama',16275000],['Johnsen','Cv. Puncak Karya',16275000],
+  ['Other','Berka Abadi Pangan',39600000]
+].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
+
+function mergeOctoberSeed(actual,seed,keyFn){
+  const out=[...(actual||[])];
+  const used=new Set();
+  for(const row of out){ used.add(keyFn(row)); }
+  for(const row of seed){
+    const k=keyFn(row);
+    if(!used.has(k)){ out.push(row); used.add(k); }
+  }
+  return out;
+}
+
 function targetRowsForMonth(){
+  if(selectedMonthKey==='2026-10'){
+    // Oktober memakai angka yang terakhir dikirim user. Jika Supabase sudah berisi
+    // sebagian data, seed hanya melengkapi baris yang belum ada.
+    const actual=(monthlyTargets||[]).filter(x=>monthKey(x.month)==='2026-10');
+    const merged=mergeOctoberSeed(actual,OCTOBER_FORECAST_SEED,x=>`${normBD(x.bd)}|${monthKey(x.month)}`);
+    return merged.map(x=>({...x,__octoberSeed:!!x.__octoberSeed}));
+  }
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
 
@@ -350,8 +426,6 @@ function targetRowsForMonth(){
     return (forecast||[]).map(x=>({...x,__legacyForecast:true}));
   }
 
-  // Bulan baru (mis. Oktober 2026) selalu dimulai dari NOL,
-  // tetapi tetap menampilkan seluruh BD agar Admin bisa langsung Edit/Isi.
   const seen=new Set();
   return (profiles||[])
     .filter(p=>{
@@ -361,20 +435,7 @@ function targetRowsForMonth(){
       seen.add(key);
       return true;
     })
-    .map(p=>({
-      id:null,
-      bd:String(p.full_name||'').trim(),
-      month:selectedMonthKey,
-      forecast:0,
-      target:0,
-      achievement_flexo:0,
-      achievement_roto:0,
-      total:0,
-      percentage:0,
-      commission_flexo:0,
-      commission_roto:0,
-      __blankMonthly:true
-    }));
+    .map(p=>({id:null,bd:String(p.full_name||'').trim(),month:selectedMonthKey,forecast:0,target:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0,__blankMonthly:true}));
 }
 
 const bdNames=()=>{
@@ -392,12 +453,16 @@ const bdNames=()=>{
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
-  if(m instanceof Date && !isNaN(m)) return `${m.getFullYear()}-${String(m.getMonth()+1).padStart(2,'0')}`;
-  const s=String(m??'').trim(); if(!s)return '';
-  let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/); if(x)return `${x[1]}-${String(x[2]).padStart(2,'0')}`;
-  x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/); if(x)return `${x[2]}-${String(x[1]).padStart(2,'0')}`;
-  const names={jan:'01',january:'01',januari:'01',feb:'02',february:'02',februari:'02',mar:'03',march:'03',maret:'03',apr:'04',april:'04',may:'05',mei:'05',jun:'06',june:'06',juni:'06',jul:'07',july:'07',juli:'07',aug:'08',august:'08',agustus:'08',sep:'09',sept:'09',september:'09',okt:'10',okto:'10',oktober:'10',oct:'10',october:'10',nov:'11',november:'11',dec:'12',december:'12',des:'12',desember:'12'};
-  const lower=s.toLowerCase(); const word=lower.match(/[a-z]+/); const y=s.match(/20\d{2}/);
+  const s=String(m??"").trim();
+  if(!s)return "";
+  let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
+  x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
+  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
+  const lower=s.toLowerCase();
+  const word=lower.match(/[a-z]+/);
+  const y=s.match(/20\d{2}/);
   if(word&&names[word[0]])return `${y?y[0]:DEFAULT_DATA_YEAR}-${names[word[0]]}`;
   return s.slice(0,7);
 }
@@ -408,9 +473,9 @@ function yearOf(m){
 }
 const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
 const bdEq=(a,b)=>normBD(a)===normBD(b);
-const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy ') || n==="nicolas'" || n==="nicolas’"; };
+const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
 function renderPotentialByBD(){
-  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd)).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd) && normBD(bd)!=="nicolas'").sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
   const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
     const rows=activeMonthRows(potential).filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
@@ -439,15 +504,22 @@ function renderCustomerMonthly(){
   $('dashCustomerMonthly').innerHTML=out||'<div class="muted">Belum ada database customer.</div>';
 }
 function renderPOByBD(){
-  const names=bdNames().filter(bd=>{const n=String(bd||'').trim().toLowerCase();return !['marketing','azki','kahar','yappy','yappy sunandi'].includes(n);});
-  const monthText=monthLabel(selectedMonthKey);
+  // PO Received per BD: jangan tampilkan akun/nama internal Marketing, Azki, atau Kahar.
+  const names=bdNames().filter(bd=>{
+    const n=String(bd||'').trim().toLowerCase();
+    return n!=='marketing' && n!=='azki' && n!=='kahar' && n!=='yappy' && n!=='yappy sunandi';
+  });
   $('dashPOBD').innerHTML=names.map(bd=>{
     const rows=activeMonthRows(po).filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
-    const detail=rows.length?rows.map(x=>`<tr><td>${esc(x.customer||'-')}</td><td>${esc(monthLabel(monthKey(x.month)||selectedMonthKey))}</td><td>${money(x.value)}</td></tr>`).join(''):`<tr><td colspan="3">Tidak ada PO pada ${esc(monthText)}.</td></tr>`;
-    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total • ${esc(monthText)}</div><div class="table"><table><thead><tr><th>Customer</th><th>Bulan</th><th>Nilai</th></tr></thead><tbody>${detail}</tbody></table></div></div>`;
+    const byYear=[2024,2025,2026].map(y=>{
+      const r=rows.filter(x=>yearOf(x.month)===String(y));
+      return `<tr><td>${y}</td><td>${r.length}</td><td>${money(r.reduce((a,x)=>a+num(x.value),0))}</td></tr>`;
+    }).join('');
+    return `<div class="bdPanel"><h3>${esc(bd)}</h3><div class="big" style="font-size:20px;color:#fff;font-weight:800">${money(total)}</div><div class="sectionNote">${rows.length} PO total</div><div class="table"><table><thead><tr><th>Tahun</th><th>Qty PO</th><th>Nilai</th></tr></thead><tbody>${byYear}</tbody></table></div></div>`;
   }).join('')||'<div class="muted">Belum ada data PO Received.</div>';
 }
+
 function poStatusOptions(value=""){
   const opts=["","File Design","RPO","Produksi","Delivery","Selesai","Pending"];
   return opts.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${o||'Pilih Status'}</option>`).join('');
@@ -476,7 +548,7 @@ function renderPOMonitor(){
   const complain=rows.reduce((a,x)=>a+num(x.complain_qty),0);
   const summary=[['TOTAL PO',rows.length],['TOTAL VALUE',money(total)],['PROSES',process],['SELESAI',done],['COMPLAIN QTY',complain]];
   $("dashPOMonitorSummary").innerHTML=summary.map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
-  $("dashPOMonitor").innerHTML=rows.slice(0,10).map(x=>`<tr><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${esc(monthLabel(monthKey(x.po_date)||selectedMonthKey))}</td><td>${money(x.value)}</td><td><span class="badge">${esc(statusOf(x))}</span></td><td>${esc(x.etd||'-')}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada monitoring PO.</td></tr>';
+  $("dashPOMonitor").innerHTML=rows.slice(0,10).map(x=>`<tr><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${money(x.value)}</td><td><span class="badge">${esc(statusOf(x))}</span></td><td>${esc(x.etd||'-')}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada monitoring PO.</td></tr>';
   $("poMonitorTable").innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.po_date||'-')}</td><td>${esc(x.po_number||'-')}</td><td>${esc(x.customer_name||'-')}</td><td>${esc(x.bd||'-')}</td><td>${esc(x.article||'-')}</td><td>${num(x.qty).toLocaleString('id-ID')}</td><td>${money(x.price_per_roll)}</td><td>${money(x.value)}</td><td><span class="badge">${esc(x.week1||'-')}</span></td><td><span class="badge">${esc(x.week2||'-')}</span></td><td><span class="badge">${esc(x.week3||'-')}</span></td><td><span class="badge">${esc(x.week4||'-')}</span></td><td>${esc(x.etd||'-')}</td><td>${num(x.delivery_qty).toLocaleString('id-ID')}</td><td>${num(x.complain_qty).toLocaleString('id-ID')}</td><td>${esc(x.need_help||'-')}</td><td>${rowBtn('pomonitor',x.id)}</td></tr>`).join('')||'<tr><td colspan="18">Belum ada data Monitoring PO Customer.</td></tr>';
 }
 
@@ -505,10 +577,6 @@ function render(){
   const monthPotential=activeMonthRows(potential);
   const monthPO=activeMonthRows(po);
   const monthTargets=targetRowsForMonth();
-  $("activePeriodLabel").textContent=monthLabel(selectedMonthKey);
-  $("activePotentialCount").textContent=monthPotential.length;
-  $("activePOCount").textContent=monthPO.length;
-  $("activeTargetCount").textContent=monthTargets.length;
 
   const totalTarget=monthTargets.reduce((a,x)=>a+num(x.target),0);
   const totalPO=monthPO.reduce((a,x)=>a+num(x.value),0);
@@ -537,10 +605,10 @@ function render(){
       const f=monthTargets.find(x=>String(x.bd||"").trim().toLowerCase()===n);
       const target=f?num(f.target):0;
       const ach=monthPO.filter(x=>String(x.bd||"").trim().toLowerCase()===n).reduce((a,x)=>a+num(x.value),0);
-      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${esc(monthLabel(selectedMonthKey))}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
+      return `<tr><td>${esc(String(p.full_name||"").trim())}</td><td>${money(target)}</td><td>${money(ach)}</td><td>${target?(ach/target*100).toFixed(1):"0.0"}%</td></tr>`;
     }).join("");
-  $("dashPerf").innerHTML=perf||`<tr><td colspan="5">Belum ada data.</td></tr>`;
-  $("performanceTable").innerHTML=perf||`<tr><td colspan="5">Belum ada data.</td></tr>`;
+  $("dashPerf").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
+  $("performanceTable").innerHTML=perf||`<tr><td colspan="4">Belum ada data.</td></tr>`;
 
   $("potentialSectionTotal").textContent=money(totalPotential);
   $("poSectionTotal").textContent=money(totalPO);
@@ -557,13 +625,13 @@ function render(){
   $("forecastFlexoGrandTotal").textContent=money(flexoSum);
   $("forecastRotoGrandTotal").textContent=money(rotoSum);
   $("forecastPOGrandTotal").textContent=money(totalPO);
-  $("forecastPercentGrandTotal").textContent=targetSum?((totalPO/targetSum)*100).toFixed(1)+"%":"-";
+  $("forecastPercentGrandTotal").textContent=targetSum?Math.round((totalPO/targetSum)*100)+"%":"-";
   $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
   $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("customerTable").innerHTML=activeMonthRows(customers).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("lostTable").innerHTML=activeMonthRows(lost,'closing_month').map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
 
   const isAdmin=profile?.role==="admin";
@@ -601,25 +669,31 @@ function openEditor(kind,id=null){
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
-    const defaultPotentialMonth=selectedMonthKey||data?.month||START_MONTH_KEY;
+    // PERIODE POTENTIAL SELALU MENGIKUTI PERIODE YANG DIPILIH USER.
+    // Jangan pernah mengembalikan form ke September hanya karena record lama.
+    const defaultPotentialMonth=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPotentialMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPotentialMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPotentialMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPotentialMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="customer"){
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    const defaultCustomerMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultCustomerMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultCustomerMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultCustomerMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultCustomerMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="lost"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+    const defaultLostMonth=data?.closing_month ? monthKey(data.closing_month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}<div><label>Closing Expected / Bulan</label><select id="f_closing"><option value="2026-09" ${monthKey(defaultLostMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultLostMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultLostMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultLostMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="complaint") {
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="po") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    const defaultPOMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPOMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPOMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPOMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPOMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="pomonitor") {
-    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
+    const selectedDate=(()=>{ const k=selectedMonthKey||START_MONTH_KEY; return /^\d{4}-\d{2}$/.test(k)?k+'-01':new Date().toISOString().slice(0,10); })();
+    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||selectedDate,"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
   } else if(kind==="forecast") {
     if(profile.role!=="admin"){ closeModal(); return; }
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   } else if(kind==="monthlyTarget") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(data?.month||selectedMonthKey)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(data?.month||selectedMonthKey)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(data?.month||selectedMonthKey)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(data?.month||selectedMonthKey)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
   $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
@@ -630,29 +704,22 @@ async function saveModal(){
   const val=id=>$(id)?.value??"";
   if(editorKind==="potential"){
     table="potential_leads";
-    const potentialMonth=selectedMonthKey||monthKey(val("f_month").trim())||START_MONTH_KEY;
+    // KUNCI: ambil bulan dari SELECT di form. SELECT ini sudah diisi
+    // mengikuti bulan yang dipilih user pada halaman Potential.
+    // Jadi tidak ada fallback diam-diam ke September.
+    const formPotentialMonth=monthKey(val("f_month").trim());
+    const potentialMonth=/^\d{4}-\d{2}$/.test(formPotentialMonth)
+      ? formPotentialMonth
+      : (selectedMonthKey||START_MONTH_KEY);
     payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
   }
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
+  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
+  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:monthKey(val("f_closing").trim())||selectedMonthKey||START_MONTH_KEY,description:val("f_desc").trim()}}
   if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
-  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
+  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,notes:val("f_notes").trim()}; }
+  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date")||((selectedMonthKey||START_MONTH_KEY)+"-01"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
   if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
-  if(editorKind==="monthlyTarget"){
-    if(profile.role!=="admin") return;
-    table="monthly_targets";
-    const mtBd=val("f_bd").trim();
-    const mtMonth=monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY;
-    payload={bd:mtBd,month:mtMonth,forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))};
-    // monthly_targets memiliki UNIQUE (bd, month). Jika user menekan Tambah
-    // untuk BD + bulan yang sudah ada, UPDATE baris tersebut agar tidak kena
-    // error "duplicate key value".
-    if(!editorId && mtBd && mtMonth){
-      const existingMT=monthlyTargets.find(x=>bdEq(x.bd,mtBd)&&monthKey(x.month)===mtMonth);
-      if(existingMT) editorId=existingMT.id;
-    }
-  }
+  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
   if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
   let r;
   if(editorId){
@@ -669,7 +736,9 @@ async function saveModal(){
   // Khusus Potential: setelah berhasil disimpan, langsung tampilkan data
   // pada periode yang baru saja dipilih/disimpan, tanpa menunggu realtime.
   if(editorKind==="potential" && r.data){
-    selectedMonthKey=monthKey(r.data.month)||selectedMonthKey||START_MONTH_KEY;
+    // Setelah save, periode aktif mengikuti bulan yang benar-benar tersimpan.
+    const savedPotentialMonth=monthKey(r.data.month);
+    if(savedPotentialMonth) { selectedMonthKey=savedPotentialMonth; try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){} }
     if(editorId){
       const idx=potential.findIndex(x=>x.id===editorId);
       if(idx>=0) potential[idx]=r.data; else potential.unshift(r.data);
@@ -946,9 +1015,9 @@ function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").repla
 function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
 ["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
-  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchPotential")$("potentialTable").innerHTML=activeMonthRows(potential).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchCustomer")$("customerTable").innerHTML=activeMonthRows(customers).filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchLost")$("lostTable").innerHTML=activeMonthRows(lost,'closing_month').filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchPO")renderPOTable(q);
 }));
