@@ -41,6 +41,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 
 
+.pageMonth{display:flex;align-items:center;gap:7px;white-space:nowrap}.pageMonth label{margin:0;color:#667085;font-size:12px;font-weight:800}.pageMonth select{width:auto;min-width:165px;font-weight:800}.pageMonth select:focus{outline:2px solid #2563eb55;outline-offset:1px}
 .monthSelector{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .monthSelector label{margin:0;color:#667085}
 .monthSelector select{width:auto;min-width:170px;font-weight:800}
@@ -180,32 +181,32 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     </section>
 
     <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
+      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
     </section>
 
     <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
+      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
     </section>
 
     <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
+      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Closing / Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
     </section>
 
     <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
+      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Data complaint belum memiliki kolom bulan di database.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div></div>
       <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
     </section>
 
     <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
+      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPO" class="search" placeholder="Cari customer / BD / bulan / catatan..."><div style="font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="pomonitor" class="section">
-      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
+      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div></div>
       <div class="panel">
         <div class="toolbar" style="justify-content:space-between;align-items:center">
           <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
@@ -216,12 +217,12 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     </section>
 
     <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
+      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
     </section>
 
     <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
+      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
     </section>
 
@@ -272,6 +273,21 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
+function syncPageMonthSelectors(){
+  const main=$("dashboardMonth");
+  const selects=[...document.querySelectorAll(".pageMonthSelect")];
+  const value=selectedMonthKey||START_MONTH_KEY;
+  selects.forEach(sel=>{
+    sel.innerHTML=main?.innerHTML||`<option value="${value}">${monthLabel(value)}</option>`;
+    sel.value=value;
+    sel.onchange=()=>{
+      selectedMonthKey=sel.value;
+      const pm=$("poMonitorMonthFilter");
+      if(pm) pm.value=selectedMonthKey;
+      render();
+    };
+  });
+}
 $("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;render()};
 $("currentMonthBtn").onclick=()=>{
   const k=currentMonthKey();
@@ -340,18 +356,17 @@ function ensureMonthOptions(){
   addFromRows(poMonitoring,['po_date','etd']);
   const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
   if(!sorted.length) sorted.push(START_MONTH_KEY);
+  // PENTING: jangan pernah mengganti periode pilihan user hanya karena
+  // bulan tersebut belum mempunyai data. Bulan baru memang harus boleh kosong
+  // supaya data pertama bisa disimpan ke bulan yang sedang dipilih.
   let wanted=selectedMonthKey;
-  if(!wanted || !sorted.includes(wanted)){
-    const current=currentMonthKey();
-    const currentHasData = [potential,customers,po,monthlyTargets,forecast,lost,poMonitoring].some(rows => (rows||[]).some(row => {
-      const fields=['month','closing_month','po_date','etd'];
-      return fields.some(field => monthKey(row?.[field]??'')===current);
-    }));
-    wanted = sorted.includes(current) && currentHasData ? current : (sorted.includes(START_MONTH_KEY) ? START_MONTH_KEY : sorted[0]);
+  if(!/^\d{4}-\d{2}$/.test(wanted) || !sorted.includes(wanted)){
+    wanted=sorted.includes(START_MONTH_KEY)?START_MONTH_KEY:sorted[0];
   }
   sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
   selectedMonthKey=wanted;
   sel.value=wanted;
+  syncPageMonthSelectors();
 }
 function activeMonthRows(rows,field='month'){
   return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
@@ -584,8 +599,8 @@ function render(){
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
   $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("customerTable").innerHTML=activeMonthRows(customers).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("lostTable").innerHTML=activeMonthRows(lost,'closing_month').map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
 
   const isAdmin=profile?.role==="admin";
@@ -959,9 +974,9 @@ function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").repla
 function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
 ["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
-  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchPotential")$("potentialTable").innerHTML=activeMonthRows(potential).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchCustomer")$("customerTable").innerHTML=activeMonthRows(customers).filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchLost")$("lostTable").innerHTML=activeMonthRows(lost,'closing_month').filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchPO")renderPOTable(q);
 }));
