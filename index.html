@@ -262,6 +262,7 @@ let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[]
 const START_MONTH_KEY='2026-09';
 const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey=''; let pendingImport=null;
+try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||''; }catch(e){}
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -282,16 +283,18 @@ function syncPageMonthSelectors(){
     sel.value=value;
     sel.onchange=()=>{
       selectedMonthKey=sel.value;
+      try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
       const pm=$("poMonitorMonthFilter");
       if(pm) pm.value=selectedMonthKey;
       render();
     };
   });
 }
-$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;render()};
+$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){};render()};
 $("currentMonthBtn").onclick=()=>{
   const k=currentMonthKey();
   selectedMonthKey = k < START_MONTH_KEY ? START_MONTH_KEY : k;
+  try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
   ensureMonthOptions();
   render();
 };
@@ -638,9 +641,9 @@ function openEditor(kind,id=null){
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
-    // DATA BARU: selalu mengikuti periode yang sedang dipilih di halaman.
-    // DATA LAMA: tetap mempertahankan bulan record tersebut saat Edit.
-    const defaultPotentialMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    // PERIODE POTENTIAL SELALU MENGIKUTI PERIODE YANG DIPILIH USER.
+    // Jangan pernah mengembalikan form ke September hanya karena record lama.
+    const defaultPotentialMonth=selectedMonthKey||START_MONTH_KEY;
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPotentialMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPotentialMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPotentialMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPotentialMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="customer"){
     const defaultCustomerMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
@@ -675,8 +678,9 @@ async function saveModal(){
     table="potential_leads";
     // Nilai bulan di form harus valid. Untuk DATA BARU, fallback selalu ke
     // periode yang sedang dipilih user, bukan otomatis ke September.
-    const formPotentialMonth=monthKey(val("f_month").trim());
-    const potentialMonth=formPotentialMonth || (selectedMonthKey||START_MONTH_KEY);
+    // KUNCI: penyimpanan Potential mengikuti periode global yang sedang dipilih.
+    // Nilai f_month hanya untuk tampilan dan tidak boleh mengalahkan periode aktif.
+    const potentialMonth=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:(monthKey(val("f_month").trim())||START_MONTH_KEY);
     payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
   }
   if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
@@ -704,7 +708,7 @@ async function saveModal(){
   if(editorKind==="potential" && r.data){
     // Setelah save, periode aktif mengikuti bulan yang benar-benar tersimpan.
     const savedPotentialMonth=monthKey(r.data.month);
-    if(savedPotentialMonth) selectedMonthKey=savedPotentialMonth;
+    if(savedPotentialMonth) { selectedMonthKey=savedPotentialMonth; try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){} }
     if(editorId){
       const idx=potential.findIndex(x=>x.id===editorId);
       if(idx>=0) potential[idx]=r.data; else potential.unshift(r.data);
