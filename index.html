@@ -259,8 +259,8 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
 const START_MONTH_KEY='2026-09';
+const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey=''; let pendingImport=null;
-try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||START_MONTH_KEY; }catch(e){ selectedMonthKey=START_MONTH_KEY; }
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -272,8 +272,13 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value||START_MONTH_KEY;try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){};render()};
-$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){};render()};
+$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value;render()};
+$("currentMonthBtn").onclick=()=>{
+  const k=currentMonthKey();
+  selectedMonthKey = k < START_MONTH_KEY ? START_MONTH_KEY : k;
+  ensureMonthOptions();
+  render();
+};
 $("previewImportBtn").onclick=previewImport;
 $("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
 $("confirmImportBtn").onclick=confirmImport;
@@ -311,21 +316,80 @@ function monthLabel(key){
 }
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=['2026-10','2026-09'];
-  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
-  const keep=keys.includes(wanted)?wanted:START_MONTH_KEY;
-  sel.innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=keep; sel.value=keep;
-  try{localStorage.setItem("cetakteam_selected_month",keep)}catch(e){}
+  const keys=new Set();
+  const start=new Date(2026,8,1); // September 2026
+  const now=new Date();
+  const end=new Date(now.getFullYear(),now.getMonth(),1);
+  for(let d=new Date(start);d<=end;d.setMonth(d.getMonth()+1)){
+    keys.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+  const addFromRows=(rows,fields)=>{
+    (rows||[]).forEach(row=>{
+      fields.forEach(field=>{
+        const k=monthKey(row?.[field]);
+        if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
+      });
+    });
+  };
+  addFromRows(potential,['month']);
+  addFromRows(customers,['month']);
+  addFromRows(po,['month']);
+  addFromRows(monthlyTargets,['month']);
+  addFromRows(forecast,['month']);
+  addFromRows(lost,['closing_month']);
+  addFromRows(poMonitoring,['po_date','etd']);
+  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
+  if(!sorted.length) sorted.push(START_MONTH_KEY);
+  let wanted=selectedMonthKey;
+  if(!wanted || !sorted.includes(wanted)){
+    const current=currentMonthKey();
+    const currentHasData = [potential,customers,po,monthlyTargets,forecast,lost,poMonitoring].some(rows => (rows||[]).some(row => {
+      const fields=['month','closing_month','po_date','etd'];
+      return fields.some(field => monthKey(row?.[field]??'')===current);
+    }));
+    wanted = sorted.includes(current) && currentHasData ? current : (sorted.includes(START_MONTH_KEY) ? START_MONTH_KEY : sorted[0]);
+  }
+  sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
+  selectedMonthKey=wanted;
+  sel.value=wanted;
 }
-
 function activeMonthRows(rows,field='month'){
   return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
 }
 function targetRowsForMonth(){
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
-  return [];
+
+  // September 2026 tetap memakai data forecast lama yang sudah tersimpan.
+  if(selectedMonthKey===START_MONTH_KEY && (forecast||[]).length){
+    return (forecast||[]).map(x=>({...x,__legacyForecast:true}));
+  }
+
+  // Bulan baru (mis. Oktober 2026) selalu dimulai dari NOL,
+  // tetapi tetap menampilkan seluruh BD agar Admin bisa langsung Edit/Isi.
+  const seen=new Set();
+  return (profiles||[])
+    .filter(p=>{
+      const bd=String(p.full_name||'').trim();
+      const key=bd.toLowerCase();
+      if(!key || key==='azki' || key==='kahar' || key==='marketing' || key==='yappy' || key==='yappy sunandi' || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map(p=>({
+      id:null,
+      bd:String(p.full_name||'').trim(),
+      month:selectedMonthKey,
+      forecast:0,
+      target:0,
+      achievement_flexo:0,
+      achievement_roto:0,
+      total:0,
+      percentage:0,
+      commission_flexo:0,
+      commission_roto:0,
+      __blankMonthly:true
+    }));
 }
 
 const bdNames=()=>{
@@ -344,7 +408,7 @@ const bdNames=()=>{
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
   const s=String(m??"").trim();
-  if(!s)return '';
+  if(!s)return "";
   let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
   if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
   x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
@@ -353,9 +417,7 @@ function monthKey(m){
   const lower=s.toLowerCase();
   const word=lower.match(/[a-z]+/);
   const y=s.match(/20\d{2}/);
-  if(word&&names[word[0]])return `${y?y[0]:"2026"}-${names[word[0]]}`;
-  const d=s.match(/20\d{2}[-\/](0?[1-9]|1[0-2])[-\/]/);
-  if(d)return `${d[0].slice(0,7).replace('/','-')}`;
+  if(word&&names[word[0]])return `${y?y[0]:DEFAULT_DATA_YEAR}-${names[word[0]]}`;
   return s.slice(0,7);
 }
 function yearOf(m){
@@ -363,7 +425,6 @@ function yearOf(m){
   const y=s.match(/20\d{2}/);
   return y?y[0]:s.slice(0,4);
 }
-
 const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
 const bdEq=(a,b)=>normBD(a)===normBD(b);
 const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
@@ -532,7 +593,16 @@ function render(){
   $("poActionHead")?.classList.toggle("hidden",!isAdmin);
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
   renderPOTable($("searchPO")?.value||"");
-  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
+  $("forecastTable").innerHTML=monthTargets.map(e=>{
+    const action=isAdmin
+      ? (e.__legacyForecast
+          ? rowBtn("forecast",e.id)
+          : (e.__blankMonthly
+              ? `<button class="btn blue small" onclick="openEditor('monthlyTarget')">Isi / Edit</button>`
+              : rowBtn("monthlyTarget",e.id)))
+      : "";
+    return `<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${action}</td>`:""}</tr>`;
+  }).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
@@ -553,24 +623,29 @@ function openEditor(kind,id=null){
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    const defaultPotentialMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPotentialMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPotentialMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPotentialMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPotentialMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="customer"){
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    const defaultCustomerMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultCustomerMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultCustomerMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultCustomerMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultCustomerMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="lost"){
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+    const defaultLostMonth=data?.closing_month ? monthKey(data.closing_month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}<div><label>Closing Expected / Bulan</label><select id="f_closing"><option value="2026-09" ${monthKey(defaultLostMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultLostMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultLostMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultLostMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="complaint") {
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="po") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    const defaultPOMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPOMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPOMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPOMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPOMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="pomonitor") {
-    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
+    const selectedDate=(()=>{ const k=selectedMonthKey||START_MONTH_KEY; return /^\d{4}-\d{2}$/.test(k)?k+'-01':new Date().toISOString().slice(0,10); })();
+    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||selectedDate,"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
   } else if(kind==="forecast") {
     if(profile.role!=="admin"){ closeModal(); return; }
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   } else if(kind==="monthlyTarget") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(data?.month||selectedMonthKey)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(data?.month||selectedMonthKey)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(data?.month||selectedMonthKey)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(data?.month||selectedMonthKey)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
   $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
@@ -579,18 +654,50 @@ function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorI
 async function saveModal(){
   let table,payload;
   const val=id=>$(id)?.value??"";
-  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:monthKey(val("f_month").trim()||selectedMonthKey),notes:val("f_notes").trim()}}
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim()||selectedMonthKey),value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
+  if(editorKind==="potential"){
+    table="potential_leads";
+    const potentialMonth=monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY;
+    payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
+  }
+  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
+  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:monthKey(val("f_closing").trim())||selectedMonthKey||START_MONTH_KEY,description:val("f_desc").trim()}}
   if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:monthKey(val("f_month").trim()||selectedMonthKey),notes:val("f_notes").trim()}; }
-  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
+  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,notes:val("f_notes").trim()}; }
+  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date")||((selectedMonthKey||START_MONTH_KEY)+"-01"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
   if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
-  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim()||selectedMonthKey),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
+  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
   if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
-  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
-  closeModal();await load();
+  let r;
+  if(editorId){
+    r=await sb.from(table).update(payload).eq("id",editorId).select("*").single();
+  }else{
+    r=await sb.from(table).insert(payload).select("*").single();
+  }
+  if(r.error){
+    $("modalMsg").className="msg error";
+    $("modalMsg").textContent="GAGAL MENYIMPAN: "+r.error.message;
+    return;
+  }
+
+  // Khusus Potential: setelah berhasil disimpan, langsung tampilkan data
+  // pada periode yang baru saja dipilih/disimpan, tanpa menunggu realtime.
+  if(editorKind==="potential" && r.data){
+    selectedMonthKey=monthKey(r.data.month)||selectedMonthKey||START_MONTH_KEY;
+    if(editorId){
+      const idx=potential.findIndex(x=>x.id===editorId);
+      if(idx>=0) potential[idx]=r.data; else potential.unshift(r.data);
+    }else{
+      potential.unshift(r.data);
+    }
+    closeModal();
+    ensureMonthOptions();
+    render();
+    alert("Data Potential berhasil disimpan ke "+monthLabel(selectedMonthKey)+".");
+    return;
+  }
+
+  closeModal();
+  await load();
 }
 
 async function removeRow(kind,id){
