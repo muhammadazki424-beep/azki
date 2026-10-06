@@ -259,8 +259,8 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
 const START_MONTH_KEY='2026-09';
-let selectedMonthKey='';
-try{selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||START_MONTH_KEY}catch(e){selectedMonthKey=START_MONTH_KEY;} let pendingImport=null;
+let selectedMonthKey=''; let pendingImport=null;
+try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||START_MONTH_KEY; }catch(e){ selectedMonthKey=START_MONTH_KEY; }
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -311,16 +311,12 @@ function monthLabel(key){
 }
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=new Set(['2026-09','2026-10',currentMonthKey()]);
-  const add=(rows,field)=> (rows||[]).forEach(x=>{ const k=monthKey(x?.[field]??''); if(/^\d{4}-\d{2}$/.test(k)) keys.add(k); });
-  add(potential,'month'); add(customers,'month'); add(po,'month'); add(monthlyTargets,'month');
-  // Hanya periode September 2026 ke depan. Data Januari/Agustus lama tidak boleh muncul di selector.
-  const sorted=[...keys].filter(k=>/^\d{4}-\d{2}$/.test(k)&&k>=START_MONTH_KEY).sort().reverse();
-  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)&&selectedMonthKey>=START_MONTH_KEY?selectedMonthKey:START_MONTH_KEY;
-  selectedMonthKey=sorted.includes(wanted)?wanted:(sorted.includes(START_MONTH_KEY)?START_MONTH_KEY:START_MONTH_KEY);
-  sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  sel.value=selectedMonthKey;
-  try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
+  const keys=['2026-10','2026-09'];
+  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
+  const keep=keys.includes(wanted)?wanted:START_MONTH_KEY;
+  sel.innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
+  selectedMonthKey=keep; sel.value=keep;
+  try{localStorage.setItem("cetakteam_selected_month",keep)}catch(e){}
 }
 
 function activeMonthRows(rows,field='month'){
@@ -348,22 +344,26 @@ const bdNames=()=>{
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
   const s=String(m??"").trim();
-  if(!s)return "";
+  if(!s)return '';
   let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
   if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
   x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
   if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
-  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",okt:"10",oktober:"10",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  const lower=s.toLowerCase(); const word=lower.match(/[a-z]+/); const y=s.match(/20\d{2}/);
-  if(word&&names[word[0]]&&y)return `${y[0]}-${names[word[0]]}`;
+  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
+  const lower=s.toLowerCase();
+  const word=lower.match(/[a-z]+/);
+  const y=s.match(/20\d{2}/);
+  if(word&&names[word[0]])return `${y?y[0]:"2026"}-${names[word[0]]}`;
+  const d=s.match(/20\d{2}[-\/](0?[1-9]|1[0-2])[-\/]/);
+  if(d)return `${d[0].slice(0,7).replace('/','-')}`;
   return s.slice(0,7);
 }
-
 function yearOf(m){
   const s=String(m??"");
-  const y=s.match(/20\\d{2}/);
+  const y=s.match(/20\d{2}/);
   return y?y[0]:s.slice(0,4);
 }
+
 const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
 const bdEq=(a,b)=>normBD(a)===normBD(b);
 const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
@@ -908,4 +908,3 @@ window.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 </body></html>
-
