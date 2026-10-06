@@ -258,7 +258,9 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
-let selectedMonthKey=''; try{selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||'2026-09'}catch(e){selectedMonthKey='2026-09'} let pendingImport=null;
+const START_MONTH_KEY='2026-09';
+let selectedMonthKey=''; let pendingImport=null;
+try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||START_MONTH_KEY; }catch(e){ selectedMonthKey=START_MONTH_KEY; }
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -270,8 +272,8 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-$("dashboardMonth").onchange=()=>{const v=$("dashboardMonth").value;if(/^\d{4}-\d{2}$/.test(v)){selectedMonthKey=v;try{localStorage.setItem('cetakteam_selected_month',v)}catch(e){};render()}};
-$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();render()};
+$("dashboardMonth").onchange=()=>{selectedMonthKey=$("dashboardMonth").value||START_MONTH_KEY;try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){};render()};
+$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){};render()};
 $("previewImportBtn").onclick=previewImport;
 $("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
 $("confirmImportBtn").onclick=confirmImport;
@@ -309,28 +311,32 @@ function monthLabel(key){
 }
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=new Set(['2026-09','2026-10','2026-11','2026-12']);
-  const addFromRows=(rows,fields)=>{(rows||[]).forEach(x=>fields.forEach(f=>{const k=monthKey(x?.[f]);if(/^\d{4}-\d{2}$/.test(k)&&k>='2026-09')keys.add(k)}))};
-  addFromRows(potential,['month']);
-  addFromRows(customers,['month']);
-  addFromRows(po,['month']);
-  addFromRows(monthlyTargets,['month']);
-  addFromRows(poMonitoring,['po_date','etd']);
-  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:'2026-09';
-  const sorted=[...keys].filter(k=>k>='2026-09').sort().reverse();
+  const keys=new Set(['2026-09','2026-10','2026-11','2026-12',currentMonthKey()]);
+  const addRows=(rows,fields)=> (rows||[]).forEach(x=>fields.forEach(f=>{
+    const k=monthKey(x?.[f]);
+    if(/^\d{4}-\d{2}$/.test(k) && k>=START_MONTH_KEY) keys.add(k);
+  }));
+  addRows(potential,['month','created_at']);
+  addRows(customers,['month','created_at']);
+  addRows(po,['month','created_at']);
+  addRows(monthlyTargets,['month','created_at']);
+  addRows(lost,['closing_month','created_at']);
+  addRows(poMonitoring,['po_date','etd','created_at']);
+  const sorted=[...keys].filter(k=>/^\d{4}-\d{2}$/.test(k)&&k>=START_MONTH_KEY).sort().reverse();
+  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
+  const keep=sorted.includes(wanted)?wanted:START_MONTH_KEY;
   sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=sorted.includes(wanted)?wanted:'2026-09';
-  sel.value=selectedMonthKey;
+  selectedMonthKey=keep;
+  sel.value=keep;
+  try{localStorage.setItem('cetakteam_selected_month',keep)}catch(e){}
 }
+
 function activeMonthRows(rows,field='month'){
   return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
 }
 function targetRowsForMonth(){
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
-  if(selectedMonthKey==='2026-09' && (forecast||[]).length){
-    return (forecast||[]).map(x=>({...x,__legacyForecast:true,month:'2026-09'}));
-  }
   return [];
 }
 
@@ -349,20 +355,19 @@ const bdNames=()=>{
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
-  const s=String(m??'').trim();
+  const s=String(m??"").trim();
   if(!s)return '';
   let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
-  if(x)return `${x[1]}-${String(x[2]).padStart(2,'0')}`;
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
   x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
-  if(x)return `${x[2]}-${String(x[1]).padStart(2,'0')}`;
-  x=s.match(/(20\d{2})[\s.-]+(0?[1-9]|1[0-2])(?!\d)/);
-  if(x)return `${x[1]}-${String(x[2]).padStart(2,'0')}`;
-  const names={jan:'01',january:'01',feb:'02',february:'02',mar:'03',march:'03',apr:'04',april:'04',may:'05',jun:'06',june:'06',jul:'07',july:'07',aug:'08',august:'08',sep:'09',sept:'09',september:'09',oct:'10',october:'10',nov:'11',november:'11',dec:'12',december:'12'};
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
+  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
   const lower=s.toLowerCase();
   const word=lower.match(/[a-z]+/);
   const y=s.match(/20\d{2}/);
-  if(word&&names[word[0]])return `${y?y[0]:'2026'}-${names[word[0]]}`;
-  if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,7);
+  if(word&&names[word[0]])return `${y?y[0]:"2026"}-${names[word[0]]}`;
+  const d=s.match(/20\d{2}[-\/](0?[1-9]|1[0-2])[-\/]/);
+  if(d)return `${d[0].slice(0,7).replace('/','-')}`;
   return s.slice(0,7);
 }
 function yearOf(m){
@@ -370,6 +375,7 @@ function yearOf(m){
   const y=s.match(/20\d{2}/);
   return y?y[0]:s.slice(0,4);
 }
+
 const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLowerCase();
 const bdEq=(a,b)=>normBD(a)===normBD(b);
 const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
