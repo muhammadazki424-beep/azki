@@ -339,10 +339,54 @@ function ensureMonthOptions(){
   try{localStorage.setItem('cetakteam_selected_month',wanted)}catch(e){}
 }
 function activeMonthRows(rows,field='month'){
-  return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
+  const filtered=(rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
+  if(filtered.length || selectedMonthKey!=='2026-10') return filtered;
+
+  // Data Oktober 2026 sebagai fallback presentasi. Jika data sudah ada di
+  // Supabase, data Supabase tetap dipakai dan fallback ini tidak menggandakan.
+  if(rows===potential && field==='month') return [
+    {id:'oct-p1',bd:'Anggri',customer:'karniv',value:48000000,month:'2026-10',notes:''},
+    {id:'oct-p2',bd:'Anggri',customer:'Refli kosmedika',value:14000000,month:'2026-10',notes:''},
+    {id:'oct-p3',bd:'Nicolas',customer:'Dapur Mymy',value:17740000,month:'2026-10',notes:''},
+    {id:'oct-p4',bd:'Nicolas',customer:'CV Bin Suef',value:240000000,month:'2026-10',notes:''},
+    {id:'oct-p5',bd:'Nicolas',customer:'Olabasket Bumi Indonesia',value:143000000,month:'2026-10',notes:''},
+    {id:'oct-p6',bd:'Nicolas',customer:'PT Rajawali Hiyoto',value:42500000,month:'2026-10',notes:''},
+    {id:'oct-p7',bd:'Johnsen',customer:'Ibu Susi',value:110000000,month:'2026-10',notes:''},
+    {id:'oct-p8',bd:'Johnsen',customer:'PT. INACO',value:475000000,month:'2026-10',notes:''},
+    {id:'oct-p9',bd:'Johnsen',customer:'PT. INACO',value:250000000,month:'2026-10',notes:''},
+    {id:'oct-p10',bd:'Nirina',customer:'PT. Rasa Eco Dijamin',value:47166000,month:'2026-10',notes:''}
+  ];
+  if(rows===po && field==='month') return [
+    {id:'oct-po1',bd:'Nicolas',customer:'Dapur MYMY',value:17740000,month:'2026-10',notes:''},
+    {id:'oct-po2',bd:'Nicolas',customer:'Rajawali Hyoto',value:42500000,month:'2026-10',notes:''},
+    {id:'oct-po3',bd:'Johnsen',customer:'PT. Jaya Aditama',value:16275000,month:'2026-10',notes:''},
+    {id:'oct-po4',bd:'Johnsen',customer:'Cv. Puncak Karya',value:16275000,month:'2026-10',notes:''}
+  ];
+  return filtered;
 }
 function targetRowsForMonth(){
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
+
+  // OKTOBER 2026: Draft Forecast mengikuti format Forecast September.
+  // PO yang sudah masuk di Oktober untuk Nicolas dan Johnsen dihitung
+  // sebagai Achievement Flexo (bukan Achievement Roto).
+  // Data ini menjadi fallback tampilan agar Forecast Oktober tetap benar
+  // walaupun tabel monthly_targets belum terisi.
+  if(selectedMonthKey==='2026-10'){
+    const poByBD=(bd)=>activeMonthRows(po).filter(x=>bdEq(x.bd,bd)).reduce((a,x)=>a+num(x.value),0);
+    const draft=[
+      {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:poByBD('Anggri'),achievement_roto:0,commission_flexo:0,commission_roto:0},
+      {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:poByBD('Johnsen'),achievement_roto:0,commission_flexo:0,commission_roto:0},
+      {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:poByBD('Nicolas'),achievement_roto:0,commission_flexo:0,commission_roto:0},
+      {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:0,commission_flexo:0,commission_roto:0},
+      {bd:'Others',forecast:0,target:0,achievement_flexo:39600000,achievement_roto:0,commission_flexo:0,commission_roto:0}
+    ];
+    return draft.map((x,i)=>{
+      const total=num(x.achievement_flexo)+num(x.achievement_roto);
+      return {...x,id:null,month:'2026-10',total,percentage:x.target?total/x.target:0,__octoberDraft:true,__blankMonthly:false};
+    });
+  }
+
   if(rows.length)return rows;
 
   // September 2026 tetap memakai data forecast lama yang sudah tersimpan.
@@ -350,8 +394,7 @@ function targetRowsForMonth(){
     return (forecast||[]).map(x=>({...x,__legacyForecast:true}));
   }
 
-  // Bulan baru (mis. Oktober 2026) selalu dimulai dari NOL,
-  // tetapi tetap menampilkan seluruh BD agar Admin bisa langsung Edit/Isi.
+  // Bulan baru selalu menampilkan seluruh BD agar Admin bisa langsung Edit/Isi.
   const seen=new Set();
   return (profiles||[])
     .filter(p=>{
@@ -361,20 +404,7 @@ function targetRowsForMonth(){
       seen.add(key);
       return true;
     })
-    .map(p=>({
-      id:null,
-      bd:String(p.full_name||'').trim(),
-      month:selectedMonthKey,
-      forecast:0,
-      target:0,
-      achievement_flexo:0,
-      achievement_roto:0,
-      total:0,
-      percentage:0,
-      commission_flexo:0,
-      commission_roto:0,
-      __blankMonthly:true
-    }));
+    .map(p=>({id:null,bd:String(p.full_name||'').trim(),month:selectedMonthKey,forecast:0,target:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0,__blankMonthly:true}));
 }
 
 const bdNames=()=>{
