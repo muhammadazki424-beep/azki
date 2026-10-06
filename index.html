@@ -107,7 +107,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
   <main class="main">
     <section id="dashboard" class="section active">
       <div class="top">
-        <div><h1>Sales Dashboard <span id="activeMonthBadge" class="badge">September 2026</span></h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
+        <div><h1>Sales Dashboard <span id="activeMonthBadge" class="badge">Oktober 2026</span></h1><div class="muted">Ringkasan data berdasarkan periode aktif.</div></div>
         <div class="toolbar">
           <button class="btn blue" onclick="downloadAllExcel()">📥 Download Semua Data Excel</button>
           <div id="sync" class="badge green">ONLINE</div>
@@ -258,6 +258,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
+const START_MONTH_KEY='2026-09';
 let selectedMonthKey=''; let pendingImport=null;
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
@@ -270,13 +271,31 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-$("currentMonthBtn").onclick=()=>setActiveMonth(currentMonthKey());
+$("dashboardMonth").addEventListener("change",function(){
+  const value=this.value;
+  if(!/^\d{4}-\d{2}$/.test(value)) return;
+  selectedMonthKey=value;
+  try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){}
+  render();
+});
+$("currentMonthBtn").onclick=()=>{
+  const value=currentMonthKey();
+  selectedMonthKey=value<START_MONTH_KEY?START_MONTH_KEY:value;
+  try{localStorage.setItem("cetakteam_selected_month",selectedMonthKey)}catch(e){}
+  render();
+};
 $("previewImportBtn").onclick=previewImport;
 $("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
 $("confirmImportBtn").onclick=confirmImport;
 $("searchPOMonitor").oninput=renderPOMonitor;
 $("poMonitorMonthFilter").onchange=renderPOMonitor;
 $("poMonitorStatusFilter").onchange=renderPOMonitor;
+
+try{
+  const saved=localStorage.getItem("cetakteam_selected_month")||"";
+  if(/^\d{4}-\d{2}$/.test(saved)&&saved>=START_MONTH_KEY) selectedMonthKey=saved;
+}catch(e){}
+if(!selectedMonthKey) selectedMonthKey=currentMonthKey()>=START_MONTH_KEY?currentMonthKey():START_MONTH_KEY;
 
 async function load(){
   const qs=await Promise.all([
@@ -307,32 +326,28 @@ function monthLabel(key){
   return y&&m?`${names[Number(m)-1]||m} ${y}`:key;
 }
 function ensureMonthOptions(){
-  const sel=$('dashboardMonth'); if(!sel)return;
-  const keys=new Set(['2026-09','2026-10','2026-11','2026-12',currentMonthKey()]);
-  [potential,customers,po,monthlyTargets,forecast].forEach(rows=>(rows||[]).forEach(x=>{
-    const k=monthKey(x.month||x.po_date||x.closing_month||x.etd||'');
-    if(/^\d{4}-\d{2}$/.test(k))keys.add(k);
-  }));
-  const sorted=[...keys].filter(k=>k>='2026-09').sort().reverse();
-  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:'2026-09';
-  const keep=sorted.includes(wanted)?wanted:sorted[0];
-  if(sel.dataset.monthBuilt!=='1' || sel.value!==keep){
-    sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-    sel.dataset.monthBuilt='1';
-  }
-  selectedMonthKey=keep;
-  sel.value=keep;
-}
-function setActiveMonth(value){
-  const key=monthKey(value);
-  if(!/^\d{4}-\d{2}$/.test(key)) return;
-  selectedMonthKey=key;
-  try{localStorage.setItem('cetakteam_selected_month',key)}catch(e){}
   const sel=$("dashboardMonth");
-  if(sel){ ensureMonthOptions(); sel.value=key; }
-  render();
+  if(!sel)return;
+  const keys=new Set(["2026-09","2026-10","2026-11","2026-12"]);
+  const add=(rows,fields)=>{(rows||[]).forEach(x=>fields.forEach(f=>{const k=monthKey(x?.[f]);if(/^\d{4}-\d{2}$/.test(k)&&k>=START_MONTH_KEY)keys.add(k)}))};
+  add(potential,["month"]);
+  add(customers,["month"]);
+  add(po,["month"]);
+  add(monthlyTargets,["month"]);
+  add(lost,["closing_month"]);
+  add(poMonitoring,["po_date","etd"]);
+  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
+  let wanted=selectedMonthKey;
+  if(!/^\d{4}-\d{2}$/.test(wanted)||wanted<START_MONTH_KEY){
+    try{wanted=localStorage.getItem("cetakteam_selected_month")||""}catch(e){}
+  }
+  if(!sorted.includes(wanted)) wanted=currentMonthKey()>=START_MONTH_KEY&&sorted.includes(currentMonthKey())?currentMonthKey():"2026-09";
+  if(sel.value!==wanted || sel.options.length!==sorted.length){
+    sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join("");
+  }
+  selectedMonthKey=wanted;
+  sel.value=wanted;
 }
-
 function activeMonthRows(rows,field='month'){
   return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
 }
@@ -428,7 +443,7 @@ function poStatusOptions(value=""){
 }
 function renderPOMonitor(){
   const q=String($("searchPOMonitor")?.value||"").trim().toLowerCase();
-  const mf=$("poMonitorMonthFilter")?.value||selectedMonthKey||"all";
+  const mf=selectedMonthKey||currentMonthKey();
   const sf=$("poMonitorStatusFilter")?.value||"all";
   const months=[...new Set(poMonitoring.map(x=>String(x.po_date||"").slice(0,7)).filter(Boolean))].sort().reverse();
   const sel=$("poMonitorMonthFilter");
@@ -471,7 +486,7 @@ function displayRole(profileOrRole){
 
 function render(){
   ensureMonthOptions();
-  const badge=$("activeMonthBadge"); if(badge) badge.textContent=monthLabel(selectedMonthKey);
+  if($("activeMonthBadge")) $("activeMonthBadge").textContent=monthLabel(selectedMonthKey);
   renderPotentialByBD();
   renderCustomerMonthly();
   renderPOByBD();
@@ -533,9 +548,9 @@ function render(){
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
   $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
+  $("customerTable").innerHTML=activeMonthRows(customers).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("lostTable").innerHTML=activeMonthRows(lost,'closing_month').map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("complaintTable").innerHTML=activeMonthRows(complaints).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
 
   const isAdmin=profile?.role==="admin";
   $("addPOBtn")?.classList.toggle("hidden",!isAdmin);
@@ -863,21 +878,15 @@ function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==u
 ["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
   if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchCustomer")$("customerTable").innerHTML=activeMonthRows(customers).filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchLost")$("lostTable").innerHTML=activeMonthRows(lost,'closing_month').filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchComplaint")$("complaintTable").innerHTML=activeMonthRows(complaints).filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchPO")renderPOTable(q);
 }));
 
 $("changePass").onclick=()=>{$("pass1").value="";$("pass2").value="";$("passMsg").textContent="";$("passModal").classList.remove("hidden")};
 $("closePass").onclick=()=>$("passModal").classList.add("hidden");
 $("savePass").onclick=async()=>{const a=$("pass1").value,b=$("pass2").value;if(a.length<6){$("passMsg").className="msg error";$("passMsg").textContent="Minimal 6 karakter.";return}if(a!==b){$("passMsg").className="msg error";$("passMsg").textContent="Password tidak sama.";return}const r=await sb.auth.updateUser({password:a});$("passMsg").className=r.error?"msg error":"msg success";$("passMsg").textContent=r.error?r.error.message:"Password berhasil diubah.";if(!r.error)setTimeout(()=>$("passModal").classList.add("hidden"),900)};
-
-document.addEventListener("change",e=>{
-  if(e.target?.id==="dashboardMonth"){
-    setActiveMonth(e.target.value);
-  }
-});
 
 window.addEventListener("load",async()=>{try{await start()}catch(e){$("loginMsg").className="msg error";$("loginMsg").textContent=e?.message||"Website gagal dijalankan."}});
 document.querySelectorAll(".eyeBtn").forEach(btn=>{
