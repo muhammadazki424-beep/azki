@@ -258,7 +258,7 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
-let selectedMonthKey='2026-09'; let pendingImport=null;
+let selectedMonthKey=''; try{selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||'2026-09'}catch(e){selectedMonthKey='2026-09'} let pendingImport=null;
 let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
@@ -270,7 +270,7 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-$("dashboardMonth").onchange=()=>{const v=$("dashboardMonth").value;if(/^\d{4}-\d{2}$/.test(v)){selectedMonthKey=v;render()}};
+$("dashboardMonth").onchange=()=>{const v=$("dashboardMonth").value;if(/^\d{4}-\d{2}$/.test(v)){selectedMonthKey=v;try{localStorage.setItem('cetakteam_selected_month',v)}catch(e){};render()}};
 $("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();render()};
 $("previewImportBtn").onclick=previewImport;
 $("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
@@ -309,19 +309,18 @@ function monthLabel(key){
 }
 function ensureMonthOptions(){
   const sel=$('dashboardMonth'); if(!sel)return;
-  // Periode dashboard selalu tersedia. Fungsi ini HANYA mengisi dropdown;
-  // tidak boleh mengganti periode aktif atau mengubah data database.
   const keys=new Set(['2026-09','2026-10','2026-11','2026-12']);
-  [potential,customers,po,monthlyTargets,poMonitoring,lost].forEach(rows=>(rows||[]).forEach(x=>{
-    const raw=x.month||x.closing_month||x.po_date||x.etd||'';
-    const k=monthKey(raw);
-    if(/^\d{4}-\d{2}$/.test(k) && k>='2026-09') keys.add(k);
-  }));
-  const sorted=[...keys].filter(k=>k>='2026-09').sort().reverse();
+  const addFromRows=(rows,fields)=>{(rows||[]).forEach(x=>fields.forEach(f=>{const k=monthKey(x?.[f]);if(/^\d{4}-\d{2}$/.test(k)&&k>='2026-09')keys.add(k)}))};
+  addFromRows(potential,['month']);
+  addFromRows(customers,['month']);
+  addFromRows(po,['month']);
+  addFromRows(monthlyTargets,['month']);
+  addFromRows(poMonitoring,['po_date','etd']);
   const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:'2026-09';
+  const sorted=[...keys].filter(k=>k>='2026-09').sort().reverse();
   sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  sel.value=sorted.includes(wanted)?wanted:'2026-09';
-  selectedMonthKey=sel.value;
+  selectedMonthKey=sorted.includes(wanted)?wanted:'2026-09';
+  sel.value=selectedMonthKey;
 }
 function activeMonthRows(rows,field='month'){
   return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
@@ -329,18 +328,10 @@ function activeMonthRows(rows,field='month'){
 function targetRowsForMonth(){
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
-  // September memakai data forecast lama yang sudah ada di tabel forecast_targets.
-  // Jangan pernah memakai data Oktober untuk mengisi September.
   if(selectedMonthKey==='2026-09' && (forecast||[]).length){
-    return (forecast||[]).map(x=>({...x, month:'2026-09', __legacyForecast:true}));
+    return (forecast||[]).map(x=>({...x,__legacyForecast:true,month:'2026-09'}));
   }
-  // Bulan baru tanpa data tetap menampilkan BD dengan nilai 0, tanpa mengambil data bulan lain.
-  const seen=new Set();
-  return (profiles||[]).filter(p=>{
-    const n=String(p.full_name||'').trim(); const k=normBD(n);
-    if(!k || k==='azki' || k==='kahar' || k==='marketing' || k==='yappy' || k==='yappy sunandi' || seen.has(k)) return false;
-    seen.add(k); return true;
-  }).map(p=>({bd:String(p.full_name||'').trim(),month:selectedMonthKey,forecast:0,target:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0,__blankMonthly:true}));
+  return [];
 }
 
 const bdNames=()=>{
@@ -358,15 +349,20 @@ const bdNames=()=>{
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
-  const s=String(m??"").trim();
+  const s=String(m??'').trim();
+  if(!s)return '';
   let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
-  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
-  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
-  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
-  const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  x=s.toLowerCase().match(/([a-z]+)/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,'0')}`;
+  x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/);
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,'0')}`;
+  x=s.match(/(20\d{2})[\s.-]+(0?[1-9]|1[0-2])(?!\d)/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,'0')}`;
+  const names={jan:'01',january:'01',feb:'02',february:'02',mar:'03',march:'03',apr:'04',april:'04',may:'05',jun:'06',june:'06',jul:'07',july:'07',aug:'08',august:'08',sep:'09',sept:'09',september:'09',oct:'10',october:'10',nov:'11',november:'11',dec:'12',december:'12'};
+  const lower=s.toLowerCase();
+  const word=lower.match(/[a-z]+/);
   const y=s.match(/20\d{2}/);
-  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
+  if(word&&names[word[0]])return `${y?y[0]:'2026'}-${names[word[0]]}`;
+  if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,7);
   return s.slice(0,7);
 }
 function yearOf(m){
