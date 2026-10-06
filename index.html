@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- CETAKDONG BUILD: PRESENTASI V2 MONTH FIX -->
 <title>Cetakdong Team Azki</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -290,7 +291,7 @@ $("poMonitorStatusFilter").onchange=renderPOMonitor;
 async function load(){
   try{
     const saved=localStorage.getItem("cetakteam_selected_month");
-    if(/^\\d{4}-\\d{2}$/.test(saved) && saved>=START_MONTH_KEY) selectedMonthKey=saved;
+    if(/^\d{4}-\d{2}$/.test(saved) && saved>=START_MONTH_KEY) selectedMonthKey=saved;
   }catch(e){}
   const qs=await Promise.all([
     sb.from("profiles").select("*").order("full_name"),
@@ -635,10 +636,11 @@ function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorI
 
 async function saveModal(){
   let table,payload;
+  let potentialMonth="";
   const val=id=>$(id)?.value??"";
   if(editorKind==="potential"){
     table="potential_leads";
-    const potentialMonth=monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY;
+    potentialMonth=monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY;
     payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
   }
   if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
@@ -677,7 +679,10 @@ async function saveModal(){
   // Khusus Potential: setelah berhasil disimpan, langsung tampilkan data
   // pada periode yang baru saja dipilih/disimpan, tanpa menunggu realtime.
   if(editorKind==="potential" && r.data){
-    selectedMonthKey=monthKey(r.data.month)||selectedMonthKey||START_MONTH_KEY;
+    // Gunakan bulan yang benar-benar dikirim/disimpan, bukan periode dashboard.
+    const savedPotentialMonth = monthKey(r.data.month) || potentialMonth || selectedMonthKey || START_MONTH_KEY;
+    selectedMonthKey = savedPotentialMonth;
+    try{ localStorage.setItem("cetakteam_selected_month", savedPotentialMonth); }catch(e){}
     if(editorId){
       const idx=potential.findIndex(x=>x.id===editorId);
       if(idx>=0) potential[idx]=r.data; else potential.unshift(r.data);
@@ -687,7 +692,7 @@ async function saveModal(){
     closeModal();
     ensureMonthOptions();
     render();
-    alert("Data Potential berhasil disimpan ke "+monthLabel(selectedMonthKey)+".");
+    alert("Data Potential berhasil disimpan ke "+monthLabel(savedPotentialMonth)+".");
     return;
   }
 
