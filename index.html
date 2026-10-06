@@ -263,7 +263,7 @@ const START_MONTH_KEY='2026-09';
 const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey=''; let pendingImport=null;
 try{ selectedMonthKey=localStorage.getItem('cetakteam_selected_month')||''; }catch(e){}
-let editorKind=null,editorId=null;
+let editorKind=null,editorId=null,editorMonthKey='';
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
 const num=n=>Number(n)||0;
@@ -357,14 +357,13 @@ function ensureMonthOptions(){
   addFromRows(forecast,['month']);
   addFromRows(lost,['closing_month']);
   addFromRows(poMonitoring,['po_date','etd']);
+  // Selalu sediakan September-Desember 2026 agar bulan baru bisa dipilih
+  // walaupun belum mempunyai satu pun data.
+  ['2026-09','2026-10','2026-11','2026-12'].forEach(k=>keys.add(k));
   const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
-  if(!sorted.length) sorted.push(START_MONTH_KEY);
-  // PENTING: jangan pernah mengganti periode pilihan user hanya karena
-  // bulan tersebut belum mempunyai data. Bulan baru memang harus boleh kosong
-  // supaya data pertama bisa disimpan ke bulan yang sedang dipilih.
   let wanted=selectedMonthKey;
-  if(!/^\d{4}-\d{2}$/.test(wanted) || !sorted.includes(wanted)){
-    wanted=sorted.includes(START_MONTH_KEY)?START_MONTH_KEY:sorted[0];
+  if(!/^\d{4}-\d{2}$/.test(wanted) || wanted<START_MONTH_KEY){
+    wanted=START_MONTH_KEY;
   }
   sel.innerHTML=sorted.map(k=>`<option value="${k}" ${k===wanted?'selected':''}>${monthLabel(k)}</option>`).join('');
   selectedMonthKey=wanted;
@@ -637,13 +636,21 @@ function renderPOTable(filter=""){
 
 function openEditor(kind,id=null){
   editorKind=kind;editorId=id;
+  // Simpan bulan yang BENAR-BENAR terlihat pada halaman saat tombol tambah/edit diklik.
+  // Ini mencegah state global kembali ke September sebelum proses save.
+  if(kind==="potential"){
+    const pageSel=document.querySelector("#potential .pageMonthSelect");
+    editorMonthKey=pageSel?.value || selectedMonthKey || START_MONTH_KEY;
+  } else {
+    editorMonthKey=selectedMonthKey || START_MONTH_KEY;
+  }
   const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring,monthlyTarget:monthlyTargets}[kind]||[]).find(x=>x.id===id):null;
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
     // PERIODE POTENTIAL SELALU MENGIKUTI PERIODE YANG DIPILIH USER.
     // Jangan pernah mengembalikan form ke September hanya karena record lama.
-    const defaultPotentialMonth=selectedMonthKey||START_MONTH_KEY;
+    const defaultPotentialMonth=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPotentialMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPotentialMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPotentialMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPotentialMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="customer"){
     const defaultCustomerMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
@@ -676,11 +683,15 @@ async function saveModal(){
   const val=id=>$(id)?.value??"";
   if(editorKind==="potential"){
     table="potential_leads";
-    // Nilai bulan di form harus valid. Untuk DATA BARU, fallback selalu ke
-    // periode yang sedang dipilih user, bukan otomatis ke September.
-    // KUNCI: penyimpanan Potential mengikuti periode global yang sedang dipilih.
-    // Nilai f_month hanya untuk tampilan dan tidak boleh mengalahkan periode aktif.
-    const potentialMonth=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:(monthKey(val("f_month").trim())||START_MONTH_KEY);
+    // KUNCI: ambil bulan dari SELECT di form. SELECT ini sudah diisi
+    // mengikuti bulan yang dipilih user pada halaman Potential.
+    // Jadi tidak ada fallback diam-diam ke September.
+    const formPotentialMonth=monthKey(val("f_month").trim());
+    // Untuk Potential, bulan dikunci ke periode yang dipilih pada halaman saat
+    // tombol Tambah/Edit ditekan. Jadi state global tidak bisa menggeser data ke September.
+    const potentialMonth=/^\d{4}-\d{2}$/.test(editorMonthKey)
+      ? editorMonthKey
+      : (formPotentialMonth||selectedMonthKey||START_MONTH_KEY);
     payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
   }
   if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
@@ -716,9 +727,12 @@ async function saveModal(){
       potential.unshift(r.data);
     }
     closeModal();
-    ensureMonthOptions();
+    // Jangan panggil ensureMonthOptions sebelum memastikan bulan tersimpan.
+    // Alert menggunakan nilai dari database, bukan state UI.
+    selectedMonthKey=savedPotentialMonth||selectedMonthKey||START_MONTH_KEY;
+    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
     render();
-    alert("Data Potential berhasil disimpan ke "+monthLabel(selectedMonthKey)+".");
+    alert("Data Potential berhasil disimpan ke "+monthLabel(savedPotentialMonth||selectedMonthKey)+".");
     return;
   }
 
