@@ -714,11 +714,13 @@ async function saveModal(){
     return;
   }
 
-  // KHUSUS POTENTIAL: paksa bulan sesuai periode yang dipilih user.
-  // Jika database/trigger mengubah nilai month, langsung koreksi kembali.
-  if(editorKind==="potential" && r.data){
+  // Semua penyimpanan di bawah ini langsung memperbarui data di layar.
+  // Jadi halaman tidak bergantung pada realtime/load ulang untuk menampilkan hasil save.
+  const savedRow=r.data;
+
+  if(editorKind==="potential" && savedRow){
     const intendedMonth=payload.month;
-    let saved=r.data;
+    let saved=savedRow;
     if(monthKey(saved.month)!==intendedMonth){
       const fix=await sb.from("potential_leads").update({month:intendedMonth}).eq("id",saved.id).select("*").single();
       if(fix.error){
@@ -730,21 +732,54 @@ async function saveModal(){
     }
     selectedMonthKey=intendedMonth;
     try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-    if(editorId){
-      const idx=potential.findIndex(x=>x.id===editorId);
-      if(idx>=0) potential[idx]=saved; else potential.unshift(saved);
-    }else{
-      potential.unshift(saved);
-    }
+    const idx=potential.findIndex(x=>x.id===saved.id);
+    if(idx>=0) potential[idx]=saved; else potential.unshift(saved);
     closeModal();
-    ensureMonthOptions();
     render();
     alert("Data Potential berhasil disimpan ke "+monthLabel(intendedMonth)+".");
     return;
   }
 
+  if(editorKind==="po" && savedRow){
+    const intendedMonth=monthKey(savedRow.month)||monthKey(payload.month)||selectedMonthKey||START_MONTH_KEY;
+    selectedMonthKey=intendedMonth;
+    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
+    const idx=po.findIndex(x=>x.id===savedRow.id);
+    if(idx>=0) po[idx]=savedRow; else po.unshift(savedRow);
+    closeModal();
+    render();
+    alert("PO Received berhasil disimpan ke "+monthLabel(intendedMonth)+".");
+    return;
+  }
+
+  if(editorKind==="monthlyTarget" && savedRow){
+    const intendedMonth=monthKey(savedRow.month)||monthKey(payload.month)||selectedMonthKey||START_MONTH_KEY;
+    selectedMonthKey=intendedMonth;
+    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
+    const idx=monthlyTargets.findIndex(x=>x.id===savedRow.id);
+    if(idx>=0) monthlyTargets[idx]=savedRow; else monthlyTargets.unshift(savedRow);
+    closeModal();
+    render();
+    alert("Forecast & Target berhasil disimpan ke "+monthLabel(intendedMonth)+".");
+    return;
+  }
+
+  if(editorKind==="forecast" && savedRow){
+    const idx=forecast.findIndex(x=>x.id===savedRow.id);
+    if(idx>=0) forecast[idx]=savedRow; else forecast.unshift(savedRow);
+    closeModal();
+    render();
+    alert("Forecast berhasil diperbarui.");
+    return;
+  }
+
   closeModal();
-  await load();
+  try{
+    await load();
+    alert("Data berhasil disimpan.");
+  }catch(err){
+    alert("Data sudah tersimpan, tetapi refresh data gagal: "+(err?.message||"silakan refresh halaman."));
+  }
 }
 
 async function removeRow(kind,id){
