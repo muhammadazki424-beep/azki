@@ -41,7 +41,6 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 
 
-.pageMonth{display:flex;align-items:center;gap:7px;white-space:nowrap}.pageMonth label{margin:0;color:#667085;font-size:12px;font-weight:800}.pageMonth select{width:auto;min-width:165px;font-weight:800}.pageMonth select:focus{outline:2px solid #2563eb55;outline-offset:1px}
 .monthSelector{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .monthSelector label{margin:0;color:#667085}
 .monthSelector select{width:auto;min-width:170px;font-weight:800}
@@ -181,32 +180,32 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     </section>
 
     <section id="potential" class="section">
-      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div></div>
+      <div class="top"><div><h1>Potential</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('potential')">+ Tambah Potential</button></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPotential" class="search" placeholder="Cari customer / BD..."><div style="font-weight:800;color:#fff">Total Value Potential: <span id="potentialSectionTotal">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="potentialTable"></tbody></table></div></div>
     </section>
 
     <section id="customers" class="section">
-      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div></div>
+      <div class="top"><div><h1>Database Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('customer')">+ Tambah Customer</button></div>
       <div class="panel"><div class="toolbar"><input id="searchCustomer" class="search" placeholder="Cari customer / area / BD..."></div><div class="table"><table><thead><tr><th>BD/Marketing</th><th>Customer</th><th>Area</th><th>Bulan</th><th>Nilai</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
     </section>
 
     <section id="lost" class="section">
-      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Closing / Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div></div>
+      <div class="top"><div><h1>Lost Leads</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('lost')">+ Tambah Lost Lead</button></div>
       <div class="panel"><div class="toolbar"><input id="searchLost" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Nilai</th><th>Alasan</th><th>Closing</th><th>Aksi</th></tr></thead><tbody id="lostTable"></tbody></table></div></div>
     </section>
 
     <section id="complaints" class="section">
-      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Data complaint belum memiliki kolom bulan di database.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div></div>
+      <div class="top"><div><h1>Complaint Customer</h1><div class="muted">Semua BD boleh tambah, edit, dan hapus.</div></div><button class="btn blue" onclick="openEditor('complaint')">+ Tambah Complaint</button></div>
       <div class="panel"><div class="toolbar"><input id="searchComplaint" class="search" placeholder="Cari customer / BD / alasan..."></div><div class="table"><table><thead><tr><th>BD</th><th>Company</th><th>PIC</th><th>Produk</th><th>Qty Order</th><th>Qty Complain</th><th>Alasan</th><th>Aksi</th></tr></thead><tbody id="complaintTable"></tbody></table></div></div>
     </section>
 
     <section id="po" class="section">
-      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div></div>
+      <div class="top"><div><h1>PO Received</h1><div class="muted">Admin dapat tambah, edit, dan hapus. BD lainnya hanya dapat melihat.</div></div><button id="addPOBtn" class="btn blue hidden" onclick="openEditor('po')">+ Tambah PO Received</button></div>
       <div class="panel"><div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><input id="searchPO" class="search" placeholder="Cari customer / BD / bulan / catatan..."><div style="font-weight:800;color:#fff">Total Value PO Received: <span id="poSectionTotal" style="margin-left:6px">Rp 0</span></div></div><div class="table"><table><thead><tr><th>BD</th><th>Customer</th><th>Nilai</th><th>Bulan</th><th>Catatan</th><th id="poActionHead" class="hidden">Aksi</th></tr></thead><tbody id="poTable"></tbody></table></div></div>
     </section>
 
     <section id="pomonitor" class="section">
-      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><div class="toolbar"><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div></div>
+      <div class="top"><div><h1>📋 Monitoring PO Customer</h1><div class="muted">Masing-masing BD dapat memasukkan dan memperbarui monitoring PO customer secara manual.</div></div><button class="btn blue" onclick="openEditor('pomonitor')">+ Tambah Monitoring PO</button></div>
       <div class="panel">
         <div class="toolbar" style="justify-content:space-between;align-items:center">
           <div class="toolbar"><input id="searchPOMonitor" class="search" placeholder="Cari PO / customer / BD..."><select id="poMonitorMonthFilter" style="max-width:180px"><option value="all">Semua Bulan</option></select><select id="poMonitorStatusFilter" style="max-width:180px"><option value="all">Semua Status</option><option value="File Design">File Design</option><option value="RPO">RPO</option><option value="Produksi">Produksi</option><option value="Delivery">Delivery</option><option value="Selesai">Selesai</option><option value="Pending">Pending</option></select></div>
@@ -217,12 +216,12 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
     </section>
 
     <section id="forecast" class="section">
-      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
+      <div class="top"><div><h1>Forecast & Target</h1><div class="muted">Admin dapat mengubah Forecast & Target. BD lainnya hanya dapat melihat.</div></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Forecast</th><th>Target</th><th>Ach. Flexo</th><th>Ach. Roto</th><th>Total</th><th>%</th><th>Komisi Flexo</th><th>Komisi Roto</th><th id="forecastActionHead" class="hidden">Aksi</th></tr></thead><tbody id="forecastTable"></tbody><tfoot><tr><th>TOTAL KESELURUHAN</th><th id="forecastGrandTotal">Rp 0</th><th id="forecastTargetGrandTotal">Rp 0</th><th id="forecastFlexoGrandTotal">Rp 0</th><th id="forecastRotoGrandTotal">Rp 0</th><th id="forecastPOGrandTotal">Rp 0</th><th id="forecastPercentGrandTotal">-</th><th id="forecastCommissionFlexoGrandTotal">Rp 0</th><th id="forecastCommissionRotoGrandTotal">Rp 0</th><th id="forecastTotalAction" class="hidden"></th></tr></tfoot></table></div></div>
     </section>
 
     <section id="performance" class="section">
-      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div><div class="pageMonth"><label>📅 Periode</label><select class="pageMonthSelect"></select></div></div>
+      <div class="top"><div><h1>BD Performance</h1><div class="muted">Ringkasan target dan achievement.</div></div></div>
       <div class="panel"><div class="table"><table><thead><tr><th>BD</th><th>Target</th><th>PO Received</th><th>Achievement %</th></tr></thead><tbody id="performanceTable"></tbody></table></div></div>
     </section>
 
@@ -259,11 +258,8 @@ tfoot th{font-weight:900;background:rgba(255,255,255,.06);border-top:2px solid r
 
 <script>
 let sb=null,user=null,profile=null,profiles=[],potential=[],customers=[],lost=[],complaints=[],po=[],forecast=[],poMonitoring=[],monthlyTargets=[];
-const START_MONTH_KEY='2026-09';
-const DEFAULT_DATA_YEAR='2026';
 let selectedMonthKey='2026-09'; let pendingImport=null;
-try{ const saved=localStorage.getItem('cetakteam_selected_month'); if(/^20\d{2}-\d{2}$/.test(saved||'')&&saved>='2026-09') selectedMonthKey=saved; }catch(e){}
-let editorKind=null,editorId=null,editorMonthKey='';
+let editorKind=null,editorId=null;
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
 const num=n=>Number(n)||0;
@@ -274,33 +270,8 @@ const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
 const go=page=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===page));window.scrollTo({top:0,behavior:"smooth"})};
 $("customerYearFilter").onchange=renderCustomerMonthly;
-function syncPageMonthSelectors(){
-  const main=$("dashboardMonth");
-  const selects=[...document.querySelectorAll(".pageMonthSelect")];
-  const value=selectedMonthKey||START_MONTH_KEY;
-  selects.forEach(sel=>{
-    sel.innerHTML=main?.innerHTML||`<option value="${value}">${monthLabel(value)}</option>`;
-    sel.value=value;
-    sel.onchange=()=>{
-      setActiveMonth(sel.value);
-    };
-  });
-}
-function setActiveMonth(value){
-  const k=monthKey(value); if(!/^20\d{2}-\d{2}$/.test(k)||k<START_MONTH_KEY)return;
-  selectedMonthKey=k;
-  try{localStorage.setItem('cetakteam_selected_month',k)}catch(e){}
-  document.querySelectorAll(".pageMonthSelect").forEach(s=>s.value=k);
-  const pm=$("poMonitorMonthFilter"); if(pm)pm.value=k;
-  render();
-}
-$("dashboardMonth").onchange=e=>setActiveMonth(e.target.value);
-$("currentMonthBtn").onclick=()=>{
-  const k=currentMonthKey();
-  selectedMonthKey = k < START_MONTH_KEY ? START_MONTH_KEY : k;
-  try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-  setActiveMonth(selectedMonthKey);
-};
+$("dashboardMonth").onchange=()=>{const v=$("dashboardMonth").value;if(/^\d{4}-\d{2}$/.test(v)){selectedMonthKey=v;render()}};
+$("currentMonthBtn").onclick=()=>{selectedMonthKey=currentMonthKey();render()};
 $("previewImportBtn").onclick=previewImport;
 $("cancelImportBtn").onclick=()=>{pendingImport=null;$("importPreview").classList.add("hidden");$("importActions").style.display="none";$("importMsg").textContent="";$("excelImportFile").value=""};
 $("confirmImportBtn").onclick=confirmImport;
@@ -337,40 +308,39 @@ function monthLabel(key){
   return y&&m?`${names[Number(m)-1]||m} ${y}`:key;
 }
 function ensureMonthOptions(){
-  const sel=$("dashboardMonth"); if(!sel)return;
-  const keys=new Set(["2026-09","2026-10","2026-11","2026-12"]);
-  const add=(rows,fields)=>{(rows||[]).forEach(row=>fields.forEach(f=>{const k=monthKey(row?.[f]); if(/^20\d{2}-\d{2}$/.test(k)&&k>=START_MONTH_KEY)keys.add(k)}))};
-  add(potential,["month","created_at"]); add(customers,["month","created_at"]); add(po,["month","created_at"]);
-  add(monthlyTargets,["month"]); add(forecast,["month","created_at"]); add(lost,["closing_month","created_at"]); add(complaints,["month","created_at"]); add(poMonitoring,["po_date","etd","created_at"]);
-  const sorted=[...keys].filter(k=>k>=START_MONTH_KEY).sort().reverse();
-  const wanted=/^20\d{2}-\d{2}$/.test(selectedMonthKey)&&selectedMonthKey>=START_MONTH_KEY?selectedMonthKey:START_MONTH_KEY;
-  const current=sel.value;
+  const sel=$('dashboardMonth'); if(!sel)return;
+  // Periode dashboard selalu tersedia. Fungsi ini HANYA mengisi dropdown;
+  // tidak boleh mengganti periode aktif atau mengubah data database.
+  const keys=new Set(['2026-09','2026-10','2026-11','2026-12']);
+  [potential,customers,po,monthlyTargets,poMonitoring,lost].forEach(rows=>(rows||[]).forEach(x=>{
+    const raw=x.month||x.closing_month||x.po_date||x.etd||'';
+    const k=monthKey(raw);
+    if(/^\d{4}-\d{2}$/.test(k) && k>='2026-09') keys.add(k);
+  }));
+  const sorted=[...keys].filter(k=>k>='2026-09').sort().reverse();
+  const wanted=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:'2026-09';
   sel.innerHTML=sorted.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
-  selectedMonthKey=sorted.includes(wanted)?wanted:(sorted.includes(current)?current:START_MONTH_KEY);
-  sel.value=selectedMonthKey;
-  syncPageMonthSelectors();
-}
-function rowMonthKey(row,fields=["month"]){
-  for(const f of fields){const k=monthKey(row?.[f]); if(/^20\d{2}-\d{2}$/.test(k)) return k;}
-  return "";
+  sel.value=sorted.includes(wanted)?wanted:'2026-09';
+  selectedMonthKey=sel.value;
 }
 function activeMonthRows(rows,field='month'){
-  const fields=Array.isArray(field)?field:[field];
-  return (rows||[]).filter(x=>rowMonthKey(x,fields)===selectedMonthKey);
+  return (rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
 }
 function targetRowsForMonth(){
-  const rows=(monthlyTargets||[]).filter(x=>rowMonthKey(x,["month"])===selectedMonthKey);
-  if(rows.length) return rows;
-  if(selectedMonthKey===START_MONTH_KEY && (forecast||[]).length){
-    const legacy=(forecast||[]).filter(x=>{const k=rowMonthKey(x,["month","created_at"]); return !k || k===START_MONTH_KEY;});
-    if(legacy.length) return legacy.map(x=>({...x,__legacyForecast:true}));
+  const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
+  if(rows.length)return rows;
+  // September memakai data forecast lama yang sudah ada di tabel forecast_targets.
+  // Jangan pernah memakai data Oktober untuk mengisi September.
+  if(selectedMonthKey==='2026-09' && (forecast||[]).length){
+    return (forecast||[]).map(x=>({...x, month:'2026-09', __legacyForecast:true}));
   }
+  // Bulan baru tanpa data tetap menampilkan BD dengan nilai 0, tanpa mengambil data bulan lain.
   const seen=new Set();
   return (profiles||[]).filter(p=>{
-    const bd=String(p.full_name||"").trim(), key=bd.toLowerCase();
-    if(!key||["azki","kahar","marketing","yappy","yappy sunandi"].includes(key)||seen.has(key)) return false;
-    seen.add(key); return true;
-  }).map(p=>({id:null,bd:String(p.full_name||"").trim(),month:selectedMonthKey,forecast:0,target:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0,__blankMonthly:true}));
+    const n=String(p.full_name||'').trim(); const k=normBD(n);
+    if(!k || k==='azki' || k==='kahar' || k==='marketing' || k==='yappy' || k==='yappy sunandi' || seen.has(k)) return false;
+    seen.add(k); return true;
+  }).map(p=>({bd:String(p.full_name||'').trim(),month:selectedMonthKey,forecast:0,target:0,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0,__blankMonthly:true}));
 }
 
 const bdNames=()=>{
@@ -388,14 +358,16 @@ const bdNames=()=>{
 };
 const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthKey(m){
-  const s=String(m??"").trim(); if(!s)return "";
-  let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/); if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
-  x=s.match(/(0?[1-9]|1[0-2])[-\/](20\d{2})/); if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
+  const s=String(m??"").trim();
+  let x=s.match(/(20\d{2})[-\/](0?[1-9]|1[0-2])/);
+  if(x)return `${x[1]}-${String(x[2]).padStart(2,"0")}`;
+  x=s.match(/(0?[1-9]|1[0-2])[-\\/](20\\d{2})/);
+  if(x)return `${x[2]}-${String(x[1]).padStart(2,"0")}`;
   const names={jan:"01",january:"01",feb:"02",february:"02",mar:"03",march:"03",apr:"04",april:"04",may:"05",jun:"06",june:"06",jul:"07",july:"07",aug:"08",august:"08",sep:"09",sept:"09",september:"09",oct:"10",october:"10",nov:"11",november:"11",dec:"12",december:"12"};
-  const lower=s.toLowerCase(); const word=lower.match(/[a-z]+/); const y=s.match(/20\d{2}/);
-  if(word&&names[word[0]])return `${y?y[0]:DEFAULT_DATA_YEAR}-${names[word[0]]}`;
-  const d=new Date(s); if(!isNaN(d.getTime())) return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-  return "";
+  x=s.toLowerCase().match(/([a-z]+)/);
+  const y=s.match(/20\d{2}/);
+  if(x&&y&&names[x[1]])return `${y[0]}-${names[x[1]]}`;
+  return s.slice(0,7);
 }
 function yearOf(m){
   const s=String(m??"");
@@ -561,8 +533,8 @@ function render(){
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
   $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
-  $("customerTable").innerHTML=activeMonthRows(customers).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
-  $("lostTable").innerHTML=activeMonthRows(lost,'closing_month').map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("customerTable").innerHTML=customers.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
+  $("lostTable").innerHTML=lost.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
 
   const isAdmin=profile?.role==="admin";
@@ -570,16 +542,7 @@ function render(){
   $("poActionHead")?.classList.toggle("hidden",!isAdmin);
   $("forecastActionHead")?.classList.toggle("hidden",!isAdmin);
   renderPOTable($("searchPO")?.value||"");
-  $("forecastTable").innerHTML=monthTargets.map(e=>{
-    const action=isAdmin
-      ? (e.__legacyForecast
-          ? rowBtn("forecast",e.id)
-          : (e.__blankMonthly
-              ? `<button class="btn blue small" onclick="openEditor('monthlyTarget')">Isi / Edit</button>`
-              : rowBtn("monthlyTarget",e.id)))
-      : "";
-    return `<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${action}</td>`:""}</tr>`;
-  }).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
+  $("forecastTable").innerHTML=monthTargets.map(e=>`<tr><td>${esc(e.bd)}</td><td>${money(e.forecast)}</td><td>${money(e.target)}</td><td>${money(e.achievement_flexo)}</td><td>${money(e.achievement_roto)}</td><td>${money(e.total)}</td><td>${typeof e.percentage==="number"?(e.percentage*100).toFixed(1)+"%":"-"}</td><td>${money(e.commission_flexo)}</td><td>${money(e.commission_roto)}</td>${isAdmin?`<td>${rowBtn("monthlyTarget",e.id)}</td>`:""}</tr>`).join("")||`<tr><td colspan="${isAdmin?10:9}">Belum ada target untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
 
   $("adminNav").classList.toggle("hidden",!isAdmin);
   if(profile?.role==="admin"){
@@ -596,43 +559,28 @@ function renderPOTable(filter=""){
 
 function openEditor(kind,id=null){
   editorKind=kind;editorId=id;
-  // Simpan bulan yang BENAR-BENAR terlihat pada halaman saat tombol tambah/edit diklik.
-  // Ini mencegah state global kembali ke September sebelum proses save.
-  if(kind==="potential"){
-    const pageSel=document.querySelector("#potential .pageMonthSelect");
-    editorMonthKey=pageSel?.value || selectedMonthKey || START_MONTH_KEY;
-  } else {
-    editorMonthKey=selectedMonthKey || START_MONTH_KEY;
-  }
   const data=id?({potential:potential,customer:customers,lost:lost,complaint:complaints,po:po,forecast:forecast,pomonitor:poMonitoring,monthlyTarget:monthlyTargets}[kind]||[]).find(x=>x.id===id):null;
   $("modalTitle").textContent=(id?"Edit ":"Tambah ")+({potential:"Potential",customer:"Database Customer",lost:"Lost Lead",complaint:"Complaint Customer",pomonitor:"Monitoring PO Customer",monthlyTarget:"Target Bulanan"}[kind]||"");
   let h="";
   if(kind==="potential"){
-    // PERIODE POTENTIAL SELALU MENGIKUTI PERIODE YANG DIPILIH USER.
-    // Jangan pernah mengembalikan form ke September hanya karena record lama.
-    const defaultPotentialMonth=/^\d{4}-\d{2}$/.test(selectedMonthKey)?selectedMonthKey:START_MONTH_KEY;
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPotentialMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPotentialMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPotentialMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPotentialMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="customer"){
-    const defaultCustomerMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
-    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultCustomerMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultCustomerMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultCustomerMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultCustomerMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD / Marketing",data?.bd||profile.full_name)}${input("f_customer","Customer",data?.customer||"")}${input("f_area","Area",data?.area||"")}${input("f_month","Bulan",data?.month||"")}${input("f_value","Nilai",data?.value||0,"number")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="lost"){
-    const defaultLostMonth=data?.closing_month ? monthKey(data.closing_month) : (selectedMonthKey||START_MONTH_KEY);
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}<div><label>Closing Expected / Bulan</label><select id="f_closing"><option value="2026-09" ${monthKey(defaultLostMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultLostMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultLostMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultLostMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qty","Quantity Expected",data?.quantity_expected||0,"number")}${input("f_amount","Amount Expected",data?.amount_expected||0,"number")}${input("f_closing","Closing Expected",data?.closing_month||"")}${area("f_why","Why Lost?",data?.why_lost||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="complaint") {
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_company","Company",data?.company||"")}${input("f_pic","PIC",data?.pic||"")}${input("f_packaging","Packaging / Spec",data?.packaging||"")}${input("f_product","Customer Product",data?.product||"")}${input("f_article","Article",data?.article||"")}${input("f_production","Production System",data?.production_system||"")}${input("f_qtyorder","Quantity Order",data?.quantity_order||0,"number")}${input("f_qtycomplain","Quantity Reject / Complain",data?.quantity_complain||0,"number")}${area("f_why","Why Complain?",data?.why_complain||"")}${area("f_desc","Description",data?.description||"")}</div>`;
   } else if(kind==="po") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    const defaultPOMonth=data?.month ? monthKey(data.month) : (selectedMonthKey||START_MONTH_KEY);
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(defaultPOMonth)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(defaultPOMonth)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(defaultPOMonth)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(defaultPOMonth)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${area("f_notes","Catatan",data?.notes||"")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_customer","Customer",data?.customer||"")}${input("f_value","Nilai",data?.value||0,"number")}${input("f_month","Bulan",data?.month||"")}${area("f_notes","Catatan",data?.notes||"")}</div>`;
   } else if(kind==="pomonitor") {
-    const selectedDate=(()=>{ const k=selectedMonthKey||START_MONTH_KEY; return /^\d{4}-\d{2}$/.test(k)?k+'-01':new Date().toISOString().slice(0,10); })();
-    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||selectedDate,"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
+    h=`<div class="formgrid">${input("f_po_date","PO Date",data?.po_date||new Date().toISOString().slice(0,10),"date")}${input("f_po_number","PO Number",data?.po_number||"")}${input("f_customer_name","Customer Name",data?.customer_name||"")}${input("f_bd","BD",data?.bd||profile.full_name)}${input("f_article","Artikel",data?.article||"")}${input("f_qty","Qty",data?.qty||0,"number")}${input("f_price","Price (Rp/Roll)",data?.price_per_roll||0,"number")}${input("f_value","Value",data?.value||0,"number")}${input("f_etd","ETD",data?.etd||"","date")}${input("f_delivery","Delivery (Qty)",data?.delivery_qty||0,"number")}${input("f_complain","Complain (Qty)",data?.complain_qty||0,"number")}${input("f_needhelp","Need Help?",data?.need_help||"")}<div><label>Week 1</label><select id="f_week1">${poStatusOptions(data?.week1||"")}</select></div><div><label>Week 2</label><select id="f_week2">${poStatusOptions(data?.week2||"")}</select></div><div><label>Week 3</label><select id="f_week3">${poStatusOptions(data?.week3||"")}</select></div><div><label>Week 4</label><select id="f_week4">${poStatusOptions(data?.week4||"")}</select></div></div>`;
   } else if(kind==="forecast") {
     if(profile.role!=="admin"){ closeModal(); return; }
     h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   } else if(kind==="monthlyTarget") {
     if(profile.role!=="admin"){ closeModal(); return; }
-    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}<div><label>Bulan</label><select id="f_month"><option value="2026-09" ${monthKey(data?.month||selectedMonthKey)==="2026-09"?"selected":""}>September 2026</option><option value="2026-10" ${monthKey(data?.month||selectedMonthKey)==="2026-10"?"selected":""}>Oktober 2026</option><option value="2026-11" ${monthKey(data?.month||selectedMonthKey)==="2026-11"?"selected":""}>November 2026</option><option value="2026-12" ${monthKey(data?.month||selectedMonthKey)==="2026-12"?"selected":""}>Desember 2026</option></select></div>${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
+    h=`<div class="formgrid">${input("f_bd","BD",data?.bd||"")}${input("f_month","Bulan",data?.month||selectedMonthKey)}${input("f_forecast","Forecast",data?.forecast||0,"number")}${input("f_target","Target",data?.target||0,"number")}${input("f_achflexo","Achievement Flexo",data?.achievement_flexo||0,"number")}${input("f_achroto","Achievement Roto",data?.achievement_roto||0,"number")}${input("f_total","Total",data?.total||0,"number")}${input("f_percentage","Percentage (0-1)",data?.percentage??0,"number")}${input("f_commflexo","Komisi Flexo",data?.commission_flexo||0,"number")}${input("f_commroto","Komisi Roto",data?.commission_roto||0,"number")}</div>`;
   }
   $("modalForm").innerHTML=h;$("modalMsg").textContent="";$("modal").classList.remove("hidden");
 }
@@ -641,137 +589,18 @@ function closeModal(){$("modal").classList.add("hidden");editorKind=null;editorI
 async function saveModal(){
   let table,payload;
   const val=id=>$(id)?.value??"";
-  if(editorKind==="potential"){
-    table="potential_leads";
-    // Bulan disimpan PERSIS dari pilihan Bulan pada form.
-    // Form dibuka mengikuti periode yang sedang dipilih di halaman.
-    const formPotentialMonth=monthKey(val("f_month").trim());
-    const potentialMonth=/^\d{4}-\d{2}$/.test(formPotentialMonth)
-      ? formPotentialMonth
-      : (selectedMonthKey||START_MONTH_KEY);
-    payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:potentialMonth,notes:val("f_notes").trim()};
-  }
-  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,value:num(val("f_value")),notes:val("f_notes").trim()}}
-  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:monthKey(val("f_closing").trim())||selectedMonthKey||START_MONTH_KEY,description:val("f_desc").trim()}}
+  if(editorKind==="potential"){table="potential_leads";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}}
+  if(editorKind==="customer"){table="customer_database";payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),area:val("f_area").trim(),month:val("f_month").trim(),value:num(val("f_value")),notes:val("f_notes").trim()}}
+  if(editorKind==="lost"){table="lost_leads";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),production_system:val("f_production").trim(),quantity_expected:num(val("f_qty")),amount_expected:num(val("f_amount")),why_lost:val("f_why").trim(),closing_month:val("f_closing").trim(),description:val("f_desc").trim()}}
   if(editorKind==="complaint"){table="customer_complaints";payload={bd:val("f_bd").trim(),company:val("f_company").trim(),pic:val("f_pic").trim(),packaging:val("f_packaging").trim(),product:val("f_product").trim(),article:val("f_article").trim(),production_system:val("f_production").trim(),quantity_order:num(val("f_qtyorder")),quantity_complain:num(val("f_qtycomplain")),why_complain:val("f_why").trim(),description:val("f_desc").trim()}}
-  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; const poMonth=monthKey(val("f_month").trim()); payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:/^\d{4}-\d{2}$/.test(poMonth)?poMonth:(selectedMonthKey||START_MONTH_KEY),notes:val("f_notes").trim()}; }
-  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date")||((selectedMonthKey||START_MONTH_KEY)+"-01"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
+  if(editorKind==="po"){ if(profile.role!=="admin") return; table="po_received"; payload={bd:val("f_bd").trim(),customer:val("f_customer").trim(),value:num(val("f_value")),month:val("f_month").trim(),notes:val("f_notes").trim()}; }
+  if(editorKind==="pomonitor"){ table="po_monitoring"; payload={po_date:val("f_po_date"),po_number:val("f_po_number").trim(),customer_name:val("f_customer_name").trim(),bd:val("f_bd").trim(),article:val("f_article").trim(),qty:num(val("f_qty")),price_per_roll:num(val("f_price")),value:num(val("f_value")),week1:val("f_week1"),week2:val("f_week2"),week3:val("f_week3"),week4:val("f_week4"),etd:val("f_etd"),delivery_qty:num(val("f_delivery")),complain_qty:num(val("f_complain")),need_help:val("f_needhelp").trim()}; }
   if(editorKind==="forecast"){ if(profile.role!=="admin") return; table="forecast_targets"; payload={bd:val("f_bd").trim(),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; } 
-  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim())||selectedMonthKey||START_MONTH_KEY,forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
+  if(editorKind==="monthlyTarget"){ if(profile.role!=="admin") return; table="monthly_targets"; payload={bd:val("f_bd").trim(),month:monthKey(val("f_month").trim()),forecast:num(val("f_forecast")),target:num(val("f_target")),achievement_flexo:num(val("f_achflexo")),achievement_roto:num(val("f_achroto")),total:num(val("f_total")),percentage:num(val("f_percentage")),commission_flexo:num(val("f_commflexo")),commission_roto:num(val("f_commroto"))}; }
   if(!payload?.bd || (editorKind!=="forecast" && editorKind!=="monthlyTarget" && editorKind!=="pomonitor" && !(payload.customer||payload.company)) || (editorKind==="pomonitor" && (!payload.customer_name||!payload.po_number))){ $("modalMsg").className="msg error";$("modalMsg").textContent="BD dan Customer/Company wajib diisi.";return}
-  let r;
-
-  // Forecast & Target bulanan memakai kunci unik (BD + Bulan).
-  // Jadi bila barisnya sudah ada, kita UPDATE, bukan INSERT ulang.
-  if(editorKind==="monthlyTarget"){
-    let existing=null;
-    if(editorId){
-      existing=monthlyTargets.find(x=>String(x.id)===String(editorId))||null;
-    }
-    if(!existing){
-      const q=await sb.from("monthly_targets").select("*").eq("bd",payload.bd).eq("month",payload.month).maybeSingle();
-      if(q.error){
-        $("modalMsg").className="msg error";
-        $("modalMsg").textContent="GAGAL MEMERIKSA DATA: "+q.error.message;
-        return;
-      }
-      existing=q.data||null;
-    }
-    if(existing?.id){
-      r=await sb.from(table).update(payload).eq("id",existing.id).select("*").single();
-    }else{
-      r=await sb.from(table).insert(payload).select("*").single();
-    }
-  }else if(editorId){
-    r=await sb.from(table).update(payload).eq("id",editorId).select("*").single();
-  }else{
-    r=await sb.from(table).insert(payload).select("*").single();
-  }
-  if(r.error){
-    $("modalMsg").className="msg error";
-    $("modalMsg").textContent="GAGAL MENYIMPAN: "+r.error.message;
-    return;
-  }
-
-
-  // Semua penyimpanan di bawah ini langsung memperbarui data di layar.
-  // Jadi halaman tidak bergantung pada realtime/load ulang untuk menampilkan hasil save.
-  const savedRow=r.data;
-
-  if(editorKind==="potential" && savedRow){
-    const intendedMonth=payload.month;
-    let saved=savedRow;
-    if(monthKey(saved.month)!==intendedMonth){
-      const fix=await sb.from("potential_leads").update({month:intendedMonth}).eq("id",saved.id).select("*").single();
-      if(fix.error){
-        $("modalMsg").className="msg error";
-        $("modalMsg").textContent="Data tersimpan tetapi bulan gagal dikoreksi: "+fix.error.message;
-        return;
-      }
-      saved=fix.data;
-    }
-    selectedMonthKey=intendedMonth;
-    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-    const idx=potential.findIndex(x=>String(x.id)===String(saved.id));
-    if(idx>=0) potential[idx]=saved; else potential.unshift(saved);
-    closeModal();
-    try{render();}catch(e){console.error(e);}
-    alert("Data Potential berhasil disimpan ke "+monthLabel(intendedMonth)+" dan ditampilkan pada periode tersebut.");
-    return;
-  }
-
-  if(editorKind==="po" && savedRow){
-    const intendedMonth=payload.month;
-    let saved=savedRow;
-    // Paksa nilai bulan yang tampil mengikuti pilihan form.
-    // Ini mencegah nilai default database seperti Januari 2026 ikut terbaca.
-    if(monthKey(saved.month)!==intendedMonth){
-      const fix=await sb.from("po_received").update({month:intendedMonth}).eq("id",saved.id).select("*").single();
-      if(fix.error){
-        $("modalMsg").className="msg error";
-        $("modalMsg").textContent="PO tersimpan tetapi bulan gagal dikoreksi: "+fix.error.message;
-        return;
-      }
-      saved=fix.data;
-    }
-    selectedMonthKey=intendedMonth;
-    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-    const idx=po.findIndex(x=>String(x.id)===String(saved.id));
-    if(idx>=0) po[idx]=saved; else po.unshift(saved);
-    closeModal();
-    try{render();}catch(e){console.error(e);}
-    alert("PO Received berhasil disimpan ke "+monthLabel(intendedMonth)+" dan ditampilkan pada periode tersebut.");
-    return;
-  }
-
-  if(editorKind==="monthlyTarget" && savedRow){
-    const intendedMonth=payload.month;
-    selectedMonthKey=intendedMonth;
-    try{localStorage.setItem('cetakteam_selected_month',selectedMonthKey)}catch(e){}
-    const idx=monthlyTargets.findIndex(x=>String(x.id)===String(savedRow.id) || (bdEq(x.bd,savedRow.bd)&&monthKey(x.month)===intendedMonth));
-    if(idx>=0) monthlyTargets[idx]=savedRow; else monthlyTargets.unshift(savedRow);
-    closeModal();
-    try{render();}catch(e){console.error(e);}
-    alert("Forecast & Target berhasil disimpan ke "+monthLabel(intendedMonth)+".");
-    return;
-  }
-
-  if(editorKind==="forecast" && savedRow){
-    const idx=forecast.findIndex(x=>x.id===savedRow.id);
-    if(idx>=0) forecast[idx]=savedRow; else forecast.unshift(savedRow);
-    closeModal();
-    render();
-    alert("Forecast berhasil diperbarui.");
-    return;
-  }
-
-  closeModal();
-  try{
-    await load();
-    alert("Data berhasil disimpan.");
-  }catch(err){
-    alert("Data sudah tersimpan, tetapi refresh data gagal: "+(err?.message||"silakan refresh halaman."));
-  }
+  let r=editorId?await sb.from(table).update(payload).eq("id",editorId):await sb.from(table).insert(payload);
+  if(r.error){$("modalMsg").className="msg error";$("modalMsg").textContent=r.error.message;return}
+  closeModal();await load();
 }
 
 async function removeRow(kind,id){
@@ -1033,9 +862,9 @@ function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").repla
 function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
 ["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
-  if(id==="searchPotential")$("potentialTable").innerHTML=activeMonthRows(potential).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchCustomer")$("customerTable").innerHTML=activeMonthRows(customers).filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
-  if(id==="searchLost")$("lostTable").innerHTML=activeMonthRows(lost,'closing_month').filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchPotential")$("potentialTable").innerHTML=potential.filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchCustomer")$("customerTable").innerHTML=customers.filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchLost")$("lostTable").innerHTML=lost.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchPO")renderPOTable(q);
 }));
