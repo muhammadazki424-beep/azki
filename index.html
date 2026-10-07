@@ -389,8 +389,10 @@ const OCTOBER_FORECAST_SEED=[
 const OCTOBER_POTENTIAL_SEED=[
   ['Anggri','karniv',48000000],['Anggri','Refli kosmedika',14000000],
   ['Nicolas','CV Bin Suef',240000000],['Nicolas','Olabasket Bumi Indonesia',143000000],
-  ['Johnsen','Ibu Susi',110000000],['Johnsen','PT. INACO',475000000],['Johnsen','PT. INACO',250000000],
-  ['Nirina','PT. Rasa Eco Dijamin',47166000]
+  ['Johnsen','Dermapad (Pak Jeff)',null],['Johnsen','Ibu Susi',110000000],
+  ['Johnsen','PT. INACO',475000000],['Johnsen','PT. INACO',250000000],
+  ['Johnsen','PT Dazry Perkasa Utama',183750000],
+  ['Nirina','PT. Rasa Eco Dijamin',47166000],['Nirina','Pak Zaka',14815000]
 ].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
 
 const OCTOBER_PO_SEED=[
@@ -629,7 +631,7 @@ function render(){
   $("forecastCommissionFlexoGrandTotal").textContent=money(commissionFlexoSum);
   $("forecastCommissionRotoGrandTotal").textContent=money(commissionRotoSum);
 
-  $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
+  $("potentialTable").innerHTML=monthPotential.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${e.value===null||e.value===''?'-':money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Belum ada data untuk ${monthLabel(selectedMonthKey)}.</td></tr>`;
   $("customerTable").innerHTML=activeMonthRows(customers).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("lostTable").innerHTML=activeMonthRows(lost,'closing_month').map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`;
   $("complaintTable").innerHTML=complaints.map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Belum ada data.</td></tr>`;
@@ -1015,7 +1017,7 @@ function normSearch(v){return String(v??"").toLowerCase().normalize("NFD").repla
 function rowSearchText(...vals){return normSearch(vals.filter(v=>v!==null&&v!==undefined).join(" "))}
 ["searchPotential","searchCustomer","searchLost","searchComplaint","searchPO"].forEach(id=>$(id)?.addEventListener("input",()=>{
   const q=normSearch($(id).value);
-  if(id==="searchPotential")$("potentialTable").innerHTML=activeMonthRows(potential).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
+  if(id==="searchPotential")$("potentialTable").innerHTML=activeMonthRows(potential).filter(x=>!q||rowSearchText(x.bd,x.customer,x.value,x.month,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${e.value===null||e.value===''?'-':money(e.value)}</td><td>${esc(e.month)}</td><td>${esc(e.notes)}</td><td>${rowBtn("potential",e.id)}</td></tr>`).join("")||`<tr><td colspan="6">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchCustomer")$("customerTable").innerHTML=activeMonthRows(customers).filter(x=>!q||rowSearchText(x.bd,x.customer,x.area,x.month,x.value,x.notes).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.customer)}</td><td>${esc(e.area)}</td><td>${esc(e.month)}</td><td>${money(e.value)}</td><td>${esc(e.notes)}</td><td>${rowBtn("customer",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchLost")$("lostTable").innerHTML=activeMonthRows(lost,'closing_month').filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.amount_expected,x.why_lost,x.closing_month).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${money(e.amount_expected)}</td><td>${esc(e.why_lost)}</td><td>${esc(e.closing_month)}</td><td>${rowBtn("lost",e.id)}</td></tr>`).join("")||`<tr><td colspan="7">Tidak ada data yang cocok.</td></tr>`;
   if(id==="searchComplaint")$("complaintTable").innerHTML=complaints.filter(x=>!q||rowSearchText(x.bd,x.company,x.pic,x.product,x.quantity_order,x.quantity_complain,x.why_complain).includes(q)).map(e=>`<tr><td>${esc(e.bd)}</td><td>${esc(e.company)}</td><td>${esc(e.pic)}</td><td>${esc(e.product)}</td><td>${num(e.quantity_order).toLocaleString("id-ID")}</td><td>${num(e.quantity_complain).toLocaleString("id-ID")}</td><td>${esc(e.why_complain)}</td><td>${rowBtn("complaint",e.id)}</td></tr>`).join("")||`<tr><td colspan="8">Tidak ada data yang cocok.</td></tr>`;
