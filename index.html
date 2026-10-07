@@ -373,7 +373,9 @@ function ensureMonthOptions(){
 function activeMonthRows(rows,field='month'){
   const actual=(rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
   if(selectedMonthKey==='2026-10' && field==='month'){
-    if(rows===potential) return mergeOctoberSeed(actual,OCTOBER_POTENTIAL_SEED,x=>`${normBD(x.bd)}|${normSearch(x.customer)}|${num(x.value)}`);
+    // Potential Oktober mengikuti data terbaru yang ditetapkan di seed.
+    // Ini mencegah data lama (mis. INACO Rp475 juta) ikut muncul kembali.
+    if(rows===potential) return OCTOBER_POTENTIAL_SEED;
     if(rows===po) return mergeOctoberSeed(actual,OCTOBER_PO_SEED,x=>`${normBD(x.bd)}|${normSearch(x.customer)}|${num(x.value)}`);
   }
   return actual;
@@ -389,9 +391,9 @@ const OCTOBER_FORECAST_SEED=[
 const OCTOBER_POTENTIAL_SEED=[
   ['Anggri','karniv',48000000],['Anggri','Refli kosmedika',14000000],
   ['Nicolas','CV Bin Suef',240000000],['Nicolas','Olabasket Bumi Indonesia',143000000],
-  ['Johnsen','Dermapad (Pak Jeff)',null],['Johnsen','Ibu Susi',110000000],
-  ['Johnsen','PT. INACO',475000000],['Johnsen','PT. INACO',250000000],
-  ['Johnsen','PT Dazry Perkasa Utama',183750000],
+  ['Johnsen','Ibu Susi',110000000],
+  ['Johnsen','PT. INACO',250000000],
+  ['Johnsen','PT Dazry Perkasa Utama',183750000],['Johnsen','Kak Esa',13750000],
   ['Nirina','PT. Rasa Eco Dijamin',47166000],['Nirina','Pak Zaka',14815000]
 ].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
 
