@@ -761,6 +761,23 @@ async function saveModal(){
 async function removeRow(kind,id){
   if(!confirm("Hapus data ini?"))return;
   if((kind==="po"||kind==="forecast"||kind==="monthlyTarget") && profile?.role!=="admin") return;
+
+  // Data seed Oktober adalah data tampilan/fallback dan ID-nya BUKAN UUID Supabase
+  // (contoh: oct-p5). Jangan pernah kirim ID seed ke Supabase karena akan memicu
+  // error: invalid input syntax for type uuid. Hapus dari seed lokal saja.
+  if(kind==="potential" && String(id).startsWith("oct-p")){
+    const idx=OCTOBER_POTENTIAL_SEED.findIndex(x=>String(x.id)===String(id));
+    if(idx>=0) OCTOBER_POTENTIAL_SEED.splice(idx,1);
+    render();
+    return;
+  }
+  if(kind==="po" && String(id).startsWith("oct-po")){
+    const idx=OCTOBER_PO_SEED.findIndex(x=>String(x.id)===String(id));
+    if(idx>=0) OCTOBER_PO_SEED.splice(idx,1);
+    render();
+    return;
+  }
+
   const table={potential:"potential_leads",customer:"customer_database",lost:"lost_leads",complaint:"customer_complaints",po:"po_received",forecast:"forecast_targets",pomonitor:"po_monitoring",monthlyTarget:"monthly_targets"}[kind];
   const r=await sb.from(table).delete().eq("id",id);
   if(r.error)alert(r.error.message);else await load();
