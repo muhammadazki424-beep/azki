@@ -477,7 +477,7 @@ const normBD=(v)=>String(v??'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' '
 const bdEq=(a,b)=>normBD(a)===normBD(b);
 const hiddenPotentialBD=(v)=>{ const n=normBD(v); return n==='kahar' || n.startsWith('kahar ') || n==='azki' || n.startsWith('azki ') || n==='yappy' || n.startsWith('yappy '); };
 function renderPotentialByBD(){
-  const names=[...bdNames()].filter(bd=>!hiddenPotentialBD(bd) && normBD(bd)!=="nicolas'").sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
+  const names=[...bdNames()].filter(bd=>{ const n=normBD(bd); const nicolasVariant=(n!=='nicolas' && /^nicolas[^a-z0-9]+$/.test(n)); return !hiddenPotentialBD(bd) && !nicolasVariant; }).sort((a,b)=>a.localeCompare(b,'id',{sensitivity:'base',numeric:false}));
   const html=names.filter(bd=>!hiddenPotentialBD(bd)).map(bd=>{
     const rows=activeMonthRows(potential).filter(x=>bdEq(x.bd,bd));
     const total=rows.reduce((a,x)=>a+num(x.value),0);
