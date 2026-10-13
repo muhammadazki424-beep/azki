@@ -376,32 +376,35 @@ function activeMonthRows(rows,field='month'){
     // Potential Oktober mengikuti data terbaru yang ditetapkan di seed.
     // Ini mencegah data lama (mis. INACO Rp475 juta) ikut muncul kembali.
     if(rows===potential) return OCTOBER_POTENTIAL_SEED;
-    if(rows===po) return mergeOctoberSeed(actual,OCTOBER_PO_SEED,x=>`${normBD(x.bd)}|${normSearch(x.customer)}|${num(x.value)}`);
+    if(rows===po) return OCTOBER_PO_SEED;
   }
   return actual;
 }
 const OCTOBER_FORECAST_SEED=[
-  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
-  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:60240000,achievement_roto:0,total:60240000,percentage:0.16,commission_flexo:0,commission_roto:0},
-  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:32550000,achievement_roto:0,total:32550000,percentage:0.13,commission_flexo:0,commission_roto:0},
+  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:45800000,achievement_roto:0,total:45800000,percentage:45800000/375000000,commission_flexo:0,commission_roto:0},
+  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:98560000,achievement_roto:10800000,total:109360000,percentage:109360000/375000000,commission_flexo:0,commission_roto:0},
+  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:147300000,achievement_roto:0,total:147300000,percentage:147300000/250000000,commission_flexo:0,commission_roto:0},
   {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
   {bd:'Others',forecast:0,target:0,achievement_flexo:39600000,achievement_roto:0,total:39600000,percentage:0,commission_flexo:0,commission_roto:0}
 ].map(x=>({...x,id:null,month:'2026-10',__octoberSeed:true}));
 
 const OCTOBER_POTENTIAL_SEED=[
-  ['Anggri','karniv',48000000],['Anggri','Refli kosmedika',14000000],
+  ['Anggri','PT PROMINDO',83840000],['Anggri','PT PROMINDO',50800000],
+  ['Anggri','PT MAP Mitra Adi Perkasa tbk',147900000],['Anggri','Bolt Indonesia',22825000],
   ['Nicolas','CV Bin Suef',240000000],['Nicolas','Olabasket Bumi Indonesia',143000000],
-  ['Johnsen','Ibu Susi',110000000],
-  ['Johnsen','PT. INACO',250000000],
-  ['Johnsen','PT Dazry Perkasa Utama',183750000],['Johnsen','Kak Esa',13750000],
-  ['Nirina','PT. Rasa Eco Dijamin',47166000],['Nirina','Pak Zaka',14815000]
-].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
+  ['Johnsen','Ibu Susi',110000000],['Johnsen','PT. INACO',250000000],
+  ['Johnsen','PT Dazry Perkasa Utama',183750000],['Johnsen','Kak Esa (UPartners Group',13750000],
+  ['Nirina','PT. Rasa Eco Dijamin',47166000],['Nirina','Bakmi Tiga Marga',113040000]
+].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel',__octoberSeed:true}));
 
 const OCTOBER_PO_SEED=[
+  ['Anggri','Carniv 8',45800000],
   ['Nicolas','Dapur MYMY',17740000],['Nicolas','Rajawali Hyoto',42500000],
+  ['Nicolas','Cv. Bin Suef',10800000],['Nicolas','PT. Gita',38320000],
   ['Johnsen','PT. Jaya Aditama',16275000],['Johnsen','Cv. Puncak Karya',16275000],
-  ['Other','Berka Abadi Pangan',39600000]
-].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026',__octoberSeed:true}));
+  ['Johnsen','Junny Boleh dicoba (pink)',76050000],['Johnsen','Junny Boleh dicoba (hijau)',38700000],
+  ['Other','Berkah Abadi Pangan',39600000]
+].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel',__octoberSeed:true}));
 
 function mergeOctoberSeed(actual,seed,keyFn){
   const out=[...(actual||[])];
@@ -416,11 +419,8 @@ function mergeOctoberSeed(actual,seed,keyFn){
 
 function targetRowsForMonth(){
   if(selectedMonthKey==='2026-10'){
-    // Oktober memakai angka yang terakhir dikirim user. Jika Supabase sudah berisi
-    // sebagian data, seed hanya melengkapi baris yang belum ada.
-    const actual=(monthlyTargets||[]).filter(x=>monthKey(x.month)==='2026-10');
-    const merged=mergeOctoberSeed(actual,OCTOBER_FORECAST_SEED,x=>`${normBD(x.bd)}|${monthKey(x.month)}`);
-    return merged.map(x=>({...x,__octoberSeed:!!x.__octoberSeed}));
+    // Oktober mengikuti data Excel terbaru yang diunggah, bukan baris lama yang tersimpan.
+    return OCTOBER_FORECAST_SEED.map(x=>({...x}));
   }
   const rows=(monthlyTargets||[]).filter(x=>monthKey(x.month)===selectedMonthKey);
   if(rows.length)return rows;
