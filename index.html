@@ -382,29 +382,29 @@ function activeMonthRows(rows,field='month'){
 }
 const OCTOBER_FORECAST_SEED=[
   {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:45800000,achievement_roto:0,total:45800000,percentage:45800000/375000000,commission_flexo:0,commission_roto:0},
-  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:98560000,achievement_roto:10800000,total:109360000,percentage:109360000/375000000,commission_flexo:0,commission_roto:0},
+  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:98560000,achievement_roto:250800000,total:349360000,percentage:349360000/375000000,commission_flexo:443520,commission_roto:501600},
   {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:147300000,achievement_roto:0,total:147300000,percentage:147300000/250000000,commission_flexo:0,commission_roto:0},
   {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
-  {bd:'Others',forecast:0,target:0,achievement_flexo:39600000,achievement_roto:0,total:39600000,percentage:0,commission_flexo:0,commission_roto:0}
+  {bd:'Others',forecast:0,target:0,achievement_flexo:529320000,achievement_roto:0,total:529320000,percentage:0,commission_flexo:0,commission_roto:0}
 ].map(x=>({...x,id:null,month:'2026-10',__octoberSeed:true}));
 
 const OCTOBER_POTENTIAL_SEED=[
   ['Anggri','PT PROMINDO',83840000],['Anggri','PT PROMINDO',50800000],
   ['Anggri','PT MAP Mitra Adi Perkasa tbk',147900000],['Anggri','Bolt Indonesia',22825000],
-  ['Nicolas','CV Bin Suef',240000000],['Nicolas','Olabasket Bumi Indonesia',143000000],
-  ['Johnsen','Ibu Susi',110000000],['Johnsen','PT. INACO',250000000],
-  ['Johnsen','PT Dazry Perkasa Utama',183750000],['Johnsen','Kak Esa (UPartners Group',13750000],
-  ['Nirina','PT. Rasa Eco Dijamin',47166000],['Nirina','Bakmi Tiga Marga',113040000]
-].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel',__octoberSeed:true}));
+  ['Nicolas','PT Mulia Indah Cosmetindo',120000000],
+  ['Johnsen','Ibu Susi',110000000],['Johnsen','Kak Esa (UPartners Group)',50700000],
+  ['Johnsen','IGO Indonesia*',57240000],
+  ['Nirina','Tikukur',11925000],['Nirina','Nona Ketupat Mini',22010000],['Nirina','Pak Abdullah',1624000]
+].map(([bd,customer,value],i)=>({id:`oct-p${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel 21 Oktober',__octoberSeed:true}));
 
 const OCTOBER_PO_SEED=[
   ['Anggri','Carniv 8',45800000],
   ['Nicolas','Dapur MYMY',17740000],['Nicolas','Rajawali Hyoto',42500000],
-  ['Nicolas','Cv. Bin Suef',10800000],['Nicolas','PT. Gita',38320000],
+  ['Nicolas','Cv. Bin Suef',10800000],['Nicolas','PT. Gita',38320000],['Nicolas','Cv. Bin Suef',240000000],
   ['Johnsen','PT. Jaya Aditama',16275000],['Johnsen','Cv. Puncak Karya',16275000],
   ['Johnsen','Junny Boleh dicoba (pink)',76050000],['Johnsen','Junny Boleh dicoba (hijau)',38700000],
-  ['Other','Berkah Abadi Pangan',39600000]
-].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel',__octoberSeed:true}));
+  ['Other','Berkah Abadi Pangan',39600000],['Other','Berkah Abadi Pangan',489720000]
+].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel 21 Oktober',__octoberSeed:true}));
 
 function mergeOctoberSeed(actual,seed,keyFn){
   const out=[...(actual||[])];
