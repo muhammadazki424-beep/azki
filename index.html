@@ -268,7 +268,7 @@ const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(n)||0);
 const num=n=>Number(n)||0;
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const rowBtn=(kind,id)=>`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
+const rowBtn=(kind,id)=>String(id||'').startsWith('nov-')?'':`<button class="btn blue small" onclick="openEditor('${kind}','${id}')">Edit</button><button class="btn red small" onclick="removeRow('${kind}','${id}')">Hapus</button>`;
 const bdOptions=(value="")=>`<select id="f_bd"><option value="">Pilih BD</option>${profiles.map(p=>`<option ${p.full_name===value?"selected":""}>${esc(p.full_name)}</option>`).join("")}<option ${value==="Others"?"selected":""}>Others</option></select>`;
 const input=(id,label,value="",type="text")=>`<div><label>${label}</label><input id="${id}" type="${type}" value="${esc(value)}"></div>`;
 const area=(id,label,value="")=>`<div class="full"><label>${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
@@ -373,12 +373,12 @@ function ensureMonthOptions(){
 function activeMonthRows(rows,field='month'){
   const actual=(rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
   if(selectedMonthKey==='2026-10' && field==='month'){
-    // Potential dan PO Oktober mengikuti data terbaru dari workbook.
+    // Potential Oktober mengikuti data terbaru yang ditetapkan di seed.
+    // Ini mencegah data lama (mis. INACO Rp475 juta) ikut muncul kembali.
     if(rows===potential) return OCTOBER_POTENTIAL_SEED;
     if(rows===po) return OCTOBER_PO_SEED;
   }
   if(selectedMonthKey==='2026-11' && field==='month'){
-    // November memakai data terbaru dari workbook yang diunggah.
     if(rows===potential) return NOVEMBER_POTENTIAL_SEED;
     if(rows===po) return NOVEMBER_PO_SEED;
   }
@@ -409,26 +409,30 @@ const OCTOBER_PO_SEED=[
   ['Other','Berkah Abadi Pangan',39600000],['Other','Berkah Abadi Pangan',489720000]
 ].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel terbaru',__octoberSeed:true}));
 
-const NOVEMBER_FORECAST_SEED=[
-  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
-  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
-  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:45000000,total:45000000,percentage:0.18,commission_flexo:0,commission_roto:0},
-  {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:4870000,achievement_roto:0,total:4870000,percentage:0.01948,commission_flexo:0,commission_roto:0},
-  {bd:'Others',forecast:0,target:0,achievement_flexo:0,achievement_roto:77400000,total:77400000,percentage:0,commission_flexo:0,commission_roto:0}
-].map(x=>({...x,id:null,month:'2026-11',__novemberSeed:true}));
-
+// DATA NOVEMBER 2026 - disematkan di index agar langsung tampil tanpa menunggu import Supabase.
 const NOVEMBER_POTENTIAL_SEED=[
   ['Anggri','PT Benli Indonesia',1120000000],
-  ['Nicolas','PT Raja Jeva Nisi',175000000],['Nicolas','CV Bin Suef',240000000],
-  ['Johnsen','Bapak Santoso',148000000],['Johnsen','Aimfood Manufacturer',128400000],['Johnsen','Upartners',67000000],
+  ['Nicolas','PT Raja Jeva Nisi',175000000],
+  ['Nicolas','CV Bin Suef',240000000],
+  ['Johnsen','Bapak Santoso',148000000],
+  ['Johnsen','Aimfood Manufacturer',128400000],
+  ['Johnsen','Upartners',67000000],
   ['Nirina','PT Kencana Anakmas Lestari',40761000]
 ].map(([bd,customer,value],i)=>({id:`nov-p${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
 
 const NOVEMBER_PO_SEED=[
   ['Johnsen','IGO Indonesia',45000000],
-  ['Nirina','CV. Sejahtera Nusantara',4870000],
+  ['Nirina','CV Sejahtera Nusantara',4870000],
   ['Other','Sari Indo Rasa',77400000]
 ].map(([bd,customer,value],i)=>({id:`nov-po${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
+
+const NOVEMBER_FORECAST_SEED=[
+  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:45000000,total:45000000,percentage:45000000/250000000,commission_flexo:0,commission_roto:0},
+  {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:4870000,achievement_roto:0,total:4870000,percentage:4870000/250000000,commission_flexo:0,commission_roto:0},
+  {bd:'Others',forecast:0,target:0,achievement_flexo:0,achievement_roto:77400000,total:77400000,percentage:0,commission_flexo:0,commission_roto:0}
+].map(x=>({...x,id:`nov-f-${x.bd.toLowerCase()}`,month:'2026-11',__novemberSeed:true}));
 
 function mergeOctoberSeed(actual,seed,keyFn){
   const out=[...(actual||[])];
@@ -791,7 +795,7 @@ async function removeRow(kind,id){
   if(!confirm("Hapus data ini?"))return;
   if((kind==="po"||kind==="forecast"||kind==="monthlyTarget") && profile?.role!=="admin") return;
 
-  // Data seed Oktober adalah data tampilan/fallback dan ID-nya BUKAN UUID Supabase
+  // Data seed Oktober/November adalah data tampilan/fallback dan ID-nya BUKAN UUID Supabase
   // (contoh: oct-p5). Jangan pernah kirim ID seed ke Supabase karena akan memicu
   // error: invalid input syntax for type uuid. Hapus dari seed lokal saja.
   if(kind==="potential" && String(id).startsWith("oct-p")){
@@ -803,18 +807,6 @@ async function removeRow(kind,id){
   if(kind==="po" && String(id).startsWith("oct-po")){
     const idx=OCTOBER_PO_SEED.findIndex(x=>String(x.id)===String(id));
     if(idx>=0) OCTOBER_PO_SEED.splice(idx,1);
-    render();
-    return;
-  }
-  if(kind==="potential" && String(id).startsWith("nov-p")){
-    const idx=NOVEMBER_POTENTIAL_SEED.findIndex(x=>String(x.id)===String(id));
-    if(idx>=0) NOVEMBER_POTENTIAL_SEED.splice(idx,1);
-    render();
-    return;
-  }
-  if(kind==="po" && String(id).startsWith("nov-po")){
-    const idx=NOVEMBER_PO_SEED.findIndex(x=>String(x.id)===String(id));
-    if(idx>=0) NOVEMBER_PO_SEED.splice(idx,1);
     render();
     return;
   }
