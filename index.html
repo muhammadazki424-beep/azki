@@ -373,10 +373,14 @@ function ensureMonthOptions(){
 function activeMonthRows(rows,field='month'){
   const actual=(rows||[]).filter(x=>monthKey(x?.[field]??'')===selectedMonthKey);
   if(selectedMonthKey==='2026-10' && field==='month'){
-    // Potential Oktober mengikuti data terbaru yang ditetapkan di seed.
-    // Ini mencegah data lama (mis. INACO Rp475 juta) ikut muncul kembali.
+    // Potential dan PO Oktober mengikuti data terbaru dari workbook.
     if(rows===potential) return OCTOBER_POTENTIAL_SEED;
     if(rows===po) return OCTOBER_PO_SEED;
+  }
+  if(selectedMonthKey==='2026-11' && field==='month'){
+    // November memakai data terbaru dari workbook yang diunggah.
+    if(rows===potential) return NOVEMBER_POTENTIAL_SEED;
+    if(rows===po) return NOVEMBER_PO_SEED;
   }
   return actual;
 }
@@ -405,6 +409,27 @@ const OCTOBER_PO_SEED=[
   ['Other','Berkah Abadi Pangan',39600000],['Other','Berkah Abadi Pangan',489720000]
 ].map(([bd,customer,value],i)=>({id:`oct-po${i+1}`,bd,customer,value,month:'2026-10',notes:'Data Oktober 2026 dari Excel terbaru',__octoberSeed:true}));
 
+const NOVEMBER_FORECAST_SEED=[
+  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:45000000,total:45000000,percentage:0.18,commission_flexo:0,commission_roto:0},
+  {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:4870000,achievement_roto:0,total:4870000,percentage:0.01948,commission_flexo:0,commission_roto:0},
+  {bd:'Others',forecast:0,target:0,achievement_flexo:0,achievement_roto:77400000,total:77400000,percentage:0,commission_flexo:0,commission_roto:0}
+].map(x=>({...x,id:null,month:'2026-11',__novemberSeed:true}));
+
+const NOVEMBER_POTENTIAL_SEED=[
+  ['Anggri','PT Benli Indonesia',1120000000],
+  ['Nicolas','PT Raja Jeva Nisi',175000000],['Nicolas','CV Bin Suef',240000000],
+  ['Johnsen','Bapak Santoso',148000000],['Johnsen','Aimfood Manufacturer',128400000],['Johnsen','Upartners',67000000],
+  ['Nirina','PT Kencana Anakmas Lestari',40761000]
+].map(([bd,customer,value],i)=>({id:`nov-p${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
+
+const NOVEMBER_PO_SEED=[
+  ['Johnsen','IGO Indonesia',45000000],
+  ['Nirina','CV. Sejahtera Nusantara',4870000],
+  ['Other','Sari Indo Rasa',77400000]
+].map(([bd,customer,value],i)=>({id:`nov-po${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
+
 function mergeOctoberSeed(actual,seed,keyFn){
   const out=[...(actual||[])];
   const used=new Set();
@@ -417,6 +442,9 @@ function mergeOctoberSeed(actual,seed,keyFn){
 }
 
 function targetRowsForMonth(){
+  if(selectedMonthKey==='2026-11'){
+    return NOVEMBER_FORECAST_SEED.map(x=>({...x}));
+  }
   if(selectedMonthKey==='2026-10'){
     // Oktober mengikuti data Excel terbaru yang diunggah, bukan baris lama yang tersimpan.
     return OCTOBER_FORECAST_SEED.map(x=>({...x}));
@@ -775,6 +803,18 @@ async function removeRow(kind,id){
   if(kind==="po" && String(id).startsWith("oct-po")){
     const idx=OCTOBER_PO_SEED.findIndex(x=>String(x.id)===String(id));
     if(idx>=0) OCTOBER_PO_SEED.splice(idx,1);
+    render();
+    return;
+  }
+  if(kind==="potential" && String(id).startsWith("nov-p")){
+    const idx=NOVEMBER_POTENTIAL_SEED.findIndex(x=>String(x.id)===String(id));
+    if(idx>=0) NOVEMBER_POTENTIAL_SEED.splice(idx,1);
+    render();
+    return;
+  }
+  if(kind==="po" && String(id).startsWith("nov-po")){
+    const idx=NOVEMBER_PO_SEED.findIndex(x=>String(x.id)===String(id));
+    if(idx>=0) NOVEMBER_PO_SEED.splice(idx,1);
     render();
     return;
   }
