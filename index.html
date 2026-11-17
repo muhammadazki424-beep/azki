@@ -412,24 +412,29 @@ const OCTOBER_PO_SEED=[
 // DATA NOVEMBER 2026 - disematkan di index agar langsung tampil tanpa menunggu import Supabase.
 const NOVEMBER_POTENTIAL_SEED=[
   ['Anggri','PT Benli Indonesia',1120000000],
-  ['Nicolas','PT Raja Jeva Nisi',175000000],
-  ['Nicolas','CV Bin Suef',240000000],
-  ['Johnsen','Bapak Santoso',148000000],
-  ['Johnsen','Aimfood Manufacturer',128400000],
-  ['Johnsen','Upartners',67000000],
-  ['Nirina','PT Kencana Anakmas Lestari',40761000]
-].map(([bd,customer,value],i)=>({id:`nov-p${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
+  ['Nicolas','PT Yasma Natura',927000000],
+  ['Nicolas','PT Serambi Botani Indonesia',78000000],
+  ['Johnsen','PT Raja Jeva Nisi',175000000],
+  ['Johnsen','CV Bin Suef',240000000],
+  ['Nirina','Aimfood Manufacturer',128400000],
+  ['Others','PT Saridewi Natural Kosmetika',47100000],
+  ['Others','CV Duta Niaga Yogayakarta',21838000]
+].map(([bd,customer,value],i)=>({id:`nov-p${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel (15)',__novemberSeed:true}));
 
 const NOVEMBER_PO_SEED=[
+  ['Anggri','Carniv 8',45600000],
+  ['Anggri','Carniv 8',14475000],
   ['Johnsen','IGO Indonesia',45000000],
+  ['Johnsen','U Partners',36780000],
+  ['Johnsen','U Partners',31020000],
   ['Nirina','CV Sejahtera Nusantara',4870000],
   ['Other','Sari Indo Rasa',77400000]
-].map(([bd,customer,value],i)=>({id:`nov-po${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel terbaru',__novemberSeed:true}));
+].map(([bd,customer,value],i)=>({id:`nov-po${i+1}`,bd,customer,value,month:'2026-11',notes:'Data November 2026 dari Excel (15)',__novemberSeed:true}));
 
 const NOVEMBER_FORECAST_SEED=[
-  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
+  {bd:'Anggri',forecast:0,target:375000000,achievement_flexo:60075000,achievement_roto:0,total:60075000,percentage:60075000/375000000,commission_flexo:0,commission_roto:0},
   {bd:'Nicolas',forecast:0,target:375000000,achievement_flexo:0,achievement_roto:0,total:0,percentage:0,commission_flexo:0,commission_roto:0},
-  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:45000000,total:45000000,percentage:45000000/250000000,commission_flexo:0,commission_roto:0},
+  {bd:'Johnsen',forecast:0,target:250000000,achievement_flexo:0,achievement_roto:112800000,total:112800000,percentage:112800000/250000000,commission_flexo:0,commission_roto:0},
   {bd:'Nirina',forecast:0,target:250000000,achievement_flexo:4870000,achievement_roto:0,total:4870000,percentage:4870000/250000000,commission_flexo:0,commission_roto:0},
   {bd:'Others',forecast:0,target:0,achievement_flexo:0,achievement_roto:77400000,total:77400000,percentage:0,commission_flexo:0,commission_roto:0}
 ].map(x=>({...x,id:`nov-f-${x.bd.toLowerCase()}`,month:'2026-11',__novemberSeed:true}));
